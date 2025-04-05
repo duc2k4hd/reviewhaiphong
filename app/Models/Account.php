@@ -7,10 +7,32 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class Account extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    protected $table = 'accounts';
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function profile() {
+        return $this->hasOne(Profile::class);
+    }
+
+    public function posts() {
+        return $this->hasMany(Post::class);
+    }
+
+    public function lastUpdatedBy() {
+        return $this->hasOne(Post::class, 'last_update_by')->latestOfMany();
+    }
+
+    public function role() {
+        return $this->belongsTo(Role::class);
+    }
 
     /**
      * The attributes that are mass assignable.

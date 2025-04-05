@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Disallow: /user
+Disallow: /admin
+Disallow: /home
+Disallow: /trang-chu
+Disallow: /review-hai-phong
+Disallow: /tim-kiem
+Disallow: /build
+
+Sitemap: https://reviewhaiphong.io.vn/sitemap.xml
+
