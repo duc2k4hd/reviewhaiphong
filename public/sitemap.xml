@@ -1,47 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
     <url>
         <loc>https://reviewhaiphong.io.vn</loc>
     
             </url>
     <url>
-        <loc>https://reviewhaiphong.io.vn/am-thuc/nha-hang-lau-long-wang</loc>
-        <lastmod>2025-04-01T15:06:57+00:00</lastmod>
+        <loc>https://reviewhaiphong.io.vn/check-in/mijoo-home</loc>
+        <lastmod>2025-04-12T01:02:41+00:00</lastmod>
 
             </url>
     <url>
-        <loc>https://reviewhaiphong.io.vn/review-tong-hop/review-du-lich-hai-phong-2025</loc>
-        <lastmod>2025-04-03T11:56:01+00:00</lastmod>
+        <loc>https://reviewhaiphong.io.vn/tin-tuc/mo-hinh-nhan-vat-3d</loc>
+        <lastmod>2025-04-12T01:03:06+00:00</lastmod>
 
             </url>
     <url>
-        <loc>https://reviewhaiphong.io.vn/review-tong-hop/food-tour-hai-phong-2025</loc>
-        <lastmod>2025-04-03T09:00:02+00:00</lastmod>
+        <loc>https://reviewhaiphong.io.vn/dich-vu/pandora-fitness-and-yoga-center</loc>
+        <lastmod>2025-04-12T02:03:28+00:00</lastmod>
 
             </url>
     <url>
-        <loc>https://reviewhaiphong.io.vn/am-thuc/ga-ran-kfc</loc>
-        <lastmod>2025-03-31T13:28:04+00:00</lastmod>
+        <loc>https://reviewhaiphong.io.vn/am-thuc/oha-coffe-and-tea-hai-phong</loc>
+        <lastmod>2025-04-12T02:02:15+00:00</lastmod>
 
             </url>
     <url>
-        <loc>https://reviewhaiphong.io.vn/am-thuc/kham-pha-thuc-don-kfc-hai-phong</loc>
-        <lastmod>2025-04-04T03:26:19+00:00</lastmod>
+        <loc>https://reviewhaiphong.io.vn/am-thuc/masahiko-sushi-324-van-cao</loc>
+        <lastmod>2025-04-12T03:33:27+00:00</lastmod>
 
             </url>
     <url>
-        <loc>https://reviewhaiphong.io.vn/review-tong-hop/so-sanh-ga-ran-kfc-va-lotteria</loc>
-        <lastmod>2025-04-04T03:03:26+00:00</lastmod>
+        <loc>https://reviewhaiphong.io.vn/am-thuc/bossam-bbq-83-tran-phu-hai-phong</loc>
+        <lastmod>2025-04-12T10:33:23+00:00</lastmod>
 
             </url>
     <url>
-        <loc>https://reviewhaiphong.io.vn/review-tong-hop/top-5-mon-ngon-tai-aeon-mall-hai-phong</loc>
-        <lastmod>2025-04-03T04:56:33+00:00</lastmod>
-
-            </url>
-    <url>
-        <loc>https://reviewhaiphong.io.vn/review-tong-hop/top-5-dia-chi-ga-ran-ngon-nhat-hai-phong</loc>
-        <lastmod>2025-04-03T12:13:37+00:00</lastmod>
+        <loc>https://reviewhaiphong.io.vn/am-thuc/mi-cay-mukbang-7-cap-do</loc>
+        <lastmod>2025-04-12T10:34:31+00:00</lastmod>
 
             </url>
 </urlset>

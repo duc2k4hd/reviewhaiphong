@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @include('client.module.css')
     <link rel="shortcut icon" href="{{ asset('/client/assets/images/logo/'. $settings['site_favicon']) }}" type="image/x-icon">
-    <title>{{ $post->seo_title }}</title>
-
-    <title>{{ $settings['site_name'] }} - {{ $post->seo_title }}</title>
-
+    <title>{{ $post->seo_title }} - {{ $settings['site_name'] }}</title>
 
     <!-- Từ khóa SEO (nên có các từ khóa phù hợp với nội dung trang) -->
-    <meta name="keywords" content="{{ $settings['seo_keywords'] }}">
+    <meta name="keywords" content="{{ $post['seo_keywords'] }}">
 
     <!-- Tên tác giả của trang -->
     <meta name="author" content="{{ $settings['seo_author'] }}">
@@ -19,7 +16,7 @@
     <!-- Thẻ Robots giúp chỉ định các công cụ tìm kiếm có thể làm gì với trang này -->
     <meta name="robots" content="index, follow">  <!-- "noindex, nofollow" nếu không muốn công cụ tìm kiếm đánh chỉ mục -->
 
-    <meta name="description" content="{{ $settings['site_description'] }}">
+    <meta name="description" content="{{ $post['seo_desc'] }}">
 
     <!-- Thời gian khi trang được tạo -->
     <meta http-equiv="date" content="{{ \Carbon\Carbon::parse($post->published_at)->format('d/m/y') }}" />
@@ -44,6 +41,13 @@
 
     <!-- Open Graph Image (Hình ảnh khi chia sẻ trên mạng xã hội) -->
     <meta property="og:image" content="{{ asset('/client/assets/images/posts/'. $post->seo_image) }}">
+
+    <!-- Open Graph Type (Loại trang, ví dụ: website, article, product, etc.) -->
+    <meta property="og:type" content="article">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ $post->name }}" />
+    <meta property="og:image:type" content="image/webp" />
 
     <!-- Open Graph Type (Loại trang, ví dụ: website, article, product, etc.) -->
     <meta property="og:type" content="article">
@@ -72,7 +76,7 @@
     <!-- Twitter Creator (Tác giả của trang, nếu có) -->
     <meta name="twitter:creator" content="{{ $settings['site_name'] }}">
 
-    <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="canonical" href="{{ url()->current() }}" />
 
     {{-- Thẻ HrefLang (Để hỗ trợ các ngôn ngữ khác nhau) --}}
     <link rel="alternate" hreflang="vi" href="{{ url()->current() }}" />
@@ -103,7 +107,7 @@
             "@type": "Person",
             "name": "{{ $post->account->profile->name }}",
             "url": "",
-            "sameAs": "https://twitter.com/author-profile"
+            "sameAs": "{{ $settings['facebook_link'] }}"
             },
             "editor": {
             "@type": "Person",
@@ -122,7 +126,7 @@
             "mainEntityOfPage": "{{ url()->current() }}",
             "url": "{{ url()->current() }}",
             "description": "{{ $post->seo_desc }}",
-            "articleBody": "Nội dung bài viết, có thể là đoạn văn bản tóm tắt hoặc nội dung ngắn gọn",
+            "articleBody": "{{ $post->seo_desc }}",
             "keywords": "{{ $post->seo_keywords }}",
             "genre": "{{ $post->category->name }}",
             "commentCount": "{{ count($post->comments) }}",
@@ -137,6 +141,7 @@
     </script>
 </head>
 <body>
+    {!! $settings['google_tag_body'] !!}
     {{-- Chỗ này để loading --}}
     @include('client.templates.loading')
     <div class="review-haiphong">

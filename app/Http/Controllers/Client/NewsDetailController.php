@@ -12,8 +12,8 @@ class NewsDetailController extends Controller
 {
     public function newsDetail(Request $request)
     {
-        $settings = Setting::getSettings();
         try {
+            // Lấy
             $post = Post::select(['id', 'category_id', 'account_id', 'name', 'views', 'content', 'seo_title', 'seo_desc', 'seo_image', 'seo_keywords', 'tags', 'published_at'])
                 ->with([
                     'category:id,name,slug',
@@ -27,9 +27,14 @@ class NewsDetailController extends Controller
                 ->where('status', 'published')
                 ->first();
 
-            $post->update([
-                'views' => $post->views + 1,
-            ]);
+            // Custom 1 ip + 1 view
+            $ip = request()->ip();
+            $key = 'viewed_post_' . $post->id . '_' . $ip;
+            
+            if (!cache()->has($key)) {
+                $post->increment('views');
+                cache()->put($key, true, now()->addHours(6));
+            }
 
             $categoryPosts = Category::select(['id', 'name', 'slug'])
                 ->with([
@@ -41,10 +46,11 @@ class NewsDetailController extends Controller
                 ])
                 ->where('id', $post->category->id)
                 ->first();
+            
         } catch (\Throwable $th) {
             return view('client.templates.errors.404');
         }
 
-        return view('client.layouts.single-page', compact('settings', 'post', 'categoryPosts'));
+        return view('client.layouts.single-page', compact( 'post', 'categoryPosts'));
     }
 }

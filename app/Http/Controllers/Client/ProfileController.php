@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 class ProfileController extends Controller
 {
     public function index(Request $request) {
-        $settings = Setting::getSettings();
         $user = Account::with(
                 [
                 'profile', 'role', 
@@ -26,8 +25,7 @@ class ProfileController extends Controller
             return view('client.templates.errors.404');
         }
         return view("client.profile.index", compact(
-            "user",
-            "settings"
+            "user"
         ));
     }
 }

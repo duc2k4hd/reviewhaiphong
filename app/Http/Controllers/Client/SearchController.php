@@ -12,7 +12,6 @@ class SearchController extends Controller
     public function search(Request $request)
     {
         $keyword = $request->keyword;
-        $settings = Setting::getSettings();
         try {
             $posts = Post::with(['category:id,name,slug', 'account:id', 'account.profile:id,name,account_id'])
                 ->where('status', 'published')
@@ -31,6 +30,6 @@ class SearchController extends Controller
         } catch (\Throwable $th) {
             return view('client.templates.errors.404');
         }
-        return view('client.layouts.search', compact('posts', 'settings', 'keyword', 'postsViews'));
+        return view('client.layouts.search', compact('posts', 'keyword', 'postsViews'));
     }
 }

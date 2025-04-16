@@ -17,7 +17,7 @@ class Post extends Model
     }
 
     public function lastUpdatedBy() {
-        return $this->belongsTo(Account::class, 'last_update_by');
+        return $this->belongsTo(Account::class, 'last_updated_by');
     }
 
     public function category() {

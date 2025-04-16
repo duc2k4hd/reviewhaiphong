@@ -1032,7 +1032,7 @@ body.loading {
 
     .breadcrumb {
         /* margin-top: 50px; */
-        margin-top: -10px;
+        /*margin-top: -10px;*/
     }
 
     .related-posts-container .post-item {
@@ -1089,6 +1089,10 @@ body.loading {
     .footer .subscribe-form input {
         margin-bottom: 10px;
     }
+    
+    .review-haiphong .header .header-logo .advertisement {
+        display: none;
+    }
 
     .review-haiphong .header .header-menu {
         display: none;
@@ -1138,16 +1142,15 @@ body.loading {
     }
 
     .review-haiphong .header .bars-mobile {
-        display: block;
-        position: fixed;
+        display: flex;
         width: max-content;
-        top: 0;
-        right: 10px;
-        top: 130px;
+        align-items: center;
+        column-gap: 15px;
+        margin-right: 10px;
         z-index: 999;
     }
 
-    .review-haiphong .header .bars-mobile > .fa-bars {
+    .review-haiphong .header .bars-mobile i {
         color: var(--main-color);
         font-size: 30px;
         text-align: center;
@@ -1214,10 +1217,6 @@ body.loading {
 
     .review-haiphong .header .header-menu .search input {
         font-size: 14px;
-    }
-
-    .review-haiphong .header .header-logo .advertisement a img {
-        object-fit: contain;
     }
 
 

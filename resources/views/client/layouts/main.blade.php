@@ -43,10 +43,14 @@
     <meta property="og:url" content="{{ url()->current() }}">
 
     <!-- Open Graph Image (Hình ảnh khi chia sẻ trên mạng xã hội) -->
-    <meta property="og:image" content="/client/assets/images/logo/{{ $settings['site_logo'] }}">
+    <meta property="og:image" content="{{ asset('/client/assets/images/logo/'. ($settings['site_image'] ?? ($settings['avatar_admin'] ?? $settings['site_logo']))) }}">
 
     <!-- Open Graph Type (Loại trang, ví dụ: website, article, product, etc.) -->
     <meta property="og:type" content="website">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ $settings['site_name'] }}" />
+    <meta property="og:image:type" content="image/png" />
 
     <!-- Open Graph Site Name (Tên website) -->
     <meta property="og:site_name" content="{{ $settings['site_name'] }}">
@@ -67,7 +71,7 @@
     <meta name="twitter:description" content="{{ $settings['site_description'] }}">
 
     <!-- Twitter Image (Hình ảnh khi chia sẻ trên Twitter) -->
-    <meta name="twitter:image" content="/client/assets/images/logo/{{ $settings['site_logo'] }}">
+    <meta name="twitter:image" content="{{ asset('/client/assets/images/logo/'. $settings['site_image']) }}">
 
     <!-- Twitter Creator (Tác giả của trang, nếu có) -->
     <meta name="twitter:creator" content="{{ $settings['site_name'] }}">
@@ -91,108 +95,160 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "name": "{{ $settings['site_name'] }}",
+          "image": [
+          "{{ asset('/client/assets/images/logo/'. $settings['site_image']) }}"
+          ],
+          "@id": "{{ $settings['site_url'] }}",
+          "url": "{{ $settings['site_url'] }}",
+          "telephone": "{{ $settings['contact_phone'] }}",
+          "priceRange": "VNĐ",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "{{ $settings['contact_address'] }}",
+            "addressLocality": "Hải Phòng",
+            "postalCode": "180000",
+            "addressCountry": "VN"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 20.8584917,
+            "longitude": 106.6844285
+          },
+          "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+              "Sunday"
+            ],
+            "opens": "00:00",
+            "closes": "23:59"
+          },
+          "sameAs": [
+            "{{ $settings['facebook_link'] }}",
+            "{{ $settings['twitter_link'] }}",
+            "{{ $settings['instagram_link'] }}",
+            "{{ $settings['telegram_link'] }}",
+            "{{ $settings['discord_link'] }}"
+          ] 
+        }
+    </script>
 
     <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "Organization",
-            "@id": "{{ url()->current() }}/#organization",
-            "name": "{{ $settings['site_name'] }}",
-            "url": "{{ url()->current() }}",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "/client/assets/images/logo/{{ $settings['site_logo'] }}"
-            },
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "{{ $settings['contact_phone'] }}",
-              "contactType": "Customer Service",
-              "email": "{{ $settings['contact_email'] }}",
-              "areaServed": "VN",
-              "availableLanguage": ["vi", "en"]
-            }
-          },
-          {
+         {
             "@context": "https://schema.org",
-            "@type": "WebSite",
-            "url": "{{ $settings['site_url'] }}",
-            "name": "{{ $settings['site_name'] }}",
-            "description": "{{ $settings['site_description'] }}",
-            "publisher": {
-              "@type": "Organization",
-              "name": "{{ $settings['site_name'] }}",
-              "logo": {
-                "@type": "ImageObject",
-                "url": "/client/assets/images/logo/{{ $settings['site_logo'] }}"
+            "@graph": [
+              {
+                "@type": "Organization",
+                "@id": "{{ url()->current() }}/#organization",
+                "name": "{{ $settings['site_name'] }}",
+                "url": "{{ url()->current() }}",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "{{ asset('/client/assets/images/logo/'. $settings['site_image']) }}"
+                },
+                "contactPoint": {
+                  "@type": "ContactPoint",
+                  "telephone": "{{ $settings['contact_phone'] }}",
+                  "contactType": "Customer Service",
+                  "email": "{{ $settings['contact_email'] }}",
+                  "areaServed": "VN",
+                  "availableLanguage": ["vi", "en"]
+                }
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "url": "{{ $settings['site_url'] }}",
+                "name": "{{ $settings['site_name'] }}",
+                "description": "{{ $settings['site_description'] }}",
+                "publisher": {
+                  "@type": "Organization",
+                  "name": "{{ $settings['site_name'] }}",
+                  "logo": {
+                    "@type": "ImageObject",
+                    "url": "{{ asset('/client/assets/images/logo/'. $settings['site_image']) }}"
+                  }
+                },
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": "https://reviewhaiphong.io.vn/tim-kiem/{search_term_string}",
+                  "query-input": "required name=search_term_string"
+                }
+              },
+              {
+                "@type": "WebPage",
+                "@id": "{{ url()->current() }}/#webpage",
+                "url": "{{ url()->current() }}",
+                "name": "{{ $settings['site_name'] }}",
+                "datePublished": "2025-03-28T08:27:14+07:00",
+                "dateModified": "2025-03-30T22:19:16+07:00",
+                "about": {
+                  "@id": "{{ url()->current() }}/#organization"
+                },
+                "isPartOf": {
+                  "@id": "{{ url()->current() }}/#website"
+                },
+                "inLanguage": "vi"
+              },
+              {
+                "@type": "Person",
+                "@id": "/user/admin",
+                "name": "{{ $settings['site_name'] }}",
+                "url": "/user/admin",
+                "image": {
+                  "@type": "ImageObject",
+                  "url": "{{ asset('/client/assets/images/logo/'. $settings['avatar_admin']) }}",
+                  "caption": "{{ $settings['site_name'] }}",
+                  "inLanguage": "vi"
+                },
+                "worksFor": {
+                  "@id": "{{ url()->current() }}/#organization"
+                }
+              },
+              {
+                "@type": "Article",
+                "@id": "{{ url()->current() }}/#richSnippet",
+                "headline": "{{ $settings['site_name'] }}",
+                "keywords": "{{ $settings['site_name'] }}",
+                "datePublished": "2025-03-28T08:27:14+07:00",
+                "dateModified": "2025-03-17T22:19:16+07:00",
+                "author": {
+                  "@id": "{{ asset('/user/admin') }}"
+                },
+                "publisher": {
+                  "@id": "{{ url()->current() }}/#organization"
+                },
+                "description": "{{ $settings['site_description'] }}",
+                "name": "{{ $settings['site_name'] }}",
+                "isPartOf": {
+                  "@id": "{{ url()->current() }}/#webpage"
+                },
+                "inLanguage": "vi",
+                "mainEntityOfPage": {
+                  "@id": "{{ url()->current() }}/#webpage"
+                }
               }
-            },
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": "https://reviewhaiphong.io.vn/tim-kiem/{search_term_string}",
-              "query-input": "required name=search_term_string"
-            }
-          },
-          {
-            "@type": "WebPage",
-            "@id": "{{ url()->current() }}/#webpage",
-            "url": "{{ url()->current() }}",
-            "name": "{{ $settings['site_name'] }}",
-            "datePublished": "2025-03-28T08:27:14+07:00",
-            "dateModified": "2025-03-30T22:19:16+07:00",
-            "about": {
-              "@id": "{{ url()->current() }}/#organization"
-            },
-            "isPartOf": {
-              "@id": "{{ url()->current() }}/#website"
-            },
-            "inLanguage": "vi"
-          },
-          {
-            "@type": "Person",
-            "@id": "/user/admin",
-            "name": "{{ $settings['site_name'] }}",
-            "url": "/user/admin",
-            "image": {
-              "@type": "ImageObject",
-              "url": "/client/assets/images/avatar/{{ $settings['avatar_admin'] }}",
-              "caption": "{{ $settings['site_name'] }}",
-              "inLanguage": "vi"
-            },
-            "worksFor": {
-              "@id": "{{ url()->current() }}/#organization"
-            }
-          },
-          {
-            "@type": "Article",
-            "@id": "{{ url()->current() }}/#richSnippet",
+            ],
+            "@type": "BlogPosting",
             "headline": "{{ $settings['site_name'] }}",
-            "keywords": "{{ $settings['site_name'] }}",
-            "datePublished": "2025-03-28T08:27:14+07:00",
-            "dateModified": "2025-03-17T22:19:16+07:00",
-            "author": {
-              "@id": "/user/admin"
-            },
-            "publisher": {
-              "@id": "{{ url()->current() }}/#organization"
-            },
-            "description": "{{ $settings['site_description'] }}",
-            "name": "{{ $settings['site_name'] }}",
-            "isPartOf": {
-              "@id": "{{ url()->current() }}/#webpage"
-            },
-            "inLanguage": "vi",
-            "mainEntityOfPage": {
-              "@id": "{{ url()->current() }}/#webpage"
-            }
-          }
-        ]
-      }      
+            "alternativeHeadline": "{{ $settings['site_name'] }}",
+            "image": "{{ asset('/client/assets/images/logo/'. $settings['site_image']) }}"
+          }      
     </script>
       
 </head>
 <body>
+    {!! $settings['google_tag_body'] !!}
     {{-- Chỗ này để loading --}}
     @include('client.templates.loading')
     <div class="review-haiphong">

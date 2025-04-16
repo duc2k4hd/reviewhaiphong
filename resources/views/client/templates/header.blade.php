@@ -24,11 +24,12 @@
         <div class="logo">
             <img src="{{ asset('/client/assets/images/logo/'. $settings['site_logo']) }}" alt="{{ $settings['site_name'] }}">
         </div>
+        <div class="bars-mobile"><i class="fa-solid fa-magnifying-glass"></i><i class="fa-solid fa-bars"></i></div>
         <div class="advertisement">
             <a href=""><img src="{{ asset('/client/assets/images/ads/'. $settings['logo_ads_1']) }}" alt="{{ $settings['site_name'] }}"></a>
         </div>
     </div>
-    <div class="bars-mobile"><i class="fa-solid fa-bars"></i></div>
+    
     <div class="header-menu">
         <div class="menu">
             

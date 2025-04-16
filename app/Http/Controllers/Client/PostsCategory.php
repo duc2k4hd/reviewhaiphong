@@ -13,7 +13,6 @@ class PostsCategory extends Controller
     public function index(Request $request)
     {
         try {
-            $settings = Setting::getSettings();
             $category = Category::where('slug', $request->slug)->firstOrFail();
             $posts = $category
                 ->posts()
@@ -28,6 +27,6 @@ class PostsCategory extends Controller
             return view('client.templates.errors.404');
         }
 
-        return view('client.layouts.posts-category', compact('category', 'posts', 'settings', 'postsViews'));
+        return view('client.layouts.posts-category', compact('category', 'posts', 'postsViews'));
     }
 }

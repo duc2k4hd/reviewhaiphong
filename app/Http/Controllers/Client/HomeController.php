@@ -10,9 +10,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $settings = Setting::getSettings();
-        return view('client.home.index', compact(
-            'settings'
-        ));
+        return view('client.home.index');
     }
 }

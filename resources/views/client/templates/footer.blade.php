@@ -84,7 +84,7 @@
 
     <div class="copyright-section">
         <div class="container">
-            <p>&copy; {{ ((2025 != now()->year & 2025 < now()->year) ? '2025 - ' : ''). now()->year }} All Rights Reserved</p>
+            {!! Blade::render($settings['copyright']) !!}
         </div>
     </div>
 </footer>

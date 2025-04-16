@@ -27,7 +27,7 @@ class Account extends Authenticatable
     }
 
     public function lastUpdatedBy() {
-        return $this->hasOne(Post::class, 'last_update_by')->latestOfMany();
+        return $this->hasOne(Post::class, 'last_updated_by')->latestOfMany();
     }
 
     public function role() {
