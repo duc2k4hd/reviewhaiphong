@@ -79,6 +79,8 @@
                             @enderror
                         </div>
 
+                        <button type="button" class="btn btn-outline-primary" onclick="openMediaLibrary()">📷 Chọn
+                            ảnh</button>
                         {{-- Nội dung --}}
                         <div class="mb-3">
                             <label class="form-label">Nội dung bài viết</label>
@@ -155,11 +157,32 @@
                         </div>
                     </form>
                 </div>
-
+                <div class="modal fade" id="mediaLibraryModal" tabindex="-1" aria-labelledby="mediaLibraryLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content p-3">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="mediaLibraryLabel">Chọn ảnh từ thư viện</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body d-flex flex-wrap gap-2">
+                                @foreach ($images as $image)
+                                    <img src="{{ $image }}" data-url="{{ $image }}" class="media-img"
+                                        style="width: 150px; height: auto; cursor: pointer;">
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!--/ Responsive Table -->
         </div>
+        <!-- Modal -->
+
         <!-- / Content -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
         <script>
             const quill = new Quill('#editor', {
@@ -241,6 +264,23 @@
                 document.querySelector('#codeView').classList.remove('d-none');
             }
 
+            function openMediaLibrary() {
+                // Mở modal chọn ảnh (giả định bạn đã có modal sẵn)
+                $('#mediaLibraryModal').modal('show');
+            }
+
+            // Hàm gán khi click vào ảnh trong thư viện
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('media-img')) {
+                    const selectedImageUrl = e.target.getAttribute('data-url'); // hoặc src
+
+                    const range = quill.getSelection();
+                    quill.insertEmbed(range.index, 'image', selectedImageUrl);
+
+                    $('#mediaLibraryModal').modal('hide'); // Đóng modal sau khi chèn
+                }
+            });
+
             document.querySelector('.ql-clearAll').addEventListener('click', function() {
                 if (confirm("Bạn có chắc muốn xóa tất cả nội dung không?")) {
                     quill.setText('');
@@ -259,15 +299,42 @@
                 isDirty = true;
             });
 
-            // Xử lý sự kiện trước khi người dùng rời khỏi trang
-            window.addEventListener('beforeunload', function(event) {
-                if (isDirty) {
-                    // Hiển thị thông báo xác nhận
-                    const message = "Bạn chưa lưu thay đổi. Bạn có chắc muốn thoát?";
-                    event.returnValue = message; // Firefox và Chrome
-                    return message; // Chrome
-                }
-            });
+            function imageHandler() {
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.click();
+
+                input.onchange = async () => {
+                    const file = input.files[0];
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append('image', file);
+                        formData.append('_token', '{{ csrf_token() }}');
+
+                        const res = await fetch('{{ route('admin.media.upload') }}', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const data = await res.json();
+                        if (data.url) {
+                            const range = quill.getSelection();
+                            quill.insertEmbed(range.index, 'image', data.url);
+                        }
+                    }
+                };
+
+                // Xử lý sự kiện trước khi người dùng rời khỏi trang
+                window.addEventListener('beforeunload', function(event) {
+                    if (isDirty) {
+                        // Hiển thị thông báo xác nhận
+                        const message = "Bạn chưa lưu thay đổi. Bạn có chắc muốn thoát?";
+                        event.returnValue = message; // Firefox và Chrome
+                        return message; // Chrome
+                    }
+                });
+            }
         </script>
         <!-- Footer -->
         <!-- / Footer -->

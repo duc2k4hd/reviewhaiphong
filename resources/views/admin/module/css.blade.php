@@ -1,7 +1,8 @@
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon"
     href="https://web.dev/static/articles/building/an-adaptive-favicon/image/example-light-theme-favic-d92b9def036e6.png" />
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <!-- Fonts -->
@@ -22,12 +23,13 @@
 <link rel="stylesheet" href="{{ asset('admins/assets/css/demo.css?v=' . time()) }}" />
 
 <!-- Vendors CSS -->
-<link rel="stylesheet" href="{{ asset('admins/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css?v=' . time()) }}" />
+<link rel="stylesheet"
+    href="{{ asset('admins/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css?v=' . time()) }}" />
 <link rel="stylesheet" href="{{ asset('admins/assets/vendor/libs/apex-charts/apex-charts.css?v=' . time()) }}" />
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 <!-- Page CSS -->
 <!-- Page -->
 <link rel="stylesheet" href="{{ asset('admins/assets/vendor/css/pages/page-auth.css?v=' . time()) }}" />
- <!-- Helpers -->
- <script src="{{ asset('admins/assets/vendor/js/helpers.js?v=' . time()) }}"></script>
- <script src="{{ asset('admins/assets/js/config.js?v=' . time()) }}"></script>
+<!-- Helpers -->
+<script src="{{ asset('admins/assets/vendor/js/helpers.js?v=' . time()) }}"></script>
+<script src="{{ asset('admins/assets/js/config.js?v=' . time()) }}"></script>

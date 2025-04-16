@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\NewsDetailController;
@@ -24,6 +25,9 @@ Route::prefix('/admin')->name('admin.')->group(function() {
     Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/dashboard')->name('dashboard.')->group((function() {
         Route::get('/', [DashboardController::class,'index'])->name('index');
     }));
+
+    Route::post('/media/upload', [MediaController::class, 'upload'])->name('media.upload');
+
 
     Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/posts')->name('posts.')->group((function() {
         Route::get('/', [PostController::class, 'index'])->name('index');
