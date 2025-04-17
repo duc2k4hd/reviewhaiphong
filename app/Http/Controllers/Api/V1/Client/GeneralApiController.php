@@ -50,7 +50,7 @@ class GeneralApiController extends Controller
                 'posts.account.profile:id,account_id,name'
             ])
             ->where('status', 1)
-            ->where('slug', '!=', 'review-hai-phong')
+            ->whereIn('slug', ['dich-vu', 'am-thuc', 'du-lich', 'check-in', 'tin-tuc'])
             ->get(['id', 'name', 'slug']);
         });
 

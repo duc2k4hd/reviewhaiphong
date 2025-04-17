@@ -44,6 +44,7 @@ Route::prefix('/admin')->name('admin.')->group(function() {
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/trang-chu', [HomeController::class, 'index']);
 Route::get('/review-hai-phong', [HomeController::class, 'index']);
+Route::get('/gioi-thieu', [HomeController::class, 'ỉntroduce'])->name('home.ỉntroduce');
 Route::get('/user/{username}', [ProfileController::class, 'index'])->name('profile.index');
 Route::get('/tim-kiem/{keyword}', [SearchController::class, 'search'])->name('search.index');
 
@@ -53,7 +54,20 @@ Route::get('/sitemap', function () {
         ->get(['id', 'slug', 'category_id', 'updated_at']);
 
     $sitemap = Sitemap::create()->add(Url::create('/'));
-
+    $sitemap->add(
+        Url::create('/review-hai-phong')
+            ->setLastModificationDate(new \DateTime())
+            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+            ->setPriority(0.9)
+    );
+    
+    // URL: /gioi-thieu
+    $sitemap->add(
+        Url::create('/gioi-thieu')
+            ->setLastModificationDate(new \DateTime())
+            ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+            ->setPriority(0.7)
+    );
     foreach ($posts as $post) {
         $sitemap->add(
             Url::create("/{$post->category->slug}/{$post->slug}")
@@ -68,12 +82,8 @@ Route::get('/sitemap', function () {
 
     // Gắn dòng stylesheet vào
     $xmlWithXsl = preg_replace(
-        '/<\?xml version="1.0" encoding="UTF-8"\?>/',
-'
-<?xml version="1.0" encoding="UTF-8"?>' . "\n" .
-'<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>',
-$xml
-);
+        '/<\?xml version="1.0" encoding="UTF-8"\?>/','<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>', $xml
+    );
 
 // Ghi ra file public
 file_put_contents(public_path('sitemap.xml'), $xmlWithXsl);

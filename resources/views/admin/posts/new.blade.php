@@ -161,19 +161,28 @@
                     aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content p-3">
-                            <div class="modal-header">
+                            <div class="modal-header d-flex justify-content-between align-items-center">
                                 <h5 class="modal-title" id="mediaLibraryLabel">Chọn ảnh từ thư viện</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <div class="d-flex">
+                                    <input type="text" id="imageSearchInput" class="form-control w-100"
+                                        placeholder="Tìm ảnh...">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
                             </div>
-                            <div class="modal-body d-flex flex-wrap gap-2">
+                            <div class="modal-body row gap-2" id="imageContainer">
                                 @foreach ($images as $image)
-                                    <img src="{{ $image }}" data-url="{{ $image }}" class="media-img"
+                                    @php
+                                        $filename = basename($image);
+                                    @endphp
+                                    <img src="{{ $image }}" data-url="{{ $image }}"
+                                        data-name="{{ strtolower($filename) }}" class="media-img col"
                                         style="width: 150px; height: auto; cursor: pointer;">
                                 @endforeach
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
             <!--/ Responsive Table -->
         </div>
@@ -264,22 +273,43 @@
                 document.querySelector('#codeView').classList.remove('d-none');
             }
 
+            // Mở modal chọn ảnh
             function openMediaLibrary() {
-                // Mở modal chọn ảnh (giả định bạn đã có modal sẵn)
                 $('#mediaLibraryModal').modal('show');
             }
 
-            // Hàm gán khi click vào ảnh trong thư viện
+            // Gán khi click vào ảnh trong thư viện
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('media-img')) {
-                    const selectedImageUrl = e.target.getAttribute('data-url'); // hoặc src
-
+                    const selectedImageUrl = e.target.getAttribute('data-url');
                     const range = quill.getSelection();
                     quill.insertEmbed(range.index, 'image', selectedImageUrl);
-
-                    $('#mediaLibraryModal').modal('hide'); // Đóng modal sau khi chèn
+                    $('#mediaLibraryModal').modal('hide');
                 }
             });
+
+            // Tìm kiếm ảnh trong modal
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.getElementById('imageSearchInput');
+
+                if (searchInput) {
+                    searchInput.addEventListener('keyup', function() {
+                        const keyword = this.value.toLowerCase();
+                        const images = document.querySelectorAll('.media-img');
+
+                        images.forEach(img => {
+                            const name = img.getAttribute('data-name')?.toLowerCase() || '';
+                            img.style.display = name.includes(keyword) ? 'block' : 'none';
+                        });
+                    });
+                }
+
+                // Tự focus vào ô tìm kiếm khi mở modal
+                $('#mediaLibraryModal').on('shown.bs.modal', function() {
+                    searchInput?.focus();
+                });
+            });
+
 
             document.querySelector('.ql-clearAll').addEventListener('click', function() {
                 if (confirm("Bạn có chắc muốn xóa tất cả nội dung không?")) {
