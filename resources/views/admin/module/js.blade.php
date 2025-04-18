@@ -5,6 +5,7 @@
     <script src="{{ asset('admins/assets/vendor/libs/jquery/jquery.js?v=' . time()) }}"></script>
     <script src="{{ asset('admins/assets/vendor/libs/popper/popper.js?v=' . time()) }}"></script>
     <script src="{{ asset('admins/assets/vendor/js/bootstrap.js?v=' . time()) }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-" crossorigin="anonymous"></script>
     <script src="{{ asset('admins/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js?v=' . time()) }}"></script>
 
     <script src="{{ asset('admins/assets/vendor/js/menu.js?v=' . time()) }}"></script>

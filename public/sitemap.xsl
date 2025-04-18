@@ -109,9 +109,10 @@
       <body>
         <h1>Sitemap - Review Hải Phòng</h1>
         <table>
-          <tr><th>Đường dẫn bài viết</th><th>Lần sửa đổi cuối cùng</th></tr>
+          <tr><th>STT</th><th>Đường dẫn bài viết</th><th>Lần sửa đổi cuối cùng</th></tr>
           <xsl:for-each select="sitemap:urlset/sitemap:url">
             <tr>
+              <td><xsl:value-of select="position()"/></td>
               <td><a href="{sitemap:loc}"><xsl:value-of select="sitemap:loc"/></a></td>
               <td><xsl:value-of select="sitemap:lastmod"/></td>
             </tr>

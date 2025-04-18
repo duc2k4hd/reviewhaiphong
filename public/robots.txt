@@ -3,7 +3,6 @@ Disallow: /user
 Disallow: /admin
 Disallow: /home
 Disallow: /trang-chu
-Disallow: /review-hai-phong
 Disallow: /tim-kiem
 Disallow: /build
 

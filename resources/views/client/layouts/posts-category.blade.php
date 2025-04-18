@@ -5,19 +5,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" href="{{ asset('/client/assets/images/'. $settings['site_favicon']) }}" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/client/assets/images/logo/'. $settings['site_favicon']) }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/client/assets/images/logo/'. $settings['site_favicon']) }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/client/assets/images/logo/'. $settings['site_favicon']) }}">
-    <link rel="mask-icon" href="{{ asset('/client/assets/images/logo/'. $settings['site_favicon']) }}" color="#5bbad5">
+    <link rel="shortcut icon" href="{{ asset('/client/assets/images/' . $settings['site_favicon']) }}" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="{{ asset('/client/assets/images/logo/' . $settings['site_favicon']) }}">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="{{ asset('/client/assets/images/logo/' . $settings['site_favicon']) }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="{{ asset('/client/assets/images/logo/' . $settings['site_favicon']) }}">
+    <link rel="mask-icon" href="{{ asset('/client/assets/images/logo/' . $settings['site_favicon']) }}" color="#5bbad5">
     <meta name="theme-color" content="#ffffff">
     <link rel="alternate" hreflang="vi" href="{{ url()->current() }}" />
     <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}" />
-    <link rel="icon" href="{{ asset('/client/assets/images/logo/'. $settings['site_favicon']) }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('/client/assets/images/logo/' . $settings['site_favicon']) }}"
+        type="image/x-icon">
     @include('client.module.css')
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Khám phá {{ $category->name }}</title>
 </head>
+
+<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Khám phá {{ $category->name }}",
+      "description": "Tổng hợp các bài viết, đánh giá, chia sẻ về chủ đề {{ $category->name }} tại {{ $settings['site_name'] }}.",
+      "url": "{{ url()->current() }}",
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+          @foreach ($posts as $index => $item)
+            {
+              "@type": "ListItem",
+              "position": {{ $index + 1 }},
+              "url": "{{ url('/' . $category->slug . '/' . $item->slug) }}",
+              "name": "{{ $item->seo_title }}"
+            }@if (!$loop->last),@endif
+          @endforeach
+        ]
+      }
+    }
+    </script>
+
+<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "{{ $settings['site_name'] }}",
+          "item": "{{ url('/' . $settings['site_slug']) }}"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "{{ $category->name }}",
+          "item": "{{ url()->current() }}"
+        }
+      ]
+    }
+    </script>
 
 <body>
     @include('client.templates.loading')

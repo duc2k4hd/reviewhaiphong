@@ -397,51 +397,41 @@
                   </li>
   
                   <!-- User -->
-                  <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                      <div class="avatar avatar-online">
-                        <img src="{{ asset('client/assets/images/avatar/'. $account->profile->avatar) }}" alt class="w-px-40 h-auto rounded-circle" />
-                      </div>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarAvatarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <img src="{{ asset('client/assets/images/avatar/'. $account->profile->avatar) }}" alt="Avatar"
+                           class="rounded-circle" width="40" height="40">
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                      <li>
-                        <a class="dropdown-item" href="#">
-                          <div class="d-flex">
-                            <div class="flex-shrink-0 me-3">
-                              <div class="avatar avatar-online">
-                                <img src="{{ asset('client/assets/images/avatar/'. $account->profile->avatar) }}" alt class="w-px-40 h-auto rounded-circle" />
-                              </div>
-                            </div>
-                            <div class="flex-grow-1">
-                              <span class="fw-semibold d-block">{{ $account->profile->name }}</span>
-                              <small class="text-muted">Admin</small>
-                            </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarAvatarDropdown">
+                      <li class="px-3 py-2">
+                        <div class="d-flex align-items-center">
+                          <img src="{{ asset('client/assets/images/avatar/'. $account->profile->avatar) }}" alt="Avatar"
+                               class="rounded-circle me-2" width="40" height="40">
+                          <div>
+                            <div class="fw-semibold">{{ $account->profile->name }}</div>
+                            <small class="text-muted">Admin</small>
                           </div>
-                        </a>
+                        </div>
                       </li>
-                      <li>
-                        <div class="dropdown-divider"></div>
-                      </li>
+                      <li><hr class="dropdown-divider"></li>
                       <li>
                         <a class="dropdown-item" href="#">
-                          <i class="bx bx-user me-2"></i>
-                          <span class="align-middle">Trang cá nhân</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="#">
-                          <i class="bx bx-cog me-2"></i>
-                          <span class="align-middle">Càu đặt</span>
+                          <i class="bi bi-person me-2"></i> Trang cá nhân
                         </a>
                       </li>
                       <li>
                         <a class="dropdown-item" href="#">
-                          <i class="bx bx-power-off me-2"></i>
-                          <span class="align-middle">Đăng xuất</span>
+                          <i class="bi bi-gear me-2"></i> Cài đặt
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="#">
+                          <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
                         </a>
                       </li>
                     </ul>
                   </li>
+                  
                   <!--/ User -->
                 </ul>
               </div>
@@ -483,9 +473,27 @@
         <!-- / Layout wrapper -->
 
         <div class="buy-now">
-            <a href="" target="_blank"
-                class="btn btn-danger btn-buy-now">Test</a>
+            <button onclick="toggleMenu(this)" class="btn btn-danger btn-buy-now">Ẩn Menu</button>
         </div>
+        <script>
+          function toggleMenu(btn) {
+              const menu = document.querySelector('#layout-menu');
+              if (menu.style.display === 'none') {
+                  menu.style.display = 'block';
+                  btn.textContent = 'Ẩn Menu';
+              } else {
+                  menu.style.display = 'none';
+                  btn.textContent = 'Bật Menu';
+              }
+          }
+      </script>
+      <style>
+        @media (max-width: 768px) {
+          .buy-now {
+            display: none;
+          }
+        }
+      </style>
         @include('admin.module.js')
 </body>
 

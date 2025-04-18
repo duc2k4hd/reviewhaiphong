@@ -1,10 +1,17 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\MediaController;
 use App\Http\Controllers\Api\V1\Client\GeneralApiController;
 use App\Http\Controllers\Api\V1\Client\NewsDetailApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
+// Admin
+Route::post('/media/upload', [MediaController::class, 'upload'])->name('api.admin.media.upload');
+
+
+// Client
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');

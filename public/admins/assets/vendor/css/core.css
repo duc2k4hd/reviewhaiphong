@@ -14714,8 +14714,8 @@ body {
 }
 .buy-now .btn-buy-now {
   position: fixed;
-  bottom: 3rem;
-  right: 1.625rem;
+  bottom: 20px;
+  right: 20px;
   z-index: 999999;
   box-shadow: 0 1px 20px 1px #ff3e1d;
 }

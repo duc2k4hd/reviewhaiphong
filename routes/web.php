@@ -11,6 +11,7 @@ use App\Http\Controllers\Client\ProfileController;
 use App\Http\Controllers\Client\SearchController;
 use App\Http\Middleware\CheckAdmin;
 use App\Http\Middleware\CheckLogin;
+use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
@@ -51,7 +52,8 @@ Route::get('/tim-kiem/{keyword}', [SearchController::class, 'search'])->name('se
 Route::get('/sitemap', function () {
     $posts = Post::with('category:id,slug')
         ->where('status', 'published')
-        ->get(['id', 'slug', 'category_id', 'updated_at']);
+        ->get(['id', 'slug', 'category_id']);
+    $categories = Category::select(['id', 'name', 'slug'])->whereIn('slug', ['review-hai-phong', 'du-lich', 'am-thuc', 'check-in', 'dich-vu', 'tin-tuc', 'gioi-thieu'])->get();
 
     $sitemap = Sitemap::create()->add(Url::create('/'));
     $sitemap->add(
@@ -68,10 +70,20 @@ Route::get('/sitemap', function () {
             ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
             ->setPriority(0.7)
     );
+
+    foreach ($categories as $category) {
+        $sitemap->add(
+            Url::create("/{$category->slug}")
+                ->setLastModificationDate(new \DateTime())
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                ->setPriority(0.6)
+        );
+    }
+
     foreach ($posts as $post) {
         $sitemap->add(
             Url::create("/{$post->category->slug}/{$post->slug}")
-                ->setLastModificationDate($post->updated_at)
+                ->setLastModificationDate(new \DateTime())
                 ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                 ->setPriority(0.6)
         );

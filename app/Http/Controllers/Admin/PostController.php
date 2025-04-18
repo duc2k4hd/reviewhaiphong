@@ -14,11 +14,6 @@ use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
-    protected function loadAccount()
-    {
-        return Auth::user()->load(['profile:id,account_id,name,age,address,avatar,phone,cover_photo,bio,social_link']);
-    }
-
     protected function getPostsByStatus($status)
     {
         return Post::with(['account:id,role_id', 'account.profile:id,account_id,name', 'account.role:id,name', 'category:id,name,slug', 'lastUpdatedBy.profile:id,account_id,name'])
@@ -68,14 +63,25 @@ class PostController extends Controller
         $categories = Category::where('status', 1)->get();
         $path = public_path('client/assets/images/posts');
 
-        $images = [];
+        $images = [
+            'name' => [],
+            'urls' => []
+        ];
+
+        function slugToTitle($slug) {
+            return implode(' ', array_map('ucfirst', explode('-', $slug)));
+        }
 
         if (file_exists($path)) {
             $files = scandir($path);
-
             foreach ($files as $file) {
+                // Kiểm tra nếu file có phần mở rộng là ảnh
                 if (in_array(pathinfo($file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                    $images[] = asset('client/assets/images/posts/' . $file);
+                    // Lưu tên tệp vào mảng 'name'
+                    $images['name'][] = slugToTitle(str_replace(['http://127.0.0.1:8000/client/assets/images/posts/', '.webp'], '', $file));
+                    
+                    // Lưu URL vào mảng 'urls' (nối vào mảng thay vì ghi đè)
+                    $images['urls'][] = str_replace('http://127.0.0.1:8000', '', asset('client/assets/images/posts/' . $file));
                 }
             }
         }
