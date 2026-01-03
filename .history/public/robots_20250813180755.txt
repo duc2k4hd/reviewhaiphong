@@ -1,0 +1,68 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /admin/staff/
+Disallow: /login
+Disallow: /register
+Disallow: /password
+Disallow: /search
+Disallow: /tim-kiem
+Disallow: /bai-viet?page=
+
+Allow: /client/assets/
+
+Sitemap: https://yourdomain.com/sitemap.xml
+
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /password/
+Disallow: /api/
+Disallow: /storage/
+Disallow: /vendor/
+Disallow: /node_modules/
+Disallow: /tests/
+Disallow: /database/
+Disallow: /config/
+Disallow: /resources/
+Disallow: /routes/
+Disallow: /app/
+Disallow: /bootstrap/
+Disallow: /cache/
+Disallow: /logs/
+Disallow: /feed/
+
+# Allow important pages
+Allow: /sitemap.xml
+Allow: /sitemap-index.xml
+
+# Crawl delay (optional)
+Crawl-delay: 5
+
+# Sitemap
+Sitemap: https://reviewhaiphong.com/sitemap.xml
+Sitemap: https://reviewhaiphong.com/sitemap-posts.xml
+Sitemap: https://reviewhaiphong.com/sitemap-categories.xml
+Sitemap: https://reviewhaiphong.com/sitemap-authors.xml
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 5
+
+# Bing specific
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 5
+
+# Facebook specific
+User-agent: facebookexternalhit
+Allow: /
+
+# Twitter specific
+User-agent: Twitterbot
+Allow: /
+

@@ -1,0 +1,536 @@
+.review-haiphong .main>.single-page {
+    position: relative;
+    display: grid;
+    grid-template-columns: 65% auto;
+    column-gap: 40px;
+    margin: 5px 100px;
+}
+
+.review-haiphong .main>.single-page>.single .title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+.review-haiphong .main>.single-page>.single .meta {
+    /* display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px; */
+}
+
+.review-haiphong .main>.single-page>.single .meta>div {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.review-haiphong .main>.single-page>.single .meta i:not(.fa-star) {
+    padding-right: 8px;
+}
+
+.review-haiphong .main>.single-page>.single .meta a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.review-haiphong .main>.single-page>.single .meta a:hover {
+    text-decoration: underline;
+}
+
+.review-haiphong .main>.single-page>.single .short-description {
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    color: #555;
+    background-color: #f0f0f0;
+    padding: 15px;
+    margin: 20px 0;
+    border-left: 4px solid #ff7f50;
+    font-style: italic;
+    border-radius: 5px;
+    max-width: 100%;
+}
+
+.review-haiphong .main>.single-page>.single .short-description p {
+    margin: 0;
+    /* Xóa margin mặc định của thẻ p */
+}
+
+.review-haiphong .main>.single-page>.single .content {
+    margin-bottom: 30px;
+    line-height: 2.1;
+}
+
+.review-haiphong .main>.single-page>.single .content ul,
+.review-haiphong .main>.single-page>.single .content ol {
+    margin: 1em 0 1em .8em;
+    font-size: .9em;
+    line-height: 1.8;
+    color: #333;
+}
+
+.review-haiphong .main>.single-page>.single .content ul li,
+.review-haiphong .main>.single-page>.single .content ol li {
+    margin-bottom: 0.6em;
+    position: relative;
+}
+
+/* Tuỳ biến bullet cho UL */
+.review-haiphong .main>.single-page>.single .content ul li::before {
+    content: "➤";
+    left: 0;
+    color: #007acc;
+    font-size: 1em;
+    margin-right: 5px;
+    line-height: 1;
+}
+
+/* Tuỳ biến đánh số cho OL */
+.review-haiphong .main>.single-page>.single .content ol {
+    counter-reset: item;
+}
+
+.review-haiphong .main>.single-page>.single .content ol li::before {
+    counter-increment: item;
+    content: counter(item) ".";
+    content: "🔥";
+    left: 0;
+    color: #007acc;
+    font-size: 1em;
+    margin-right: 5px;
+    line-height: 1;
+}
+
+
+.review-haiphong .main>.single-page>.single .content h2 {
+    background-color: #ececec;
+    color: black;
+    padding: 7px 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    line-height: 1.5;
+    border-left: red 5px solid;
+    margin: 25px 0 10px 0;
+}
+
+.review-haiphong .main>.single-page>.single .content h3 {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 2.2em 0 1em;
+    position: relative;
+    padding-left: 0.75em;
+    border-left: 4px solid #007acc;
+    line-height: 1.4;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.review-haiphong .main>.single-page>.single .content h3:hover {
+    color: #007acc;
+    transition: color 0.3s ease;
+}
+
+/*.review-haiphong .main > .single-page > .single .content h3 {*/
+/*    font-size: 16px;*/
+/*    line-height: 1.5;*/
+/*    padding: 7px 0;*/
+/*}*/
+
+/*.review-haiphong .main > .single-page > .single .content h3::before {*/
+/*    content: '\f0a4'; */
+/*    font-family: 'FontAwesome'; */
+/*    margin-right: 5px;*/
+/*    margin-left: 5px;*/
+/*    color: var(--support-color);*/
+/*    font-size: 16px;*/
+/*}*/
+
+.review-haiphong .main>.single-page>.single .content h4,
+.review-haiphong .main>.single-page>.single .content h5,
+.review-haiphong .main>.single-page>.single .content h6 {
+    font-weight: 600;
+    margin: 2em 0 1em;
+    color: #222;
+    position: relative;
+    padding-bottom: 0.4em;
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.4;
+}
+
+/* Gạch chân gradient cực chill */
+.review-haiphong .main>.single-page>.single .content h4::after,
+.review-haiphong .main>.single-page>.single .content h5::after,
+.review-haiphong .main>.single-page>.single .content h6::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #007acc, #00c6ff);
+    border-radius: 2px;
+}
+
+/* Cỡ chữ tùy theo cấp độ */
+.review-haiphong .main>.single-page>.single .content h4 {
+    font-size: 1.2em;
+}
+
+.review-haiphong .main>.single-page>.single .content h5 {
+    font-size: 1em;
+}
+
+.review-haiphong .main>.single-page>.single .content h6 {
+    font-size: .8em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #444;
+}
+
+
+.review-haiphong .main>.single-page>.single .content img {
+    position: relative;
+    display: block;
+    width: 90%;
+    object-fit: auto;
+    height: 54vh;
+    border-radius: 5px;
+    margin: 10px auto 15px auto;
+}
+
+.review-haiphong .main>.single-page>.single .content hr {
+    height: 1px;
+    border: none;
+    margin: 10px auto;
+    width: 80%;
+    background-color: #a0a0a0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.review-haiphong .main>.single-page>.single .content blockquote {
+    font-style: italic;
+    background: #f9f9f9;
+    border-left: 5px solid #007acc;
+    margin: 1.5em 10px;
+    padding: 1em 1.5em;
+    position: relative;
+    color: #333;
+    font-size: 1.1em;
+    line-height: 1.6;
+    border-radius: 8px;
+}
+
+.review-haiphong .main>.single-page>.single .content blockquote::before {
+    content: "“";
+    font-size: 3em;
+    position: absolute;
+    left: 10px;
+    top: -10px;
+    color: #007acc;
+    font-family: Georgia, serif;
+}
+
+.review-haiphong .main>.single-page>.single .content blockquote cite {
+    display: block;
+    text-align: right;
+    color: #666;
+    font-size: 0.8em;
+    margin-top: 0.5em;
+}
+
+.review-haiphong .main>.single-page>.single .content p {
+    margin-bottom: 15px;
+}
+
+.review-haiphong .main>.single-page>.single .image {
+    position: relative;
+    margin: 30px auto;
+    width: 90%;
+    height: 58vh;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.review-haiphong .main>.single-page>.single .image img {
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 40px);
+    top: 0;
+    left: 0;
+    /*object-fit: cover;*/
+}
+
+.review-haiphong .main>.single-page>.single .image figcaption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(239, 239, 239, .9);
+    color: rgb(47, 47, 47);
+    font-size: .9rem;
+    font-weight: 500;
+    line-height: 1.7;
+    text-align: center;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.review-haiphong .main>.single-page>.single .image:hover figcaption {
+    background-color: rgba(239, 239, 239, 1);
+    color: #333;
+    cursor: pointer;
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+
+
+.review-haiphong .main>.single-page>.single .tag {
+    margin-bottom: 20px;
+}
+
+.review-haiphong .main>.single-page>.single .tag a {
+    color: #007bff;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.review-haiphong .main>.single-page>.single .tag a:hover {
+    text-decoration: underline;
+}
+
+.review-haiphong .main>.single-page>.single .share {
+    margin-bottom: 30px;
+}
+
+.review-haiphong .main>.single-page>.single .share a {
+    color: #007bff;
+    margin-right: 10px;
+}
+
+.review-haiphong .main>.single-page>.single .share a:hover {
+    text-decoration: none;
+}
+
+.review-haiphong .main>.single-page .comment-section {
+    margin-top: 40px;
+}
+
+.review-haiphong .main>.single-page .comment-section h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    background-color: #28a745;
+    color: white;
+    padding: 10px 0 10px 10px;
+    border-radius: 4px;
+}
+
+.review-haiphong .main>.single-page .comment-list {
+    margin-top: 20px;
+}
+
+.review-haiphong .main>.single-page .comment-item {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.review-haiphong .main>.single-page .comment-avatar {
+    margin-right: 15px;
+}
+
+.review-haiphong .main>.single-page .comment-avatar img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.review-haiphong .main>.single-page .comment-content {
+    max-width: 600px;
+}
+
+.review-haiphong .main>.single-page .comment-meta {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.review-haiphong .main>.single-page .comment-text {
+    font-size: 1rem;
+}
+
+.review-haiphong .main>.single-page .comment-actions {
+    margin-top: 10px;
+}
+
+.review-haiphong .main>.single-page .comment-actions button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.review-haiphong .main>.single-page .comment-actions button:hover {
+    background-color: #0056b3;
+}
+
+.review-haiphong .main>.single-page .comment-actions .like-btn.liked {
+    background-color: #28a745;
+}
+
+.review-haiphong .main>.single-page .reply-form {
+    margin-top: 10px;
+}
+
+.review-haiphong .main>.single-page .reply-form textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    margin-bottom: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.review-haiphong .main>.single-page .reply-form .submit-reply {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+.review-haiphong .main>.single-page .reply-form .submit-reply:hover {
+    background-color: #218838;
+}
+
+/* #backToTop {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    display: none; 
+} */
+
+/* #backToTop:hover {
+    background-color: #0056b3;
+} */
+
+
+/* Container TOC */
+
+
+/* 1050px and below */
+@media screen and (max-width: 1050px) {
+    .review-haiphong .main>.single-page {
+        grid-template-columns: 1fr;
+        margin: 5px 20px;
+    }
+
+    .review-haiphong .main>.single-page>.single .meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .review-haiphong .main>.single-page>.single .meta>div {
+        font-size: 0.9rem;
+    }
+
+    .review-haiphong .main>.single-page>.single .content p {
+        font-size: 1rem;
+    }
+
+    .review-haiphong .main>.single-page>.single .image {
+        width: 80%;
+        height: 30vh;
+    }
+
+    .review-haiphong .main>.single-page>.single .comment-content {
+        max-width: 100%;
+    }
+
+    .review-haiphong .main>.single-page>.single .comment-avatar img {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* 480px and below */
+@media screen and (max-width: 600px) {
+    .review-haiphong .main>.single-page {
+        margin: 5px 10px !important;
+    }
+
+    .review-haiphong .main>.single-page>.single .title {
+        font-size: 1.5rem;
+    }
+
+    .review-haiphong .main>.single-page>.single .meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .review-haiphong .main>.single-page>.single .meta>div {
+        font-size: 0.85rem;
+    }
+
+    .review-haiphong .main>.single-page>.single .content p {
+        font-size: 0.9rem;
+    }
+
+    .review-haiphong .main>.single-page>.single .content img {
+        height: 30vh;
+    }
+
+    .review-haiphong .main>.single-page>.single .image {
+        width: 90%;
+        height: 35vh;
+    }
+
+    .review-haiphong .main>.single-page>.single .tag a {
+        font-size: 0.9rem;
+        margin-right: 5px;
+    }
+
+    .review-haiphong .main>.single-page>.single .comment-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .review-haiphong .main>.single-page>.single .comment-avatar img {
+        width: 35px;
+        height: 35px;
+    }
+
+    .review-haiphong .main>.single-page>.single .comment-content {
+        max-width: 100%;
+    }
+
+    .review-haiphong .main>.single-page>.single .comment-meta {
+        font-size: 0.9rem;
+    }
+
+    .review-haiphong .main>.single-page>.single .comment-text {
+        font-size: 0.9rem;
+    }
+}

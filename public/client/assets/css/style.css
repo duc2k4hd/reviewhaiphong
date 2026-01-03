@@ -1,0 +1,1302 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+:root {
+    --main-color: red;
+    --support-color: #1c75bc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: "Open Sans", sans-serif;
+    list-style: none;
+}
+
+body {
+    overflow: visible;
+}
+
+body.loading {
+    overflow: hidden;
+}
+
+.fixed {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 999 !important;
+}
+
+.posts-category {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.review-haiphong {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    left: 50%;
+    margin: 0 auto;
+    transform: translateX(-50%);
+}
+
+.review-haiphong .header {
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+.review-haiphong .header .bars-mobile, .review-haiphong .header .header-menu .close-mobile {
+    display: none;
+}
+
+.review-haiphong .header .header-top {
+    position: relative;
+    width: 100%;
+    line-height: 40px;
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.review-haiphong .header .header-top .date-location {
+    display: flex;
+}
+
+.review-haiphong .header .header-top .date-location * {
+    margin-right: 5px;
+}
+
+.review-haiphong .header .header-top .social ul {
+    display: flex;
+}
+
+.review-haiphong .header .header-top .social ul li {
+    margin-left: 20px;
+    font-size: 25px;
+}
+
+.review-haiphong .header .header-top .social ul li a i {
+    color: var(--support-color);
+}
+
+.review-haiphong .header .header-logo {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.review-haiphong .header .header-logo .logo {
+    position: relative;
+    width: 230px;
+    height: 230px;
+    margin: auto 0;
+}
+
+.review-haiphong .header .header-logo .logo img {
+    width: 100%;
+    height: 100%;
+}
+
+.review-haiphong .header .header-logo .advertisement {
+    position: relative;
+    width: auto;
+    height: 80px;
+    margin: auto 0;
+    border-radius: 5px;
+}
+
+.review-haiphong .header .header-logo .advertisement a img {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    object-fit: cover;
+    display: inline-block;
+    animation: shake 1s ease-in-out infinite;
+}
+
+@keyframes shake {
+    0% {
+        transform: rotate(0);
+    }
+
+    20% {
+        transform: rotate(-.3deg);
+    }
+
+    40% {
+        transform: rotate(.3deg);
+    }
+
+    60% {
+        transform: rotate(-.3deg);
+    }
+
+    80% {
+        transform: rotate(.3deg);
+    }
+
+    100% {
+        transform: rotate(0);
+    }
+}
+
+.review-haiphong .header .header-menu {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.review-haiphong .header .header-menu .menu ul {
+    position: relative;
+    display: flex;
+    justify-content: start;
+}
+
+.review-haiphong .header .header-menu .menu ul li {
+    position: relative;
+    margin-right: 10px;
+    font-size: 17px;
+    padding: 0 15px;
+}
+
+.review-haiphong .header .header-menu .menu ul li a {
+    color: black;
+    font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
+}
+
+.review-haiphong .header .header-menu .menu ul li a i {
+    font-size: 14px;
+}
+
+.review-haiphong .header .header-menu .menu ul li:first-child {
+    position: relative;
+}
+
+.review-haiphong .header .header-menu .menu ul li::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    /* Ban đầu không hiển thị */
+    height: 3px;
+    background-color: var(--main-color);
+    bottom: -10px;
+    left: 0;
+    transition: width 0.5s ease;
+    /* Chỉ chuyển đổi `width` */
+}
+
+.review-haiphong .header .header-menu .menu ul li:hover::before {
+    width: 100%;
+    /* Khi hover vào, gạch dưới mở rộng */
+}
+
+.review-haiphong .header .header-menu .menu ul li:first-child a {
+    color: var(--main-color);
+}
+
+.review-haiphong .header .header-menu .menu ul li:first-child::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background-color: var(--main-color);
+    bottom: -10px;
+    /* Đưa gạch xuống dưới chữ */
+    left: 0;
+    transition: all 0.5s;
+}
+
+.review-haiphong .header .header-menu .menu ul li a:hover {
+    color: var(--main-color);
+}
+
+.review-haiphong .header .header-menu .search form {
+    display: flex;
+    align-items: center;
+    width: 300px;
+    background: #fff;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.review-haiphong .header .header-menu .search input {
+    flex: 1;
+    padding: 10px 15px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.review-haiphong .header .header-menu .search button {
+    background: var(--support-color);
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.review-haiphong .header .header-menu .search button i {
+    color: #fff;
+    font-size: 18px;
+}
+
+.review-haiphong .header .header-menu .search button:hover {
+    background: var(--main-color);
+}
+
+
+.review-haiphong .main {
+    position: relative;
+    width: 100%;
+    margin: 20px auto;
+}
+
+.review-haiphong .latest-news {
+    position: relative;
+    background: #f9f9f9;
+    padding: 5px 30px;
+    border-radius: 8px;
+}
+
+.review-haiphong .latest-news > .title > h1, .review-haiphong .discover-news > .title > h2 {
+    position: relative;
+    font-size: 18px;
+    /* background: var(--support-color); */
+    font-weight: bold;
+    text-align: center;
+    width: max-content;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px 20px;
+    margin: 0 auto 10px auto;
+    color: rgb(147, 147, 147);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.review-haiphong .news-list {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.review-haiphong .news-list .news-item {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.review-haiphong .news-list .news-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.review-haiphong .news-list .news-item a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    height: 100%;
+}
+
+.review-haiphong .news-list .news-item .image {
+    height: 180px;
+    overflow: hidden;
+}
+
+.review-haiphong .news-list .news-item .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.review-haiphong .news-list .news-item:hover .image img {
+    transform: scale(1.05);
+}
+
+.review-haiphong .news-list .news-item .content {
+    padding: 16px;
+}
+
+.review-haiphong .news-list .news-item .content h2 {
+    font-size: 18px;
+    margin: 0 0 10px;
+    color: #222;
+    line-height: 1.4;
+    font-weight: 600;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.review-haiphong .news-list .news-item .content p:not(.description) {
+    font-size: 14px;
+    color: #555;
+    margin: 0;
+}
+
+.review-haiphong .news-list .news-item .content .description {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.review-haiphong .news-list .news-item .category-by {
+    padding: 0 16px 16px;
+    font-size: 13px;
+    color: #888;
+    text-align: right;
+}
+
+.review-haiphong .news-list .news-item .category-by span {
+    background-color: var(--main-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+
+.review-haiphong .discover-news {
+    position: relative;
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.review-haiphong .discover-news .discover {
+    position: relative;
+    display: grid;
+    border-radius: 8px;
+    height: auto;
+    grid-template-columns: 70% auto;
+    column-gap: 30px;
+}
+
+.review-haiphong .discover-news .discover .review {
+    position: relative;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    border-radius: 8px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.review-haiphong .discover-news .discover .review .experience {
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience>.title {
+    /* position: relative; */
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    background-color: var(--main-color);
+    width: max-content;
+    padding: 7px 18px;
+    color: white;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience>.title::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    top: 38.5px;
+    background-color: var(--main-color);
+    left: 0;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience > .content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    background-color: #f9f9f9;
+    padding: 20px;
+    gap: 10px;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience .item {
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience .item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience .item a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience .item .content {
+    padding: 10px 5px;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience .item .image {
+    height: 200px;
+    overflow: hidden;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience .item .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+    display: block;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience .item:hover .image img {
+    transform: scale(1.05);
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience .item .title h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 5px;
+    line-height: 1.4;
+    color: #222;
+    transition: color 0.3s ease;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience .item:hover .title h4 {
+    color: #1fbeea;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience .item .post-date p {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.star i {
+    color: gold;
+    margin-left: 2px;
+    font-size: 13px;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience .item .description p {
+    font-size: 14px;
+    color: #444;
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+
+.review-haiphong .discover-news>.discover>.review>.experience>.view-more {
+    position: relative;
+    margin-top: 20px;
+    text-align: center;
+    margin: 20px auto;
+    font-size: 16px;
+    width: 180px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: var(--main-color);
+    overflow: hidden;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience>.view-more>a {
+    position: absolute;
+    display: block;
+    width: 100%;
+    line-height: 40px;
+    color: white;
+}
+
+.review-haiphong .discover-news>.discover>.review>.experience>.view-more>a:hover {
+    background-color: var(--support-color);
+}
+
+.related-posts-container, .featured-posts-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    height: max-content;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.related-posts-container .related-posts-header,
+.featured-posts-container .featured-posts-header {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+.related-posts-container .related-posts-header .icon,
+.featured-posts-container .featured-posts-header .icon {
+    color: var(--main-color);
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.related-posts-container .related-posts-header h3,
+.featured-posts-container .featured-posts-header h3 {
+    color: var(--main-color);
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.related-posts-container .related-posts-list .featured-posts-container .featured-posts-list {
+    padding: 10px;
+}
+
+.related-posts-container .post-item,
+.featured-posts-container .post-item {
+    display: flex;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 10px 5px;
+    transition: transform 0.3s ease;
+}
+
+.related-posts-container .post-item:hover,
+.featured-posts-container .post-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.related-posts-container .post-image,
+.featured-posts-container .post-image {
+    position: relative;
+    width: 140px;
+    height: 90px;
+    flex-shrink: 0;
+}
+
+.related-posts-container .post-image img,
+.featured-posts-container .post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.featured-posts-container .post-category {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: max-content;
+    height: 24px;
+    background-color: var(--main-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    border-radius: 3px;
+    padding: 7px 5px;
+}
+
+.related-posts-container .post-content,
+.featured-posts-container .post-content {
+    padding: 0 15px;
+    flex-grow: 1;
+}
+
+.related-posts-container .post-title,
+.featured-posts-container .post-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 4;
+    line-height: 1.3;
+}
+
+.related-posts-container .post-meta,
+.featured-posts-container .post-meta {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    color: #888;
+}
+
+.related-posts-container .post-date, .post-author,
+.featured-posts-container .post-date, .post-author {
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.related-posts-container .post-date i, .post-author i,
+.featured-posts-container .post-date i, .post-author i {
+    margin-right: 5px;
+    font-size: 14px;
+}
+
+
+.loader {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    position: fixed;
+    z-index: 999;
+    overflow: hidden;
+}
+
+.loader>.sleep {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    background: url("/client/assets/images/loading/panda-loading-remove-bg.gif");
+    background-size: cover;
+    background-color: transparent;
+}
+
+.loader>.sleep:before {
+    content: "";
+    position: absolute;
+    bottom: -15px;
+    font-weight: 900;
+    width: max-content;
+    left: 50%;
+    color: var(--main-color);
+    transform: translateX(-50%);
+    transition: 0.6s;
+    animation: try 1s ease infinite;
+}
+
+@keyframes try {
+    0% {
+        content: "R";
+    }
+
+    6.66% {
+        content: "Re";
+    }
+
+    13.33% {
+        content: "Rev";
+    }
+
+    20% {
+        content: "Revi";
+    }
+
+    26.66% {
+        content: "Revie";
+    }
+
+    33.33% {
+        content: "Review";
+    }
+
+    40% {
+        content: "Review ";
+    }
+
+    46.66% {
+        content: "Review H";
+    }
+
+    53.33% {
+        content: "Review Hải";
+    }
+
+    60% {
+        content: "Review Hải ";
+    }
+
+    66.66% {
+        content: "Review Hải P";
+    }
+
+    73.33% {
+        content: "Review Hải Ph";
+    }
+
+    80% {
+        content: "Review Hải Phò";
+    }
+
+    86.66% {
+        content: "Review Hải Phòng";
+    }
+
+    100% {
+        content: "Review Hải Phòng";
+    }
+}
+
+
+/* Style for Breadcrumb */
+.breadcrumb {
+    position: relative;
+    background-color: #f8f8f8;
+    border-radius: 5px;
+    padding: 5px 0 0 5px !important;
+    margin-top: 15px !important;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.breadcrumb ol {
+    padding-left: 20px;
+}
+
+.breadcrumb-item {
+    display: inline-block;
+    font-size: 16px;
+    color: black;
+}
+
+.breadcrumb-item a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+    color: var(--main-color);
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    content: "\f0da";
+    padding: 0 10px;
+    color: #6c757d;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 600;
+}
+
+.breadcrumb-item.active {
+    color: var(--support-color);
+    font-weight: bold;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--support-color);
+    padding: 0 30px;
+    color: #fff;
+}
+
+.footer .subscribe-section {
+    background-color: var(--support-color);
+    padding: 25px 0;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.footer .subscribe-form {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto 10px;
+}
+
+.footer .subscribe-form input {
+    flex: 1;
+    padding: 10px 15px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+.footer .subscribe-form button {
+    background-color: #ffc107;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.footer .subscribe-text {
+    text-align: center;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.footer .footer-content {
+    padding: 50px 0;
+    background-color: var(--support-color);
+}
+
+.footer .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 30px;
+}
+
+.footer .logo-col {
+    grid-column: 1;
+}
+
+.footer .site-logo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.footer .logo {
+    position: relative;
+    width: 200px;
+    height: 70px;
+    background-color: white;
+}
+
+.footer .dmca {
+    margin: 20px 0 0 0;
+}
+
+.footer .logo img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    object-fit: contain;
+}
+
+.footer .follow-text {
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.footer .social-icons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.footer .social-icons a {
+    color: #fff;
+    font-size: 14px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer .footer-heading {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer .footer-heading::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 2px;
+    background-color: #ffc107;
+}
+
+.footer .footer-links li {
+    margin-bottom: 10px;
+    text-align: start !important;
+}
+
+.footer .footer-links a {
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.3s;
+    text-align: start !important;
+}
+
+.footer .footer-links a:hover {
+    color: #ffc107;
+}
+
+.footer .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.footer .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.footer .contact-item i {
+    color: #ffc107;
+    font-size: 16px;
+    margin-top: 3px;
+}
+
+.footer .contact-item p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+}
+
+.footer .copyright-section {
+    background-color: var(--support-color);
+    padding: 15px 0;
+    border-top: 1px solid #3a3a3a;
+    text-align: center;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 1050px) {
+    .footer .footer-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .footer .logo-col {
+        grid-column: 1 / -1;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .footer .site-logo {
+        justify-content: center;
+    }
+
+    .footer .social-icons {
+        justify-content: center;
+    }
+
+    .review-haiphong .header .header-top {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .review-haiphong .header .header-logo {
+        display: grid;
+        grid-template-columns: 200px auto;
+        column-gap: 10px;
+    }
+
+    .review-haiphong .header .header-top .social ul {
+        display: none !important;
+    }    
+
+    .review-haiphong .discover-news .discover {
+        grid-template-columns: 1fr;
+    }
+
+    .review-haiphong .discover-news .discover .featured-posts-container {
+        margin-top: 50px;
+    }
+
+    .review-haiphong .header .header-logo .logo {
+        width: 100%;
+        height: 65px;
+    }
+
+    .breadcrumb {
+        /* margin-top: 50px; */
+        /*margin-top: -10px;*/
+    }
+
+    .related-posts-container .post-item {
+        flex-direction: column;
+    }
+
+    .related-posts-container .post-image {
+        width: 100%;
+        height: 180px;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+
+    .related-posts-container .post-content {
+        padding: 15px;
+    }
+
+    .related-posts-container .post-title {
+        text-align: justify;
+    }
+
+    .related-posts-container .post-meta {
+        flex-direction: column;
+    }
+
+    .related-posts-container .post-date {
+        margin-bottom: 5px;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .review-haiphong .discover-news {
+        padding: 10px;
+    }
+
+    .review-haiphong .news-list {
+        padding: 20px 0;
+    }
+
+    .footer .subscribe-form {
+        flex-direction: column;
+    }
+
+    .footer .subscribe-form input,
+    .footer .subscribe-form button {
+        width: 100%;
+    }
+
+    .footer .subscribe-form input {
+        margin-bottom: 10px;
+    }
+    
+    .review-haiphong .header .header-logo .advertisement {
+        display: none;
+    }
+
+    .review-haiphong .header .header-menu {
+        display: none;
+        z-index: 100;
+        flex-direction: column;
+        margin: 5px 0 20px 0;
+    }
+
+    .review-haiphong .header .header-menu .menu ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .review-haiphong .header .header-menu .menu ul li {
+        font-size: 16px;
+        padding: 10px 0;
+    }
+
+    .review-haiphong .header .header-menu .search form {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .review-haiphong .header .header-menu .menu ul li::before {
+        content: '';
+        bottom: 0;
+    }
+
+    .review-haiphong .header .header-menu .menu ul li:first-child::before {
+        content: '';
+        bottom: 0;
+    }
+
+    .review-haiphong .header .header-menu .close-mobile {
+        display: block;
+        position: absolute;
+        width: max-content;
+        top: 0;
+        right: 10px;
+    }
+
+    .review-haiphong .header .header-menu .close-mobile >.fa-xmark {
+        color: var(--main-color);
+        font-size: 30px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .review-haiphong .header .bars-mobile {
+        display: flex;
+        width: max-content;
+        align-items: center;
+        column-gap: 15px;
+        margin-right: 10px;
+        z-index: 999;
+    }
+
+    .review-haiphong .header .bars-mobile i {
+        color: var(--main-color);
+        font-size: 30px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+}
+
+@media (max-width: 576px) {
+    .footer .footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer .footer-col {
+        text-align: center;
+    }
+
+    .footer .footer-heading::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .footer .contact-item {
+        justify-content: center;
+    }
+    
+    .review-haiphong .discover-news>.discover>.review>.experience > .content {
+        padding: 0;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .review-haiphong {
+        width: 100%;
+        height: auto;
+    }
+
+    .review-haiphong .latest-news {
+        padding: 5px 15px;
+    }
+
+    .review-haiphong .latest-news > .title > h1, .review-haiphong .discover-news > .title > h2 {
+        text-align: center !important;
+        margin: 10px auto;
+    }
+
+    .review-haiphong .news-list {
+        padding-top: 5px;
+    }
+
+    .review-haiphong .news-list .news-item a {
+        display: grid !important;
+        grid-template-columns: 120px auto;
+    }
+
+    .review-haiphong .news-list .news-item a .image {
+        width: 100%;
+        height: 80px !important;
+        padding: 5px 2px 1px 5px;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .review-haiphong .news-list .news-item a .content {
+        padding: 5px 5px 2px 2px;
+    }
+
+    .review-haiphong .news-list .news-item a .content h2 {
+        margin-bottom: 0;
+    }
+
+    .review-haiphong .news-list .news-item a .content .description {
+        margin: 1px 0;
+        -webkit-line-clamp: 3 !important;
+    }
+
+    .review-haiphong .news-list .news-item a .category-by {
+        position: absolute;
+        font-size: 10px;
+        left: -10px;
+        margin-top: 88px;
+    }
+
+    .review-haiphong .news-list .news-item a .image img {
+        object-fit: cover !important;
+        border-radius: 4px;
+    }
+
+    .review-haiphong .discover-news .discover .review {
+        padding: 16px 10px;
+    }
+
+    .review-haiphong .header {
+        width: 95%;
+        height: auto;
+        margin: auto;
+    }
+
+    .review-haiphong .header .header-top {
+        padding: 0;
+    }
+
+    .review-haiphong .header .header-top .date-location {
+        margin: auto;
+    }
+
+    .review-haiphong .header .header-top .social ul li {
+        margin: 0 10px;
+    }
+
+    .review-haiphong .header .header-menu .menu ul li {
+        font-size: 14px;
+    }
+
+    .review-haiphong .header .header-menu .search input {
+        font-size: 14px;
+    }
+
+
+    .review-haiphong .discover-news .discover {
+        grid-template-columns: 1fr;
+        column-gap: 10px;
+    }
+
+    .related-posts-container .post-image {
+        width: max-content;
+        height: max-content;
+    }
+
+    .related-posts-container .post-image img {
+        width: 190px;
+        height: 100px;
+    }
+
+}
