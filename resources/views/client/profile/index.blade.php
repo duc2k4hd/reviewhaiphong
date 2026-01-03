@@ -69,7 +69,7 @@
                     
                         <div class="admin-posts-list">
                             @foreach ($user->posts as $post)
-                                <a href="/bai-viet/{{ $post->slug }}" class="post-item">
+                                <a href="/{{ $post->slug }}" class="post-item">
                                     <div class="post-image">
                                         <img src="{{ asset('/client/assets/images/posts/'. $post->seo_image) }}" title="{{ $post->seo_title }}" alt="{{ $post->seo_title }}">
                                         <p class="post-category">{{ $post->category->name }}</p>

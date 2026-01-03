@@ -59,7 +59,7 @@
                             <li>Chuyển tất cả thẻ <code>div</code> thành <code>p</code></li>
                             <li>Loại bỏ class và attributes không cần thiết</li>
                             <li>Download và lưu tất cả ảnh vào <code>client/assets/images/posts</code></li>
-                            <li>Thay thế link URL từ <code>https://mia.vn/...</code> thành <code>https://reviewhaiphong.io.vn/bai-viet/...</code></li>
+                            <li>Thay thế link URL từ <code>https://mia.vn/...</code> thành <code>https://reviewhaiphong.io.vn/...</code></li>
                             <li>Thay thế link "Xem thêm" bằng bài viết random từ database</li>
                             <li>Lấy ảnh đại diện từ <code>&lt;div class="post-top-img"&gt;</code></li>
                             <li>Tự động thêm vào danh mục <strong>"Review Tổng Hợp"</strong></li>

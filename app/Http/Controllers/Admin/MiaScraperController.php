@@ -417,7 +417,7 @@ class MiaScraperController extends Controller
                 $classValue = $node->getAttribute('class');
                 if (!empty($classValue) && strpos($classValue, 'dropcap') !== false) {
                     // Thêm style inline cho dropcap
-                    $node->setAttribute('style', 'font-size: 75px; line-height: 50px; float: left; padding: 10px 10px 10px 0; color: #09c; font-weight: 400; margin-right: 10px;');
+                    $node->setAttribute('style', 'font-size: 75px; line-height: 50px; float: left; padding: 10px 10px 10px 0 !important; color: #09c; font-weight: 400; margin-right: 10px !important;');
                     // Chỉ loại bỏ class, giữ lại style
                     $node->removeAttribute('class');
                     // Loại bỏ các attributes khác không cần thiết
@@ -489,26 +489,26 @@ class MiaScraperController extends Controller
 
         // THAY THẾ LINK URL CUỐI CÙNG - sau khi đã xử lý xong tất cả
         // Chỉ thay thế các link chưa được xử lý bởi replaceXemThemLinks (không có data-xem-them-link)
-        // Thay thế các link URL từ https://mia.vn/cam-nang-du-lich/ thành https://reviewhaiphong.io.vn/bai-viet/
+        // Thay thế các link URL từ https://mia.vn/cam-nang-du-lich/ thành https://reviewhaiphong.io.vn/
         $html = preg_replace_callback(
             '/(<a[^>]*href=["\'])(https?:\/\/(www\.)?mia\.vn\/cam-nang-du-lich\/([^"\'\s<>\)]+))(["\'])/i',
             function($matches) {
                 // Kiểm tra xem link có data-xem-them-link không
                 if (strpos($matches[0], 'data-xem-them-link') === false) {
-                    return $matches[1] . 'https://reviewhaiphong.io.vn/bai-viet/' . $matches[4] . $matches[5];
+                    return $matches[1] . 'https://reviewhaiphong.io.vn/' . $matches[4] . $matches[5];
                 }
                 return $matches[0]; // Giữ nguyên nếu đã được xử lý
             },
             $html
         );
         
-        // Thay thế các link URL khác từ mia.vn thành reviewhaiphong.io.vn/bai-viet/
+        // Thay thế các link URL khác từ mia.vn thành reviewhaiphong.io.vn/
         $html = preg_replace_callback(
             '/(<a[^>]*href=["\'])(https?:\/\/(www\.)?mia\.vn\/([^"\'\s<>\)]+))(["\'])/i',
             function($matches) {
                 // Kiểm tra xem link có data-xem-them-link không
                 if (strpos($matches[0], 'data-xem-them-link') === false) {
-                    return $matches[1] . 'https://reviewhaiphong.io.vn/bai-viet/' . $matches[4] . $matches[5];
+                    return $matches[1] . 'https://reviewhaiphong.io.vn/' . $matches[4] . $matches[5];
                 }
                 return $matches[0]; // Giữ nguyên nếu đã được xử lý
             },
@@ -546,7 +546,7 @@ class MiaScraperController extends Controller
                         
                         if ($randomPost) {
                             // Thay thế href
-                            $newHref = 'https://reviewhaiphong.io.vn/bai-viet/' . $randomPost->slug;
+                            $newHref = 'https://reviewhaiphong.io.vn/' . $randomPost->slug;
                             $link->setAttribute('href', $newHref);
                             
                             // Thay text của link bằng title của post random để khớp với href

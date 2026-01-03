@@ -7,7 +7,7 @@
     <div class="related-posts-list">
         @if(isset($categoryPosts) && count($categoryPosts) > 0)
             @foreach ($categoryPosts as $relatedPost)
-                <a href="/bai-viet/{{ $relatedPost->slug }}" class="post-item">
+                <a href="/{{ $relatedPost->slug }}" class="post-item">
                     <div class="post-image">
                         @if($relatedPost->seo_image)
                             <img src="{{ asset('/client/assets/images/posts/'. $relatedPost->seo_image) }}" 

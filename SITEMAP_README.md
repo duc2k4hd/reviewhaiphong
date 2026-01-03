@@ -71,7 +71,7 @@ Sitemap sẽ được tạo tự động hàng ngày lúc 2:00 sáng.
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>http://yourdomain.com/bai-viet/ten-bai-viet</loc>
+        <loc>http://yourdomain.com/ten-bai-viet</loc>
         <lastmod>2025-08-13T07:21:13+00:00</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>

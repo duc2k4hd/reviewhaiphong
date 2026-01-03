@@ -95,10 +95,10 @@ class PostObserver
                 );
             }
 
-            // Thêm bài viết với URL chuẩn /bai-viet/{slug}
+            // Thêm bài viết với URL chuẩn /{slug}
             foreach ($posts as $post) {
                 $sitemap->add(
-                    Url::create("/bai-viet/{$post->slug}")
+                    Url::create("/{$post->slug}")
                         ->setLastModificationDate($post->updated_at ? new \DateTime($post->updated_at) : new \DateTime())
                         ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                         ->setPriority(0.6)

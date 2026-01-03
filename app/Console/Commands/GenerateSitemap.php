@@ -131,7 +131,7 @@ class GenerateSitemap extends Command
                 
                 foreach ($postChunk as $post) {
                     $postSitemap->add(
-                        Url::create("/bai-viet/{$post->slug}")
+                        Url::create("/{$post->slug}")
                             ->setLastModificationDate($post->published_at ? new \DateTime($post->published_at) : new \DateTime())
                             ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                             ->setPriority(0.6)

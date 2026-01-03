@@ -18,6 +18,11 @@ class PostsCategory extends Controller
     public function index(Request $request, string $slug)
     {
         try {
+            // Kiểm tra slug không hợp lệ (chứa dấu / hoặc các ký tự đặc biệt không phù hợp)
+            if (strpos($slug, '/') !== false || preg_match('/\.(jpg|jpeg|png|gif|webp|css|js|ico|svg|woff|woff2|ttf|eot)$/i', $slug)) {
+                abort(404);
+            }
+
             // Cache category - 1 ngày
             $category = Cache::remember('category_' . $slug, now()->addDay(), function () use ($slug) {
                 return Category::where('slug', $slug)

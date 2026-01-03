@@ -78,6 +78,11 @@
                       </a>
                     </li>
                     <li class="menu-item">
+                      <a href="{{ route('admin.link-extractor.index') }}" class="menu-link">
+                        <div data-i18n="Link Extractor"><i class="fas fa-link"></i> Trích xuất Link</div>
+                      </a>
+                    </li>
+                    <li class="menu-item">
                       <a href="{{ route('admin.posts.published') }}" class="menu-link">
                         <div data-i18n="Without navbar">Bài viết công khai</div>
                       </a>

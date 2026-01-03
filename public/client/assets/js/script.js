@@ -260,7 +260,7 @@ $(document).ready(function () {
 
             `<div class="news-item">
 
-                <a href="/bai-viet/${post.slug}">
+                <a href="/${post.slug}">
 
                     <div class="image">
 
@@ -358,7 +358,7 @@ $(document).ready(function () {
 
                             return `<div class="item">
 
-                                        <a href="/bai-viet/${item.slug}">
+                                        <a href="/${item.slug}">
 
                                             <div class="image">
 
@@ -454,7 +454,7 @@ $(document).ready(function () {
 
             $('.featured-posts-container .featured-posts-list').append(
 
-                `<a href="/bai-viet/${post.slug}" class="post-item">
+                `<a href="/${post.slug}" class="post-item">
 
                     <div class="post-image">
 

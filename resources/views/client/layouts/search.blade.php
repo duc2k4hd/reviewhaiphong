@@ -36,7 +36,7 @@
                     @foreach ($posts as $item)
                         <article class="news-item">
                             <div class="news-image">
-                                <a href="/bai-viet/{{ $item->slug }}"><img
+                                <a href="/{{ $item->slug }}"><img
                                         src="/client/assets/images/posts/{{ $item->seo_image }}"
                                         alt="{{ $item->seo_title }}" title="{{ $item->seo_title }}"></a>
                             </div>
@@ -60,7 +60,7 @@
                         @foreach ($postsViews as $item)
                             <div class="sidebar-item">
                                 <div class="sidebar-image">
-                                    <a href="/bai-viet/{{ $item->slug }}"><img
+                                    <a href="/{{ $item->slug }}"><img
                                             src="/client/assets/images/posts/{{ $item->seo_image }}"
                                             alt="{{ $item->seo_title }}" title="{{ $item->seo_title }}"></a>
                                 </div>

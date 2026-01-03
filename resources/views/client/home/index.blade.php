@@ -84,12 +84,12 @@
                     "position": {{ $index + 1 }},
                     "item": {
                         "@type": "Article",
-                        "@id": "{{ url('/bai-viet/' . $post->slug) }}",
+                        "@id": "{{ url('/' . $post->slug) }}",
                         "name": {!! json_encode($post->seo_title ?? $post->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                         "headline": {!! json_encode($post->seo_title ?? $post->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                         "description": {!! json_encode(\Illuminate\Support\Str::limit(strip_tags($post->seo_desc ?? ''), 200), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                         "image": "{{ $post->seo_image ? asset('/client/assets/images/posts/' . $post->seo_image) : '' }}",
-                        "url": "{{ url('/bai-viet/' . $post->slug) }}",
+                        "url": "{{ url('/' . $post->slug) }}",
                         "datePublished": "{{ $post->published_at ? \Carbon\Carbon::parse($post->published_at)->toIso8601String() : '' }}",
                         "dateModified": "{{ $post->updated_at ? \Carbon\Carbon::parse($post->updated_at)->toIso8601String() : '' }}",
                         "author": {
@@ -853,14 +853,14 @@
             <div class="reviewhaiphong_home_hero">
                 @if($featuredPost)
                 <div class="reviewhaiphong_home_featured-post">
-                    <a href="/bai-viet/{{ $featuredPost->slug }}">
+                    <a href="/{{ $featuredPost->slug }}">
                         <img src="{{ $featuredPost->seo_image ? asset('/client/assets/images/posts/' . $featuredPost->seo_image) : asset('/client/assets/images/default-post.jpg') }}" alt="{{ $featuredPost->seo_title ?? 'Featured Post' }}">
                         <div class="reviewhaiphong_home_featured-overlay">
                             @if($featuredPost->category)
                             <span class="reviewhaiphong_home_category-tag">{{ $featuredPost->category->name }}</span>
                             @endif
                             <h2 class="reviewhaiphong_home_featured-title">
-                                <a href="/bai-viet/{{ $featuredPost->slug }}">{{ $featuredPost->seo_title ?? 'Tiêu đề bài viết' }}</a>
+                                <a href="/{{ $featuredPost->slug }}">{{ $featuredPost->seo_title ?? 'Tiêu đề bài viết' }}</a>
                             </h2>
                             <div class="reviewhaiphong_home_featured-meta">
                                 <span><i class="fa fa-user"></i> {{ $featuredPost->account->profile->name ?? $featuredPost->account->username ?? 'Admin' }}</span>
@@ -880,12 +880,12 @@
                 <div class="reviewhaiphong_home_side-posts">
                     @foreach($sidePosts as $sidePost)
                     <div class="reviewhaiphong_home_side-post">
-                        <a href="/bai-viet/{{ $sidePost->slug }}">
+                        <a href="/{{ $sidePost->slug }}">
                             <img src="{{ $sidePost->seo_image ? asset('/client/assets/images/posts/' . $sidePost->seo_image) : asset('/client/assets/images/default-post.jpg') }}" alt="{{ $sidePost->seo_title ?? 'Post' }}">
                         </a>
                         <div class="reviewhaiphong_home_side-post-content">
                             <h3 class="reviewhaiphong_home_side-post-title">
-                                <a href="/bai-viet/{{ $sidePost->slug }}">{{ $sidePost->seo_title ?? 'Tiêu đề bài viết' }}</a>
+                                <a href="/{{ $sidePost->slug }}">{{ $sidePost->seo_title ?? 'Tiêu đề bài viết' }}</a>
                             </h3>
                         <div class="reviewhaiphong_home_post-meta">
                             <span><i class="fa fa-user"></i> {{ $sidePost->account->profile->name ?? $sidePost->account->username ?? 'Admin' }}</span>
@@ -908,12 +908,12 @@
             <div class="reviewhaiphong_home_posts-grid">
                 @foreach($postsByCategory[$category->slug] as $post)
                 <div class="reviewhaiphong_home_post-card">
-                    <a href="/bai-viet/{{ $post->slug }}">
+                    <a href="/{{ $post->slug }}">
                         <img src="{{ $post->seo_image ? asset('/client/assets/images/posts/' . $post->seo_image) : asset('/client/assets/images/default-post.jpg') }}" alt="{{ $post->seo_title ?? 'Post' }}">
                     </a>
                         <div class="reviewhaiphong_home_post-card-content">
                         <h3 class="reviewhaiphong_home_post-card-title">
-                            <a href="/bai-viet/{{ $post->slug }}">{{ $post->seo_title ?? 'Tiêu đề bài viết' }}</a>
+                            <a href="/{{ $post->slug }}">{{ $post->seo_title ?? 'Tiêu đề bài viết' }}</a>
                         </h3>
                         @if($post->seo_desc)
                         <p style="font-size: 13px; color: #666; margin: 8px 0; line-height: 1.5;">{{ \Illuminate\Support\Str::limit(strip_tags($post->seo_desc), 100) }}</p>
@@ -923,16 +923,16 @@
                             <span><i class="fa fa-eye"></i> {{ number_format($post->views ?? 0) }} lượt xem</span>
                         </div>
                         <div class="reviewhaiphong_home_social-share">
-                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url('/bai-viet/' . $post->slug)) }}" target="_blank" class="reviewhaiphong_home_social-share-btn facebook" title="Chia sẻ lên Facebook">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url('/' . $post->slug)) }}" target="_blank" class="reviewhaiphong_home_social-share-btn facebook" title="Chia sẻ lên Facebook">
                                 <i class="fa fa-facebook"></i>
                             </a>
-                            <a href="https://twitter.com/intent/tweet?url={{ urlencode(url('/bai-viet/' . $post->slug)) }}&text={{ urlencode($post->seo_title ?? '') }}" target="_blank" class="reviewhaiphong_home_social-share-btn twitter" title="Chia sẻ lên Twitter">
+                            <a href="https://twitter.com/intent/tweet?url={{ urlencode(url('/' . $post->slug)) }}&text={{ urlencode($post->seo_title ?? '') }}" target="_blank" class="reviewhaiphong_home_social-share-btn twitter" title="Chia sẻ lên Twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
-                            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ urlencode(url('/bai-viet/' . $post->slug)) }}" target="_blank" class="reviewhaiphong_home_social-share-btn linkedin" title="Chia sẻ lên LinkedIn">
+                            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ urlencode(url('/' . $post->slug)) }}" target="_blank" class="reviewhaiphong_home_social-share-btn linkedin" title="Chia sẻ lên LinkedIn">
                                 <i class="fa fa-linkedin"></i>
                             </a>
-                            <a href="https://zalo.me/share?url={{ urlencode(url('/bai-viet/' . $post->slug)) }}" target="_blank" class="reviewhaiphong_home_social-share-btn zalo" title="Chia sẻ lên Zalo">
+                            <a href="https://zalo.me/share?url={{ urlencode(url('/' . $post->slug)) }}" target="_blank" class="reviewhaiphong_home_social-share-btn zalo" title="Chia sẻ lên Zalo">
                                 <i class="fa fa-comment"></i>
                             </a>
                         </div>
@@ -959,11 +959,11 @@
             <div class="reviewhaiphong_home_stories-grid">
                 @foreach($stories as $story)
                 <div class="reviewhaiphong_home_story-card">
-                    <a href="/bai-viet/{{ $story->slug }}">
+                    <a href="/{{ $story->slug }}">
                         <img src="{{ $story->seo_image ? asset('/client/assets/images/posts/' . $story->seo_image) : asset('/client/assets/images/default-post.jpg') }}" alt="{{ $story->seo_title ?? 'Story' }}">
                         <div class="reviewhaiphong_home_story-overlay">
                             <p class="reviewhaiphong_home_story-title">
-                                <a href="/bai-viet/{{ $story->slug }}">{{ \Illuminate\Support\Str::limit($story->seo_title ?? 'Story Title', 50) }}</a>
+                                <a href="/{{ $story->slug }}">{{ \Illuminate\Support\Str::limit($story->seo_title ?? 'Story Title', 50) }}</a>
                             </p>
                         </div>
                     </a>
@@ -982,12 +982,12 @@
 
                 @foreach($editorPicks as $pick)
                 <div class="reviewhaiphong_home_editor-pick">
-                    <a href="/bai-viet/{{ $pick->slug }}">
+                    <a href="/{{ $pick->slug }}">
                         <img src="{{ $pick->seo_image ? asset('/client/assets/images/posts/' . $pick->seo_image) : asset('/client/assets/images/default-post.jpg') }}" alt="{{ $pick->seo_title ?? 'Pick' }}">
                     </a>
                     <div class="reviewhaiphong_home_editor-pick-content">
                         <h4 class="reviewhaiphong_home_editor-pick-title">
-                            <a href="/bai-viet/{{ $pick->slug }}">{{ \Illuminate\Support\Str::limit($pick->seo_title ?? 'Tiêu đề bài viết', 60) }}</a>
+                            <a href="/{{ $pick->slug }}">{{ \Illuminate\Support\Str::limit($pick->seo_title ?? 'Tiêu đề bài viết', 60) }}</a>
                         </h4>
                         <div class="reviewhaiphong_home_post-meta">
                             <span><i class="fa fa-calendar"></i> {{ $pick->published_at ? \Carbon\Carbon::parse($pick->published_at)->format('d/m/Y') : 'N/A' }}</span>
@@ -1008,7 +1008,7 @@
                     <li class="reviewhaiphong_home_hot-topic">
                         <div class="reviewhaiphong_home_hot-topic-number">#{{ $index + 1 }}</div>
                         <h4 class="reviewhaiphong_home_hot-topic-title">
-                            <a href="/bai-viet/{{ $topic->slug }}">{{ \Illuminate\Support\Str::limit($topic->seo_title ?? 'Tiêu đề bài viết', 80) }}</a>
+                            <a href="/{{ $topic->slug }}">{{ \Illuminate\Support\Str::limit($topic->slug ?? 'Tiêu đề bài viết', 80) }}</a>
                         </h4>
                         <p class="reviewhaiphong_home_hot-topic-excerpt">{{ \Illuminate\Support\Str::limit($topic->seo_desc ?? '', 100) }}</p>
                     </li>
@@ -1034,7 +1034,7 @@
                         <div class="reviewhaiphong_home_recent-comment-content">
                             <div class="reviewhaiphong_home_recent-comment-author">{{ $comment->account->profile->name ?? $comment->account->username ?? 'Khách' }}</div>
                             <div class="reviewhaiphong_home_recent-comment-text">
-                                <a href="/bai-viet/{{ $comment->post->slug ?? '#' }}#comment-{{ $comment->id }}">
+                                <a href="/{{ $comment->post->slug ?? '#' }}#comment-{{ $comment->id }}">
                                     {{ \Illuminate\Support\Str::limit($comment->content, 80) }}
                                 </a>
                             </div>

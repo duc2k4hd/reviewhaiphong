@@ -9,9 +9,11 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\MiaScraperController;
+use App\Http\Controllers\Admin\LinkExtractorController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\NewsDetailController;
 use App\Http\Controllers\Client\PostsCategory;
+use App\Http\Controllers\Client\SlugRouterController;
 use App\Http\Controllers\Client\PostsListController;
 use App\Http\Controllers\Client\ProfileController;
 use App\Http\Controllers\Client\SearchController;
@@ -117,6 +119,12 @@ Route::prefix('/admin')->name('admin.')->group(function() {
         Route::get('/', [MiaScraperController::class, 'index'])->name('index');
         Route::post('/scrape', [MiaScraperController::class, 'scrape'])->name('scrape');
     }));
+
+    // Link Extractor Tool
+    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/link-extractor')->name('link-extractor.')->group((function() {
+        Route::get('/', [LinkExtractorController::class, 'index'])->name('index');
+        Route::post('/extract', [LinkExtractorController::class, 'extract'])->name('extract');
+    }));
 });
 
 // Client routes with maintenance mode check
@@ -132,22 +140,29 @@ Route::middleware([MaintenanceMode::class])->group(function() {
 
     // Danh sách bài viết (URL chuẩn)
     Route::get('/bai-viet', [PostsListController::class, 'index'])->name('post.index');
-    // Bài viết (URL chuẩn)
-    Route::get('/bai-viet/{slug}', [NewsDetailController::class, 'newsDetailBySlug'])->name('post.detail')->where(['slug' => '[a-zA-Z0-9-_]+' ]);
+    
+    // Redirect 301: /bai-viet/{slug} -> /{slug}
+    Route::get('/bai-viet/{slug}', function (string $slug) {
+        return redirect('/' . $slug, 301);
+    })->where(['slug' => '[a-zA-Z0-9-_]+']);
 
     // Redirect 301: /danh-muc/{slug} -> /{slug}
     Route::get('/danh-muc/{slug}', function (string $slug) {
-        return redirect()->route('posts-category.index', ['slug' => $slug], 301);
+        return redirect('/' . $slug, 301);
     })->where(['slug' => '[a-zA-Z0-9-_]+']);
 
-    // Trang danh mục
-    Route::get('/{slug}', [PostsCategory::class, 'index'])->name('posts-category.index')->where(['slug' => '^(?!bai-viet$|admin$|admin\/).+']);
+    // Route chung: /{slug} - Tự động kiểm tra post hoặc category
+    Route::get('/{slug}', [SlugRouterController::class, 'handle'])
+        ->name('post.detail')
+        ->where(['slug' => '^(?!admin$|admin\/|storage\/|client\/|assets\/|vendor\/|public\/|bai-viet$|danh-muc$|trang-chu$|gioi-thieu$|lien-he$|tim-kiem$|user$|storage$|client$|assets$|vendor$|public$)[a-zA-Z0-9-_]+']);
 
-    // Bài viết dạng cũ /{category}/{slug} -> redirect 301 về /bai-viet/{slug}
-    Route::get('/{category}/{slug}', [NewsDetailController::class, 'newsDetail'])
+    // Bài viết dạng cũ /{category}/{slug} -> redirect 301 về /{slug}
+    Route::get('/{category}/{slug}', function (string $category, string $slug) {
+        return redirect('/' . $slug, 301);
+    })
         ->name('news.detail')
         ->where([
-            'category' => '^(?!bai-viet$)[a-zA-Z0-9-_]+',
+            'category' => '^(?!bai-viet$|admin$|storage$|client$|assets$|vendor$|public$)[a-zA-Z0-9-_]+',
             'slug' => '[a-zA-Z0-9-_]+'
         ]);
 });
@@ -237,7 +252,7 @@ Route::get('/sitemap', function () {
         
         foreach ($postChunk as $post) {
             $postSitemap->add(
-                Url::create("/bai-viet/{$post->slug}")
+                Url::create("/{$post->slug}")
                     ->setLastModificationDate($post->published_at ? new \DateTime($post->published_at) : new \DateTime())
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                     ->setPriority(0.6)

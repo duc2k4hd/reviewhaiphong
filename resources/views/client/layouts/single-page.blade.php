@@ -41,8 +41,8 @@
     <!-- Open Graph Description -->
     <meta property="og:description" content="{{ $post->seo_desc ?? '' }}">
 
-    <!-- Open Graph URL (chuẩn /bai-viet/{slug}) -->
-    <meta property="og:url" content="{{ url('/bai-viet/' . $post->slug) }}">
+    <!-- Open Graph URL -->
+    <meta property="og:url" content="{{ url('/' . $post->slug) }}">
 
     <!-- Open Graph Image -->
     @if($post->seo_image)
@@ -91,12 +91,12 @@
     @endif
     <meta name="twitter:creator" content="{{ $settings['site_name'] ?? 'Review Hải Phòng' }}">
 
-    <!-- Canonical (chuẩn /bai-viet/{slug}) -->
-    <link rel="canonical" href="{{ url('/bai-viet/' . $post->slug) }}" />
+    <!-- Canonical -->
+    <link rel="canonical" href="{{ url('/' . $post->slug) }}" />
 
     <!-- HrefLang -->
-    <link rel="alternate" hreflang="vi" href="{{ url('/bai-viet/' . $post->slug) }}" />
-    <link rel="alternate" hreflang="x-default" href="{{ url('/bai-viet/' . $post->slug) }}" />
+    <link rel="alternate" hreflang="vi" href="{{ url('/' . $post->slug) }}" />
+    <link rel="alternate" hreflang="x-default" href="{{ url('/' . $post->slug) }}" />
     
     <!-- Additional Meta Tags -->
     <meta name="news_keywords" content="{{ $post->seo_keywords ?? '' }}">
@@ -123,88 +123,88 @@
 
     <!-- Structured Data - Enhanced Schema -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
+        {
+            "@context": "https://schema.org",
         "@graph": [
             {
-                "@type": "BlogPosting",
-                "@id": "{{ url('/bai-viet/' . $post->slug) . '/#blogposting' }}",
-                "mainEntityOfPage": {
-                    "@type": "WebPage",
-                    "@id": "{{ url('/bai-viet/' . $post->slug) . '/#webpage' }}"
-                },
+            "@type": "BlogPosting",
+                "@id": "{{ url('/' . $post->slug) . '/#blogposting' }}",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                    "@id": "{{ url('/' . $post->slug) . '/#webpage' }}"
+            },
                 "headline": {!! json_encode($post->seo_title ?? $post->name ?? 'Bài viết', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                 "alternativeHeadline": {!! json_encode($post->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
-                @if($post->seo_image)
+            @if($post->seo_image)
                 "image": {
                     "@type": "ImageObject",
                     "url": "{{ asset('/client/assets/images/posts/' . $post->seo_image) }}",
                     "width": 1200,
                     "height": 630
                 },
-                @endif
-                "author": {
-                    "@type": "Person",
+            @endif
+            "author": {
+                "@type": "Person",
                     "name": "{{ $post->account->profile->name ?? $post->account->username ?? 'Admin' }}",
-                    "url": "{{ url('/') }}"
-                },
-                "publisher": {
-                    "@type": "Organization",
+                "url": "{{ url('/') }}"
+            },
+            "publisher": {
+                "@type": "Organization",
                     "@id": "{{ ($settings['site_url'] ?? url('/')) . '/#organization' }}",
-                    "name": "{{ $settings['site_name'] ?? 'Review Hải Phòng' }}",
-                    "logo": {
-                        "@type": "ImageObject",
+                "name": "{{ $settings['site_name'] ?? 'Review Hải Phòng' }}",
+                "logo": {
+                    "@type": "ImageObject",
                         "url": "{{ asset('/client/assets/images/logo/' . ($settings['site_image'] ?? 'logo.png')) }}",
                         "width": 600,
                         "height": 600
                     }
                 },
-                "identifier": "{{ url('/bai-viet/' . $post->slug) }}",
-                "url": "{{ url('/bai-viet/' . $post->slug) }}",
-                @if($post->published_at)
-                "datePublished": "{{ \Carbon\Carbon::parse($post->published_at)->toIso8601String() }}",
-                @endif
-                "dateModified": "{{ \Carbon\Carbon::parse($post->updated_at)->toIso8601String() }}",
+                "identifier": "{{ url('/' . $post->slug) }}",
+                "url": "{{ url('/' . $post->slug) }}",
+            @if($post->published_at)
+            "datePublished": "{{ \Carbon\Carbon::parse($post->published_at)->toIso8601String() }}",
+            @endif
+            "dateModified": "{{ \Carbon\Carbon::parse($post->updated_at)->toIso8601String() }}",
                 "description": {!! json_encode(\Illuminate\Support\Str::limit(strip_tags($post->seo_desc ?? ''), 300), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                 "articleBody": {!! json_encode(\Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 5000), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
-                @if($post->category)
-                "articleSection": "{{ $post->category->name }}",
+            @if($post->category)
+            "articleSection": "{{ $post->category->name }}",
                 "about": {
                     "@type": "Thing",
                     "name": "{{ $post->category->name }}"
                 },
-                @endif
-                "keywords": "{{ $post->seo_keywords ?? '' }}",
-                @if($post->category)
-                "genre": "{{ $post->category->name }}",
-                @endif
-                "inLanguage": "vi",
+            @endif
+            "keywords": "{{ $post->seo_keywords ?? '' }}",
+            @if($post->category)
+            "genre": "{{ $post->category->name }}",
+            @endif
+            "inLanguage": "vi",
                 "wordCount": {{ str_word_count(strip_tags($post->content ?? '')) }},
-                "commentCount": {{ $post->comments ? $post->comments->count() : 0 }},
-                @if($post->comments && $post->comments->count() > 0)
-                "comment": [
+            "commentCount": {{ $post->comments ? $post->comments->count() : 0 }},
+            @if($post->comments && $post->comments->count() > 0)
+            "comment": [
                     @foreach ($post->comments->take(10) as $comment)
-                    {
-                        "@type": "Comment",
-                        "@id": "{{ url('/bai-viet/' . $post->slug) . '#comment-' . $comment->id }}",
-                        "author": {
-                            "@type": "Person",
+                {
+                    "@type": "Comment",
+                        "@id": "{{ url('/' . $post->slug) . '#comment-' . $comment->id }}",
+                    "author": {
+                        "@type": "Person",
                             "name": "{{ $comment->account->profile->name ?? $comment->account->username ?? 'Khách' }}"
-                        },
-                        "dateCreated": "{{ \Carbon\Carbon::parse($comment->created_at)->toIso8601String() }}",
+                    },
+                    "dateCreated": "{{ \Carbon\Carbon::parse($comment->created_at)->toIso8601String() }}",
                         "text": {!! json_encode(\Illuminate\Support\Str::limit(strip_tags($comment->content), 200), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
-                        "url": "{{ url('/bai-viet/' . $post->slug) . '#comment-' . $comment->id }}"
+                        "url": "{{ url('/' . $post->slug) . '#comment-' . $comment->id }}"
                     }@if(!$loop->last),@endif
-                    @endforeach
-                ],
-                @endif
+                @endforeach
+            ],
+            @endif
                 "interactionStatistic": [
                     {
-                        "@type": "InteractionCounter",
-                        "interactionType": {
-                            "@type": "ViewAction"
-                        },
-                        "userInteractionCount": {{ $post->views ?? 0 }}
+                "@type": "InteractionCounter",
+                "interactionType": {
+                    "@type": "ViewAction"
+                },
+                "userInteractionCount": {{ $post->views ?? 0 }}
                     }
                 ],
                 "isPartOf": {
@@ -213,8 +213,8 @@
             },
             {
                 "@type": "WebPage",
-                "@id": "{{ url('/bai-viet/' . $post->slug) . '/#webpage' }}",
-                "url": "{{ url('/bai-viet/' . $post->slug) }}",
+                "@id": "{{ url('/' . $post->slug) . '/#webpage' }}",
+                "url": "{{ url('/' . $post->slug) }}",
                 "name": {!! json_encode($post->seo_title ?? $post->name ?? 'Bài viết', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                 "description": {!! json_encode(\Illuminate\Support\Str::limit(strip_tags($post->seo_desc ?? ''), 300), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                 "isPartOf": {
@@ -228,15 +228,15 @@
                 "dateModified": "{{ \Carbon\Carbon::parse($post->updated_at)->toIso8601String() }}",
                 "inLanguage": "vi",
                 "breadcrumb": {
-                    "@id": "{{ url('/bai-viet/' . $post->slug) . '/#breadcrumb' }}"
+                    "@id": "{{ url('/' . $post->slug) . '/#breadcrumb' }}"
                 },
                 "mainEntity": {
-                    "@id": "{{ url('/bai-viet/' . $post->slug) . '/#blogposting' }}"
+                    "@id": "{{ url('/' . $post->slug) . '/#blogposting' }}"
                 }
             },
             {
                 "@type": "BreadcrumbList",
-                "@id": "{{ url('/bai-viet/' . $post->slug) . '/#breadcrumb' }}",
+                "@id": "{{ url('/' . $post->slug) . '/#breadcrumb' }}",
                 "itemListElement": [
                     {
                         "@type": "ListItem",
@@ -256,7 +256,7 @@
                         "@type": "ListItem",
                         "position": {{ $post->category ? 3 : 2 }},
                         "name": {!! json_encode($post->seo_title ?? $post->name ?? 'Bài viết', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
-                        "item": "{{ url('/bai-viet/' . $post->slug) }}"
+                        "item": "{{ url('/' . $post->slug) }}"
                     }
                 ]
             }
@@ -271,10 +271,10 @@
                         "position": {{ $index + 1 }},
                         "item": {
                             "@type": "Article",
-                            "@id": "{{ url('/bai-viet/' . $relatedPost->slug) }}",
+                            "@id": "{{ url('/' . $relatedPost->slug) }}",
                             "name": {!! json_encode($relatedPost->seo_title ?? $relatedPost->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                             "headline": {!! json_encode($relatedPost->seo_title ?? $relatedPost->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
-                            "url": "{{ url('/bai-viet/' . $relatedPost->slug) }}",
+                            "url": "{{ url('/' . $relatedPost->slug) }}",
                             "image": "{{ $relatedPost->seo_image ? asset('/client/assets/images/posts/' . $relatedPost->seo_image) : '' }}"
                         }
                     }@if(!$loop->last),@endif
@@ -283,7 +283,7 @@
             }
             @endif
         ]
-    }
+        }
     </script>
 
     <style>
@@ -1005,7 +1005,7 @@
             max-width: 100% !important;
             height: auto !important;
             border-radius: 4px !important;
-            margin: 16px 0 !important;
+            margin: 16px auto !important;
             padding: 0 !important;
             display: block !important;
         }
@@ -1553,7 +1553,7 @@
             }
 
             .reviewhaiphong_blog_article-content img {
-                margin: 14px 0 !important;
+                margin: 14px auto !important;
             }
 
             .reviewhaiphong_blog_article-content table {
@@ -1714,7 +1714,7 @@
             }
 
             .reviewhaiphong_blog_article-content img {
-                margin: 14px 0 !important;
+                margin: 14px auto !important;
                 border-radius: 4px !important;
             }
 
@@ -1957,7 +1957,7 @@
             }
 
             .reviewhaiphong_blog_article-content img {
-                margin: 12px 0 !important;
+                margin: 12px auto !important;
             }
 
             .reviewhaiphong_blog_article-content blockquote {
@@ -2165,7 +2165,7 @@
     @endif
     
     <!-- Header chung -->
-    @include('client.templates.header')
+        @include('client.templates.header')
 
     <!-- Social Icons Sidebar (Left) -->
     <div class="reviewhaiphong_blog_social-icons">
@@ -2247,7 +2247,7 @@
                             </div>
                             <div class="reviewhaiphong_blog_popular-post-info">
                                 <h5 class="reviewhaiphong_blog_popular-post-title">
-                                    <a href="/bai-viet/{{ $popular_post->slug }}">{{ $popular_post->seo_title ?? $popular_post->name }}</a>
+                                    <a href="/{{ $popular_post->slug }}">{{ $popular_post->seo_title ?? $popular_post->name }}</a>
                                 </h5>
                                 <div class="reviewhaiphong_blog_popular-post-meta">
                                     <i class="fa fa-eye"></i> {{ $popular_post->views ?? 0 }}
@@ -2347,7 +2347,7 @@
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
                     @foreach($categoryPosts as $relatedPost)
                         <div style="border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; transition: transform 0.3s;">
-                            <a href="/bai-viet/{{ $relatedPost->slug }}" style="text-decoration: none; color: inherit;">
+                            <a href="/{{ $relatedPost->slug }}" style="text-decoration: none; color: inherit;">
                                 @if(!empty($relatedPost->seo_image))
                                 <div style="width: 100%; height: 150px; overflow: hidden; background: #f0f0f0;">
                                     <img src="{{ asset('/client/assets/images/posts/' . $relatedPost->seo_image) }}" 
@@ -2434,7 +2434,7 @@
             <i style="color: #fff;" class="fa fa-comment"></i>
         </a>
     </div>
-
+    
     <!-- Support Button -->
     <div class="reviewhaiphong_blog_support-button">
         <a href="https://zalo.me/{{ $settings['contact_zalo'] }}" target="_blank">
@@ -2452,7 +2452,7 @@
             <i class="fa fa-arrow-up"></i>
         </div>
     </div>
-
+    
     <!-- JavaScript -->
     @include('client.module.js')
     
@@ -2573,6 +2573,40 @@
         `;
         document.head.appendChild(style);
 
+        // Hàm chuyển tiếng Việt có dấu sang slug không dấu
+        function toSlug(text) {
+            const map = {
+                'à': 'a', 'á': 'a', 'ạ': 'a', 'ả': 'a', 'ã': 'a', 'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ậ': 'a', 'ẩ': 'a', 'ẫ': 'a',
+                'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ặ': 'a', 'ẳ': 'a', 'ẵ': 'a',
+                'è': 'e', 'é': 'e', 'ẹ': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ê': 'e', 'ề': 'e', 'ế': 'e', 'ệ': 'e', 'ể': 'e', 'ễ': 'e',
+                'ì': 'i', 'í': 'i', 'ị': 'i', 'ỉ': 'i', 'ĩ': 'i',
+                'ò': 'o', 'ó': 'o', 'ọ': 'o', 'ỏ': 'o', 'õ': 'o', 'ô': 'o', 'ồ': 'o', 'ố': 'o', 'ộ': 'o', 'ổ': 'o', 'ỗ': 'o',
+                'ơ': 'o', 'ờ': 'o', 'ớ': 'o', 'ợ': 'o', 'ở': 'o', 'ỡ': 'o',
+                'ù': 'u', 'ú': 'u', 'ụ': 'u', 'ủ': 'u', 'ũ': 'u', 'ư': 'u', 'ừ': 'u', 'ứ': 'u', 'ự': 'u', 'ử': 'u', 'ữ': 'u',
+                'ỳ': 'y', 'ý': 'y', 'ỵ': 'y', 'ỷ': 'y', 'ỹ': 'y',
+                'đ': 'd',
+                'À': 'a', 'Á': 'a', 'Ạ': 'a', 'Ả': 'a', 'Ã': 'a', 'Â': 'a', 'Ầ': 'a', 'Ấ': 'a', 'Ậ': 'a', 'Ẩ': 'a', 'Ẫ': 'a',
+                'Ă': 'a', 'Ằ': 'a', 'Ắ': 'a', 'Ặ': 'a', 'Ẳ': 'a', 'Ẵ': 'a',
+                'È': 'e', 'É': 'e', 'Ẹ': 'e', 'Ẻ': 'e', 'Ẽ': 'e', 'Ê': 'e', 'Ề': 'e', 'Ế': 'e', 'Ệ': 'e', 'Ể': 'e', 'Ễ': 'e',
+                'Ì': 'i', 'Í': 'i', 'Ị': 'i', 'Ỉ': 'i', 'Ĩ': 'i',
+                'Ò': 'o', 'Ó': 'o', 'Ọ': 'o', 'Ỏ': 'o', 'Õ': 'o', 'Ô': 'o', 'Ồ': 'o', 'Ố': 'o', 'Ộ': 'o', 'Ổ': 'o', 'Ỗ': 'o',
+                'Ơ': 'o', 'Ờ': 'o', 'Ớ': 'o', 'Ợ': 'o', 'Ở': 'o', 'Ỡ': 'o',
+                'Ù': 'u', 'Ú': 'u', 'Ụ': 'u', 'Ủ': 'u', 'Ũ': 'u', 'Ư': 'u', 'Ừ': 'u', 'Ứ': 'u', 'Ự': 'u', 'Ử': 'u', 'Ữ': 'u',
+                'Ỳ': 'y', 'Ý': 'y', 'Ỵ': 'y', 'Ỷ': 'y', 'Ỹ': 'y',
+                'Đ': 'd'
+            };
+            
+            return text
+                .split('')
+                .map(char => map[char] || char)
+                .join('')
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '') // Loại bỏ ký tự đặc biệt
+                .replace(/\s+/g, '-') // Thay khoảng trắng bằng dấu gạch ngang
+                .replace(/-+/g, '-') // Loại bỏ nhiều dấu gạch ngang liên tiếp
+                .replace(/^-|-$/g, ''); // Loại bỏ dấu gạch ngang ở đầu và cuối
+        }
+
         // Table of Contents (TOC) - Tự động tạo từ headings
         function initTOC() {
             const articleContent = document.getElementById('article-content');
@@ -2603,10 +2637,9 @@
                 // Escape HTML trong text
                 const escapedText = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
                 
-                // Tạo ID cho heading
-                const id = 'heading-' + index + '-' + text.toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/^-+|-+$/g, '');
+                // Tạo ID cho heading - chuyển tiếng Việt có dấu sang slug không dấu
+                const slug = toSlug(text);
+                const id = 'heading-' + index + '-' + slug;
                 
                 heading.id = id;
                 

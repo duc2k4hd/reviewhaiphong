@@ -13,11 +13,11 @@ class NewsDetailController extends Controller
 {
     public function newsDetail(Request $request, string $category, string $slug)
     {
-        // Redirect 301 về URL chuẩn SEO: /bai-viet/{slug}
+        // Redirect 301 về URL chuẩn SEO: /{slug}
         return redirect()->route('post.detail', ['slug' => $slug], 301);
     }
 
-    // Hỗ trợ URL: /bai-viet/{slug}
+    // Hỗ trợ URL: /{slug}
     public function newsDetailBySlug(Request $request, string $slug)
     {
         return $this->renderPostDetailBySlug($slug, $request);
@@ -48,9 +48,10 @@ class NewsDetailController extends Controller
                     ->where('status', 'published')
                     ->first();
             });
-
+            
             if (!$post) {
-                return view('client.templates.errors.404');
+                // Throw exception để route có thể fallback về category
+                throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
             }
 
             // Tăng lượt xem

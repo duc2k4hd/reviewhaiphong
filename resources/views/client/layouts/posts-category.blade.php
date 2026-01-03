@@ -35,15 +35,15 @@
 @section('hreflang_default', url('/' . $category->slug))
 
 @section('structured_data')
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
     "@graph": [
         {
-            "@type": "CollectionPage",
+        "@type": "CollectionPage",
             "@id": "{{ url('/' . $category->slug) . '/#webpage' }}",
             "url": "{{ url('/' . $category->slug) }}",
-            "name": "{{ $category->name }}",
+        "name": "{{ $category->name }}",
             "description": "{{ $category->description ?? $category->meta_description ?? 'Tổng hợp các bài viết về ' . $category->name }}",
             "isPartOf": {
                 "@id": "{{ ($settings['site_url'] ?? url('/')) . '/#website' }}"
@@ -62,21 +62,21 @@
                 "@id": "{{ url('/' . $category->slug) . '/#breadcrumb' }}"
             },
             @if($posts->count() > 0)
-            "mainEntity": {
-                "@type": "ItemList",
-                "itemListElement": [
+        "mainEntity": {
+            "@type": "ItemList",
+            "itemListElement": [
                     @foreach($posts->items() as $index => $post)
-                    {
-                        "@type": "ListItem",
-                        "position": {{ $index + 1 }},
+                {
+                    "@type": "ListItem",
+                    "position": {{ $index + 1 }},
                         "item": {
                             "@type": "Article",
-                            "@id": "{{ url('/bai-viet/' . $post->slug) }}",
+                            "@id": "{{ url('/' . $post->slug) }}",
                             "name": {!! json_encode($post->seo_title ?? $post->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                             "headline": {!! json_encode($post->seo_title ?? $post->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                             "description": {!! json_encode(\Illuminate\Support\Str::limit(strip_tags($post->seo_desc ?? ''), 200), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                             "image": "{{ $post->seo_image ? asset('/client/assets/images/posts/' . $post->seo_image) : '' }}",
-                            "url": "{{ url('/bai-viet/' . $post->slug) }}",
+                            "url": "{{ url('/' . $post->slug) }}",
                             "datePublished": "{{ $post->published_at ? \Carbon\Carbon::parse($post->published_at)->toIso8601String() : '' }}",
                             "dateModified": "{{ $post->updated_at ? \Carbon\Carbon::parse($post->updated_at)->toIso8601String() : '' }}",
                             "author": {
@@ -89,11 +89,11 @@
                             "articleSection": "{{ $category->name }}"
                         }
                     }@if(!$loop->last),@endif
-                    @endforeach
+                @endforeach
                 ],
                 "numberOfItems": {{ $postsCount ?? $posts->total() }}
-            },
-            @endif
+        },
+        @endif
             "aggregateRating": {
                 "@type": "AggregateRating",
                 "ratingValue": "4.5",
@@ -101,30 +101,30 @@
             }
         },
         {
-            "@type": "BreadcrumbList",
+        "@type": "BreadcrumbList",
             "@id": "{{ url('/' . $category->slug) . '/#breadcrumb' }}",
-            "itemListElement": [
-                {
-                    "@type": "ListItem",
-                    "position": 1,
-                    "name": "{{ $settings['site_name'] ?? 'Review Hải Phòng' }}",
-                    "item": "{{ url('/') }}"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 2,
-                    "name": "{{ $category->name }}",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "{{ $settings['site_name'] ?? 'Review Hải Phòng' }}",
+                "item": "{{ url('/') }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "{{ $category->name }}",
                     "item": "{{ url('/' . $category->slug) }}"
                 }
             ]
-        }
-    ]
-}
-</script>
+            }
+        ]
+    }
+    </script>
 @endsection
 
 @section('header')
-    @include('client.templates.header')
+        @include('client.templates.header')
 @endsection
 
 @section('content')
@@ -691,12 +691,12 @@
             <div class="reviewhaiphong_category_stat">
                 <div class="reviewhaiphong_category_stat-number">{{ number_format($postsCount ?? 0) }}</div>
                 <div class="reviewhaiphong_category_stat-label">Bài viết</div>
-            </div>
+                        </div>
             <div class="reviewhaiphong_category_stat">
                 <div class="reviewhaiphong_category_stat-number">{{ number_format($commentsCount ?? 0) }}</div>
                 <div class="reviewhaiphong_category_stat-label">Bình luận</div>
-            </div>
-        </div>
+                            </div>
+                        </div>
     </div> --}}
 
     <!-- Main Content -->
@@ -710,14 +710,14 @@
                 @foreach($posts as $post)
                 <article class="reviewhaiphong_category_post-item">
                     <div class="reviewhaiphong_category_post-thumbnail">
-                        <a href="/bai-viet/{{ $post->slug }}">
+                        <a href="/{{ $post->slug }}">
                             <img src="{{ $post->seo_image ? asset('/client/assets/images/posts/' . $post->seo_image) : asset('/client/assets/images/default-post.jpg') }}" alt="{{ $post->seo_title ?? 'Post' }}" loading="lazy">
                         </a>
                         <span class="reviewhaiphong_category_post-tag">{{ strtoupper($category->name) }}</span>
-                    </div>
+                            </div>
                     <div class="reviewhaiphong_category_post-content">
                         <h3 class="reviewhaiphong_category_post-title">
-                            <a href="/bai-viet/{{ $post->slug }}">{{ $post->seo_title ?? 'Tiêu đề bài viết' }}</a>
+                            <a href="/{{ $post->slug }}">{{ $post->seo_title ?? 'Tiêu đề bài viết' }}</a>
                         </h3>
                         <p class="reviewhaiphong_category_post-excerpt">
                             {{ \Illuminate\Support\Str::limit(strip_tags($post->seo_desc ?? ''), 150) }}
@@ -733,19 +733,19 @@
                                 $commentCount = \App\Models\Comment::where('post_id', $post->id)->count();
                             @endphp
                             <span><i class="fa fa-comment"></i> {{ $commentCount }} bình luận</span>
-                        </div>
-                    </div>
-                </article>
-                @endforeach
+                                </div>
+                            </div>
+                        </article>
+                    @endforeach
             </div>
-
-            <!-- Pagination -->
+                    
+                    <!-- Pagination -->
             <div class="reviewhaiphong_category_pagination">
                 @if($posts->onFirstPage())
                 <span class="reviewhaiphong_category_page-btn" style="opacity: 0.5; cursor: not-allowed;"><i class="fa fa-chevron-left"></i></span>
                 @else
                 <a href="{{ $posts->previousPageUrl() }}" class="reviewhaiphong_category_page-btn"><i class="fa fa-chevron-left"></i></a>
-                @endif
+                        @endif
 
                 @foreach(range(1, $posts->lastPage()) as $page)
                     @if($page == $posts->currentPage())
@@ -754,7 +754,7 @@
                     <a href="{{ $posts->url($page) }}" class="reviewhaiphong_category_page-btn">{{ $page }}</a>
                     @elseif($page == $posts->currentPage() - 3 || $page == $posts->currentPage() + 3)
                     <span class="reviewhaiphong_category_page-btn" style="cursor: default;">...</span>
-                    @endif
+                        @endif
                 @endforeach
 
                 @if($posts->hasMorePages())
@@ -772,7 +772,7 @@
             @endif
         </div>
 
-        <!-- Sidebar -->
+            <!-- Sidebar -->
         <aside class="reviewhaiphong_category_sidebar">
             <!-- Editor's Picks Widget -->
             @if(isset($editorPicks) && $editorPicks->count() > 0)
@@ -781,19 +781,19 @@
 
                 @foreach($editorPicks as $pick)
                 <div class="reviewhaiphong_category_editor-pick">
-                    <a href="/bai-viet/{{ $pick->slug }}">
+                    <a href="/{{ $pick->slug }}">
                         <img src="{{ $pick->seo_image ? asset('/client/assets/images/posts/' . $pick->seo_image) : asset('/client/assets/images/default-post.jpg') }}" alt="{{ $pick->seo_title ?? 'Pick' }}" loading="lazy">
                     </a>
                     <div class="reviewhaiphong_category_editor-pick-content">
                         <h4 class="reviewhaiphong_category_editor-pick-title">
-                            <a href="/bai-viet/{{ $pick->slug }}">{{ \Illuminate\Support\Str::limit($pick->seo_title ?? 'Tiêu đề bài viết', 60) }}</a>
+                            <a href="/{{ $pick->slug }}">{{ \Illuminate\Support\Str::limit($pick->seo_title ?? 'Tiêu đề bài viết', 60) }}</a>
                         </h4>
                         <div class="reviewhaiphong_category_editor-pick-meta">
                             {{ $pick->published_at ? \Carbon\Carbon::parse($pick->published_at)->format('d/m/Y') : 'N/A' }} • {{ number_format($pick->views ?? 0) }} lượt xem
-                        </div>
-                    </div>
-                </div>
-                @endforeach
+                                </div>
+                                </div>
+                            </div>
+                        @endforeach
             </div>
             @endif
 
@@ -807,7 +807,7 @@
                     <li class="reviewhaiphong_category_hot-topic">
                         <div class="reviewhaiphong_category_hot-topic-number">#{{ $index + 1 }}</div>
                         <h4 class="reviewhaiphong_category_hot-topic-title">
-                            <a href="/bai-viet/{{ $topic->slug }}">{{ \Illuminate\Support\Str::limit($topic->seo_title ?? 'Tiêu đề bài viết', 80) }}</a>
+                            <a href="/{{ $topic->slug }}">{{ \Illuminate\Support\Str::limit($topic->seo_title ?? 'Tiêu đề bài viết', 80) }}</a>
                         </h4>
                         <p class="reviewhaiphong_category_hot-topic-excerpt">{{ \Illuminate\Support\Str::limit($topic->seo_desc ?? '', 100) }}</p>
                     </li>
@@ -834,17 +834,17 @@
                     </div>
                 </div>
                 @endforeach
-            </div>
-            @endif
-        </aside>
+                    </div>
+                @endif
+            </aside>
     </div>
-</div>
-
+        </div>
+        
 <!-- Back to Top Button -->
 <div class="reviewhaiphong_category_back-to-top" id="backToTop">
     <i class="fa fa-arrow-up"></i>
-</div>
-
+    </div>
+    
 <script>
     // Back to Top Button
     const backToTop = document.getElementById('backToTop');

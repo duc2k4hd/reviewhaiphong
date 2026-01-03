@@ -284,7 +284,7 @@
                         <div class="popular-posts">
                             @foreach($popularPosts as $popular_post)
                                 <div class="popular-post-item">
-                                    <a href="/bai-viet/{{ $popular_post->slug }}" class="popular-post-link">
+                                    <a href="/{{ $popular_post->slug }}" class="popular-post-link">
                                         <div class="popular-post-image">
                                             @if(!empty($popular_post->seo_image))
                                                 <img src="/client/assets/images/posts/{{ $popular_post->seo_image }}" 
