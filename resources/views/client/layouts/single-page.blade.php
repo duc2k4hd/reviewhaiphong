@@ -157,8 +157,8 @@
                         "url": "{{ asset('/client/assets/images/logo/' . ($settings['site_image'] ?? 'logo.png')) }}",
                         "width": 600,
                         "height": 600
-                    }
-                },
+                }
+            },
                 "identifier": "{{ url('/' . $post->slug) }}",
                 "url": "{{ url('/' . $post->slug) }}",
             @if($post->published_at)
@@ -276,7 +276,7 @@
                             "headline": {!! json_encode($relatedPost->seo_title ?? $relatedPost->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
                             "url": "{{ url('/' . $relatedPost->slug) }}",
                             "image": "{{ $relatedPost->seo_image ? asset('/client/assets/images/posts/' . $relatedPost->seo_image) : '' }}"
-                        }
+            }
                     }@if(!$loop->last),@endif
                     @endforeach
                 ]

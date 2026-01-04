@@ -143,7 +143,7 @@ class HomeController extends Controller
                         'account:id,username',
                         'account.profile:id,account_id,name',
                     ])
-                    ->where('status', 'published')
+            ->where('status', 'published')
                     ->whereNotNull('seo_image')
                     ->where('seo_image', '!=', '')
                     ->orderBy('published_at', 'desc')
@@ -162,7 +162,7 @@ class HomeController extends Controller
                     ->whereHas('post', function($query) {
                         $query->where('status', 'published');
                     })
-                    ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'desc')
                     ->take(5)
                     ->get();
             });

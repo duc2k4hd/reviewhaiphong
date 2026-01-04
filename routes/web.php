@@ -9,6 +9,9 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\MiaScraperController;
+use App\Http\Controllers\Admin\TourProScraperController;
+use App\Http\Controllers\Admin\VinpearlScraperController;
+use App\Http\Controllers\Admin\VinpearlLinkExtractorController;
 use App\Http\Controllers\Admin\LinkExtractorController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\NewsDetailController;
@@ -118,6 +121,24 @@ Route::prefix('/admin')->name('admin.')->group(function() {
     Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/mia-scraper')->name('mia-scraper.')->group((function() {
         Route::get('/', [MiaScraperController::class, 'index'])->name('index');
         Route::post('/scrape', [MiaScraperController::class, 'scrape'])->name('scrape');
+    }));
+
+    // Tour Pro Scraper routes
+    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/tour-pro-scraper')->name('tour-pro-scraper.')->group((function() {
+        Route::get('/', [TourProScraperController::class, 'index'])->name('index');
+        Route::post('/scrape', [TourProScraperController::class, 'scrape'])->name('scrape');
+    }));
+
+    // Vinpearl Scraper routes
+    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/vinpearl-scraper')->name('vinpearl-scraper.')->group((function() {
+        Route::get('/', [VinpearlScraperController::class, 'index'])->name('index');
+        Route::post('/scrape', [VinpearlScraperController::class, 'scrape'])->name('scrape');
+    }));
+
+    // Vinpearl Link Extractor routes
+    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/vinpearl-link-extractor')->name('vinpearl-link-extractor.')->group((function() {
+        Route::get('/', [VinpearlLinkExtractorController::class, 'index'])->name('index');
+        Route::post('/extract', [VinpearlLinkExtractorController::class, 'extract'])->name('extract');
     }));
 
     // Link Extractor Tool

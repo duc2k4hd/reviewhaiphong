@@ -66,10 +66,24 @@ class MiaScraperController extends Controller
             $successCount = 0;
             $errorCount = 0;
             $errors = [];
-
-            // Xử lý từng URL
-            foreach ($validUrls as $url) {
+            $totalUrls = count($validUrls);
+            
+            // Tăng thời gian thực thi và memory limit
+            set_time_limit(0); // Không giới hạn thời gian
+            ini_set('memory_limit', '1024M'); // Tăng memory limit
+            
+            // Xử lý từng URL với delay và flush output
+            foreach ($validUrls as $index => $url) {
                 try {
+                    // Flush output để tránh timeout
+                    if (ob_get_level() > 0) {
+                        ob_flush();
+                    }
+                    flush();
+                    
+                    // Log tiến trình
+                    Log::info("MIA Scraper: Đang xử lý URL " . ($index + 1) . "/{$totalUrls}: {$url}");
+                    
                     $result = $this->scrapeSingleUrl($url, $account);
                     if ($result) {
                         $successCount++;
@@ -77,10 +91,22 @@ class MiaScraperController extends Controller
                         $errorCount++;
                         $errors[] = $url . ': Không thể cào dữ liệu';
                     }
+                    
+                    // Delay giữa các request để tránh quá tải (chỉ delay nếu không phải URL cuối)
+                    if ($index < $totalUrls - 1) {
+                        usleep(500000); // Delay 0.5 giây giữa các request
+                    }
+                    
                 } catch (\Exception $e) {
                     $errorCount++;
-                    $errors[] = $url . ': ' . $e->getMessage();
-                    Log::error('MIA Scraper Error for URL ' . $url . ': ' . $e->getMessage());
+                    $errorMsg = $e->getMessage();
+                    $errors[] = $url . ': ' . $errorMsg;
+                    Log::error('MIA Scraper Error for URL ' . $url . ': ' . $errorMsg, [
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    
+                    // Tiếp tục xử lý URL tiếp theo thay vì dừng lại
+                    continue;
                 }
             }
 
@@ -123,9 +149,29 @@ class MiaScraperController extends Controller
                 ]
             );
 
-            // Fetch HTML từ URL
-            $response = Http::timeout(30)->get($url);
-            if (!$response->successful()) {
+            // Fetch HTML từ URL với timeout dài hơn và retry
+            $maxRetries = 3;
+            $response = null;
+            
+            for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+                try {
+                    $response = Http::timeout(60)
+                        ->retry(2, 1000) // Retry 2 lần, delay 1 giây
+                        ->get($url);
+                    
+                    if ($response->successful()) {
+                        break;
+                    }
+                } catch (\Exception $e) {
+                    if ($attempt === $maxRetries) {
+                        throw new \Exception('Không thể truy cập URL sau ' . $maxRetries . ' lần thử: ' . $url . ' - ' . $e->getMessage());
+                    }
+                    // Đợi trước khi retry
+                    sleep(2);
+                }
+            }
+            
+            if (!$response || !$response->successful()) {
                 throw new \Exception('Không thể truy cập URL này: ' . $url);
             }
 
@@ -269,6 +315,14 @@ class MiaScraperController extends Controller
      */
     private function rewriteWithGemini(string $text, string $type = 'title'): string
     {
+        // Thêm delay để tránh rate limit của Gemini API
+        static $lastCallTime = 0;
+        $minDelay = 1; // Delay tối thiểu 1 giây giữa các API call
+        $timeSinceLastCall = microtime(true) - $lastCallTime;
+        if ($timeSinceLastCall < $minDelay) {
+            usleep(($minDelay - $timeSinceLastCall) * 1000000);
+        }
+        $lastCallTime = microtime(true);
         try {
             $geminiApiKey = env('GEMINI_API_KEY');
             $geminiModel = env('GEMINI_MODEL', 'gemini-2.0-pro');
@@ -299,7 +353,8 @@ class MiaScraperController extends Controller
                 ]
             ];
 
-            $response = Http::timeout(30)
+            $response = Http::timeout(60)
+                ->retry(2, 2000) // Retry 2 lần, delay 2 giây
                 ->withHeaders(['Content-Type' => 'application/json'])
                 ->post($geminiUrl . '?key=' . $geminiApiKey, $payload);
 
@@ -645,8 +700,29 @@ class MiaScraperController extends Controller
                 }
             }
 
-            $response = Http::timeout(30)->get($url);
-            if (!$response->successful()) {
+            // Retry logic cho download ảnh
+            $maxRetries = 3;
+            $response = null;
+            
+            for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+                try {
+                    $response = Http::timeout(60)
+                        ->retry(1, 1000)
+                        ->get($url);
+                    
+                    if ($response->successful()) {
+                        break;
+                    }
+                } catch (\Exception $e) {
+                    if ($attempt === $maxRetries) {
+                        Log::warning('Không thể download ảnh sau ' . $maxRetries . ' lần thử: ' . $url . ' - ' . $e->getMessage());
+                        return null;
+                    }
+                    sleep(1); // Đợi 1 giây trước khi retry
+                }
+            }
+            
+            if (!$response || !$response->successful()) {
                 Log::warning('Không thể download ảnh: ' . $url);
                 return null;
             }

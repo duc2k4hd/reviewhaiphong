@@ -31,12 +31,12 @@ class LoginController extends Controller
         if ($user) {
             if ($user->role_id == 1) {
                 Log::info('LoginController::index - Redirecting to admin dashboard');
-                return redirect()->route('admin.dashboard.index');
+            return redirect()->route('admin.dashboard.index');
             } elseif ($user->role_id == 2) {
                 Log::info('LoginController::index - Redirecting to staff dashboard');
                 return redirect()->route('admin.staff.dashboard.index');
             }
-        }
+        } 
         
         Log::info('LoginController::index - Showing login form');
         return view('admin.login.index');
