@@ -36,11 +36,33 @@
                             <a class="btn btn-outline-secondary w-100" href="{{ route('admin.posts.index') }}">Xóa lọc</a>
                         </div>
                     </form>
+                    <div class="mt-3 d-flex gap-2 flex-wrap">
+                        <button type="submit" form="bulkDeleteForm" id="bulkDeleteBtn" class="btn btn-danger" disabled>
+                            <i class="fas fa-trash"></i> Xóa đã chọn (<span id="selectedCount">0</span>)
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="selectAllPosts()">
+                            <i class="fas fa-check-square"></i> Chọn tất cả
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="deselectAllPosts()">
+                            <i class="fas fa-square"></i> Bỏ chọn tất cả
+                        </button>
+                        <a href="{{ route('admin.posts.export', request()->query()) }}" class="btn btn-success">
+                            <i class="fas fa-file-excel"></i> Xuất Excel
+                        </a>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
+                            <i class="fas fa-file-upload"></i> Nhập Excel
+                        </button>
+                    </div>
                 </div>
+                <form id="bulkDeleteForm" method="POST" action="{{ route('admin.posts.bulk-destroy') }}" onsubmit="return confirm('Bạn có chắc chắn muốn xóa các bài viết đã chọn? Hành động này không thể hoàn tác.');">
+                    @csrf
                 <div class="table-responsive" style="overflow-x:auto;">
                     <table class="table table-striped table-hover align-middle table-sm admin-posts-table">
                         <thead>
                             <tr>
+                                <th class="col-checkbox" style="width: 40px;">
+                                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)">
+                                </th>
                                 <th class="col-stt">STT</th>
                                 <th class="col-name">Tên</th>
                                 <th class="col-title">Tiêu đề SEO</th>
@@ -80,6 +102,9 @@
                             @foreach ($posts as $post)
                                 @php $statusKey = $post->status; @endphp
                                     <tr>
+                                        <td class="col-checkbox">
+                                            <input type="checkbox" class="post-checkbox" name="post_ids[]" value="{{ $post->id }}" onchange="updateBulkDeleteButton()">
+                                        </td>
                                         <th scope="row" class="col-stt">{{ $increasing++ }}</th>
                                         <td class="col-name">{{ $post->name }}</td>
                                         <td class="col-title">{{ $post->seo_title }}</td>
@@ -132,6 +157,7 @@
                         </tbody>
                     </table>
                 </div>
+                </form>
                 <div class="card-footer d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
                     <div>Tổng: {{ $posts->total() }} bài</div>
                     <div class="pagination-wrapper">{{ $posts->links('pagination::bootstrap-5') }}</div>
@@ -144,8 +170,64 @@
                 .admin-posts-table .col-name { max-width: 260px; }
                 .admin-posts-table .col-seoimg { width: 88px; }
                 .admin-posts-table .col-actions { width: 220px; }
+                .admin-posts-table .col-checkbox { width: 40px; text-align: center; }
                 .pagination-wrapper .pagination { margin: 0; }
             </style>
+
+            <script>
+                function updateBulkDeleteButton() {
+                    const checkboxes = document.querySelectorAll('.post-checkbox:checked');
+                    const count = checkboxes.length;
+                    const btn = document.getElementById('bulkDeleteBtn');
+                    const countSpan = document.getElementById('selectedCount');
+                    
+                    countSpan.textContent = count;
+                    btn.disabled = count === 0;
+                }
+
+                function toggleSelectAll(checkbox) {
+                    const checkboxes = document.querySelectorAll('.post-checkbox');
+                    checkboxes.forEach(cb => {
+                        cb.checked = checkbox.checked;
+                    });
+                    updateBulkDeleteButton();
+                }
+
+                function selectAllPosts() {
+                    const checkboxes = document.querySelectorAll('.post-checkbox');
+                    const selectAllCheckbox = document.getElementById('selectAll');
+                    checkboxes.forEach(cb => {
+                        cb.checked = true;
+                    });
+                    selectAllCheckbox.checked = true;
+                    updateBulkDeleteButton();
+                }
+
+                function deselectAllPosts() {
+                    const checkboxes = document.querySelectorAll('.post-checkbox');
+                    const selectAllCheckbox = document.getElementById('selectAll');
+                    checkboxes.forEach(cb => {
+                        cb.checked = false;
+                    });
+                    selectAllCheckbox.checked = false;
+                    updateBulkDeleteButton();
+                }
+
+                // Cập nhật checkbox "Chọn tất cả" khi có thay đổi
+                document.addEventListener('DOMContentLoaded', function() {
+                    const checkboxes = document.querySelectorAll('.post-checkbox');
+                    const selectAllCheckbox = document.getElementById('selectAll');
+                    
+                    checkboxes.forEach(cb => {
+                        cb.addEventListener('change', function() {
+                            const allChecked = Array.from(checkboxes).every(c => c.checked);
+                            const someChecked = Array.from(checkboxes).some(c => c.checked);
+                            selectAllCheckbox.checked = allChecked;
+                            selectAllCheckbox.indeterminate = someChecked && !allChecked;
+                        });
+                    });
+                });
+            </script>
             <!--/ Responsive Table -->
         </div>
         <!-- / Content -->
@@ -154,5 +236,66 @@
         <!-- / Footer -->
 
         <div class="content-backdrop fade"></div>
+    </div>
+
+    <!-- Modal Nhập Excel -->
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('admin.posts.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importModalLabel">
+                            <i class="fas fa-file-upload"></i> Nhập bài viết từ Excel
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @if (session('import_errors') && count(session('import_errors')) > 0)
+                            <div class="alert alert-warning">
+                                <strong>Một số lỗi đã xảy ra:</strong>
+                                <ul class="mb-0 mt-2">
+                                    @foreach (session('import_errors') as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <div class="mb-3">
+                            <label for="importFile" class="form-label">
+                                <strong>Chọn file Excel (.xlsx hoặc .xls)</strong>
+                            </label>
+                            <input type="file" class="form-control @error('file') is-invalid @enderror" id="importFile" name="file" accept=".xlsx,.xls" required>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle"></i> File phải có định dạng Excel (.xlsx hoặc .xls) và không vượt quá 10MB.
+                            </div>
+                            @error('file')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="alert alert-info">
+                            <h6 class="alert-heading"><i class="fas fa-info-circle"></i> Hướng dẫn:</h6>
+                            <ul class="mb-0">
+                                <li>File Excel phải có các cột: ID, Tiêu đề, Slug, Nội dung, SEO Title, SEO Description, SEO Keywords, SEO Image, Tags, Danh mục (Slug), Trạng thái, Ngày xuất bản, Lượt xem, Type</li>
+                                <li><strong>Cập nhật bài viết:</strong> Nếu có ID và bài viết tồn tại, hệ thống sẽ <strong>CẬP NHẬT</strong> bài viết đó</li>
+                                <li><strong>Cập nhật theo Slug:</strong> Nếu không có ID nhưng slug đã tồn tại, hệ thống sẽ <strong>CẬP NHẬT</strong> bài viết có slug đó</li>
+                                <li><strong>Tạo mới:</strong> Chỉ tạo bài viết mới khi không có ID và slug cũng chưa tồn tại</li>
+                                <li>Danh mục phải nhập slug của danh mục (ví dụ: du-lich, am-thuc)</li>
+                                <li>Trạng thái hợp lệ: draft, published, archived, pending</li>
+                                <li>Bạn có thể xuất file mẫu bằng nút "Xuất Excel" để xem cấu trúc</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Nhập dữ liệu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 @endsection

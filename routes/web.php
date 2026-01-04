@@ -69,6 +69,8 @@ Route::prefix('/admin')->name('admin.')->group(function() {
         Route::get('/pending', [PostController::class, 'posts_pending'])->name('pending');
         Route::get('/new', [PostController::class, 'posts_new'])->name('new');
         Route::post('/new/handle', [PostController::class, 'handle_posts_new'])->name('new.handle');
+        Route::get('/export', [PostController::class, 'export'])->name('export');
+        Route::post('/import', [PostController::class, 'import'])->name('import');
         Route::get('/{post}/edit', [PostController::class, 'edit'])->name('edit');
         Route::put('/{post}', [PostController::class, 'update'])->name('update');
         Route::post('/ai/generate', [PostController::class, 'generateWithAI'])->name('ai.generate');
@@ -80,6 +82,7 @@ Route::prefix('/admin')->name('admin.')->group(function() {
         // Hành động: đổi trạng thái, xoá vĩnh viễn
         Route::post('/{post}/status', [PostController::class, 'updateStatus'])->name('status');
         Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-delete', [PostController::class, 'bulkDestroy'])->name('bulk-destroy');
     }));
 
     // Categories routes

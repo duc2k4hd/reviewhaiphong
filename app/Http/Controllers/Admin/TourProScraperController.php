@@ -87,6 +87,9 @@ class TourProScraperController extends Controller
                     $result = $this->scrapeSingleUrl($url, $account);
                     if ($result) {
                         $successCount++;
+                    } elseif ($result === null) {
+                        // Bài viết đã tồn tại (slug trùng), không tính là lỗi
+                        Log::info("Tour Pro Scraper: Bỏ qua URL vì slug đã tồn tại: {$url}");
                     } else {
                         $errorCount++;
                         $errors[] = $url . ': Không thể cào dữ liệu';
@@ -209,12 +212,10 @@ class TourProScraperController extends Controller
             
             $slug = Str::slug($seoTitle);
             
-            // Kiểm tra slug đã tồn tại chưa
-            $originalSlug = $slug;
-            $counter = 1;
-            while (Post::where('slug', $slug)->exists()) {
-                $slug = $originalSlug . '-' . $counter;
-                $counter++;
+            // Kiểm tra slug đã tồn tại chưa - nếu đã tồn tại thì bỏ qua bài viết này
+            if (Post::where('slug', $slug)->exists()) {
+                Log::info("Tour Pro Scraper: Bỏ qua bài viết vì slug đã tồn tại: {$slug} - URL: {$url}");
+                return null; // Bỏ qua bài viết này
             }
 
             $data['seo_title'] = $seoTitle;

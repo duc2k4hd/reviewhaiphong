@@ -28,10 +28,15 @@ class VinpearlScraperController extends Controller
     }
 
     /**
-     * Xử lý scraping từ URL vinpearl.com
+     * Xử lý scraping từ URL vinpearl.com - Chia nhỏ batch để tránh timeout
      */
     public function scrape(Request $request)
     {
+        // Nếu là AJAX request để xử lý batch
+        if ($request->ajax() && $request->has('batch_index')) {
+            return $this->processBatch($request);
+        }
+
         $request->validate([
             'urls' => 'required|string',
             'category' => 'required|string|in:du-lich,am-thuc,check-in,dich-vu,review-tong-hop'
@@ -63,66 +68,18 @@ class VinpearlScraperController extends Controller
                 return back()->withErrors(['urls' => 'Không có URL hợp lệ nào. Vui lòng kiểm tra lại định dạng URL (phải là link từ vinpearl.com).']);
             }
 
-            $account = $this->loadAccount();
-            $successCount = 0;
-            $errorCount = 0;
-            $errors = [];
-            $totalUrls = count($validUrls);
-            
-            // Tăng thời gian thực thi và memory limit
-            set_time_limit(0); // Không giới hạn thời gian
-            ini_set('memory_limit', '1024M'); // Tăng memory limit
-            
-            // Xử lý từng URL với delay và flush output
-            foreach ($validUrls as $index => $url) {
-                try {
-                    // Flush output để tránh timeout
-                    if (ob_get_level() > 0) {
-                        ob_flush();
-                    }
-                    flush();
-                    
-                    // Log tiến trình
-                    Log::info("Vinpearl Scraper: Đang xử lý URL " . ($index + 1) . "/{$totalUrls}: {$url}");
-                    
-                    $categorySlug = $request->input('category', 'du-lich');
-                    $result = $this->scrapeSingleUrl($url, $account, $categorySlug);
-                    if ($result) {
-                        $successCount++;
-                    } else {
-                        $errorCount++;
-                        $errors[] = $url . ': Không thể cào dữ liệu';
-                    }
-                    
-                    // Delay giữa các request để tránh quá tải (chỉ delay nếu không phải URL cuối)
-                    if ($index < $totalUrls - 1) {
-                        usleep(200000); // Delay 0.2 giây giữa các request (giảm để tăng tốc)
-                    }
-                    
-                } catch (\Exception $e) {
-                    $errorCount++;
-                    $errorMsg = $e->getMessage();
-                    $errors[] = $url . ': ' . $errorMsg;
-                    Log::error('Vinpearl Scraper Error for URL ' . $url . ': ' . $errorMsg, [
-                        'trace' => $e->getTraceAsString()
-                    ]);
-                    
-                    // Tiếp tục xử lý URL tiếp theo thay vì dừng lại
-                    continue;
-                }
-            }
+            // Lưu URLs vào session để xử lý batch
+            $request->session()->put('scraper_urls', $validUrls);
+            $request->session()->put('scraper_category', $request->input('category', 'du-lich'));
+            $request->session()->put('scraper_total', count($validUrls));
+            $request->session()->put('scraper_success', 0);
+            $request->session()->put('scraper_errors', []);
 
-            // Clear cache sau khi cào xong
-            $this->clearCache();
-
-            $message = "Đã cào thành công {$successCount} bài viết";
-            if ($errorCount > 0) {
-                $message .= ", {$errorCount} bài viết lỗi";
-            }
-
-            return redirect()->route('admin.posts.index')
-                ->with('success', $message)
-                ->with('errors', $errors);
+            // Trả về view với JavaScript để xử lý batch
+            return view('admin.vinpearl-scraper.processing', [
+                'totalUrls' => count($validUrls),
+                'category' => $request->input('category', 'du-lich')
+            ]);
 
         } catch (\Exception $e) {
             Log::error('Vinpearl Scraper Error: ' . $e->getMessage(), [
@@ -135,12 +92,120 @@ class VinpearlScraperController extends Controller
     }
 
     /**
+     * Xử lý một batch nhỏ (5 URL mỗi lần) để tránh timeout
+     */
+    private function processBatch(Request $request)
+    {
+        try {
+            $batchIndex = (int) $request->input('batch_index', 0);
+            $batchSize = 5; // Xử lý 5 URL mỗi batch
+            
+            $validUrls = $request->session()->get('scraper_urls', []);
+            $categorySlug = $request->session()->get('scraper_category', 'du-lich');
+            $totalUrls = count($validUrls);
+            
+            if (empty($validUrls)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không có URL nào để xử lý'
+                ]);
+            }
+
+            // Tính toán batch hiện tại
+            $startIndex = $batchIndex * $batchSize;
+            $endIndex = min($startIndex + $batchSize, $totalUrls);
+            $batchUrls = array_slice($validUrls, $startIndex, $batchSize);
+            
+            if (empty($batchUrls)) {
+                // Đã xử lý xong tất cả
+                $successCount = $request->session()->get('scraper_success', 0);
+                $errors = $request->session()->get('scraper_errors', []);
+                
+                // Clear session
+                $request->session()->forget(['scraper_urls', 'scraper_category', 'scraper_total', 'scraper_success', 'scraper_errors']);
+                
+                // Clear cache
+                $this->clearCache();
+                
+                return response()->json([
+                    'success' => true,
+                    'completed' => true,
+                    'message' => "Đã cào thành công {$successCount} bài viết" . (count($errors) > 0 ? ", " . count($errors) . " bài viết lỗi" : ""),
+                    'successCount' => $successCount,
+                    'errorCount' => count($errors),
+                    'errors' => $errors
+                ]);
+            }
+
+            $account = $this->loadAccount();
+            $successCount = $request->session()->get('scraper_success', 0);
+            $errors = $request->session()->get('scraper_errors', []);
+            
+            // Tăng thời gian thực thi cho batch này
+            set_time_limit(300); // 5 phút cho mỗi batch
+            ini_set('memory_limit', '2048M');
+            
+            // Xử lý từng URL trong batch
+            foreach ($batchUrls as $index => $url) {
+                try {
+                    Log::info("Vinpearl Scraper: Đang xử lý URL " . ($startIndex + $index + 1) . "/{$totalUrls}: {$url}");
+                    
+                    $result = $this->scrapeSingleUrl($url, $account, $categorySlug);
+                    if ($result) {
+                        $successCount++;
+                    } elseif ($result === null) {
+                        // Bài viết đã tồn tại (slug trùng), không tính là lỗi
+                        Log::info("Vinpearl Scraper: Bỏ qua URL vì slug đã tồn tại: {$url}");
+                    } else {
+                        $errors[] = $url . ': Không thể cào dữ liệu';
+                    }
+                    
+                    // Delay nhỏ giữa các URL
+                    if ($index < count($batchUrls) - 1) {
+                        usleep(300000); // 0.3 giây
+                    }
+                    
+                } catch (\Exception $e) {
+                    $errorMsg = $e->getMessage();
+                    $errors[] = $url . ': ' . $errorMsg;
+                    Log::error('Vinpearl Scraper Error for URL ' . $url . ': ' . $errorMsg);
+                }
+            }
+            
+            // Cập nhật session
+            $request->session()->put('scraper_success', $successCount);
+            $request->session()->put('scraper_errors', $errors);
+            
+            return response()->json([
+                'success' => true,
+                'completed' => false,
+                'batchIndex' => $batchIndex,
+                'processed' => $endIndex,
+                'total' => $totalUrls,
+                'successCount' => $successCount,
+                'errorCount' => count($errors),
+                'message' => "Đã xử lý {$endIndex}/{$totalUrls} URL..."
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Vinpearl Scraper Batch Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi xử lý batch: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Cào một URL đơn lẻ
      */
     private function scrapeSingleUrl(string $url, $account, string $categorySlug = 'du-lich')
     {
         // Reset static variable cho mỗi URL mới
         self::$staticDomainAccessed = false;
+        
+        // Đảm bảo time limit không bị giới hạn
+        set_time_limit(0);
         
         try {
             
@@ -184,7 +249,7 @@ class VinpearlScraperController extends Controller
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 60,
+                    CURLOPT_TIMEOUT => 120, // Tăng timeout lên 2 phút
                     CURLOPT_CONNECTTIMEOUT => 30,
                     CURLOPT_SSL_VERIFYPEER => false,
                     CURLOPT_SSL_VERIFYHOST => false,
@@ -296,12 +361,10 @@ class VinpearlScraperController extends Controller
             
             $slug = Str::slug($seoTitle);
             
-            // Kiểm tra slug đã tồn tại chưa
-            $originalSlug = $slug;
-            $counter = 1;
-            while (Post::where('slug', $slug)->exists()) {
-                $slug = $originalSlug . '-' . $counter;
-                $counter++;
+            // Kiểm tra slug đã tồn tại chưa - nếu đã tồn tại thì bỏ qua bài viết này
+            if (Post::where('slug', $slug)->exists()) {
+                Log::info("Vinpearl Scraper: Bỏ qua bài viết vì slug đã tồn tại: {$slug} - URL: {$url}");
+                return null; // Bỏ qua bài viết này
             }
 
             $data['seo_title'] = $seoTitle;
@@ -1551,6 +1614,12 @@ class VinpearlScraperController extends Controller
                 Log::info('Vinpearl Scraper: Đã truy cập statics.vinpearl.com để lấy cookie cho subdomain');
             }
 
+            // Bỏ qua ảnh từ Google Cloud Storage nếu URL chứa storage.googleapis.com (thường bị 404/400)
+            if (strpos($url, 'storage.googleapis.com') !== false || strpos($url, 'STORAGE.GOOGLEAPIS.COM') !== false) {
+                Log::info('Vinpearl Scraper: Bỏ qua ảnh từ Google Cloud Storage (thường không có): ' . $url);
+                return null;
+            }
+
             // Các biến thể URL tiềm năng
             $candidateUrls = $this->buildCandidateUrls($url, true);
 
@@ -1565,7 +1634,7 @@ class VinpearlScraperController extends Controller
 
             $lastError = null;
             $totalAttempts = 0;
-            $maxAttempts = 12;
+            $maxAttempts = 4; // Giảm từ 12 xuống 4 để tránh timeout
             $tooMany = false;
             $imageData = null;
             $contentType = null;
@@ -1626,9 +1695,9 @@ class VinpearlScraperController extends Controller
                             $curlOptions = [
                                 CURLOPT_RETURNTRANSFER => true,
                                 CURLOPT_FOLLOWLOCATION => true,
-                                CURLOPT_MAXREDIRS => 10,
-                                CURLOPT_TIMEOUT => 20,
-                                CURLOPT_CONNECTTIMEOUT => 10,
+                                CURLOPT_MAXREDIRS => 5, // Giảm từ 10 xuống 5
+                                CURLOPT_TIMEOUT => 10, // Giảm từ 20 xuống 10 giây
+                                CURLOPT_CONNECTTIMEOUT => 5, // Giảm từ 10 xuống 5 giây
                                 CURLOPT_SSL_VERIFYPEER => $sslStrict,
                                 CURLOPT_SSL_VERIFYHOST => $sslStrict ? 2 : 0,
                                 CURLOPT_USERAGENT => $ua,
@@ -1714,13 +1783,30 @@ class VinpearlScraperController extends Controller
                                 continue;
                             }
 
-                            // 404 -> thử URL khác
+                            // 404 -> bỏ qua ngay nếu là Google Cloud Storage (thường không có)
                             if ($httpCode === 404) {
                                 $lastError = '404 Not Found';
                                 Log::warning('Vinpearl Scraper: 404 Not Found');
-                                $consecutive404++;
-                                if ($consecutive404 >= 2) {
+                                // Nếu là Google Cloud Storage, bỏ qua ngay không thử nữa
+                                if (strpos($attemptUrl, 'storage.googleapis.com') !== false || strpos($attemptUrl, 'STORAGE.GOOGLEAPIS.COM') !== false) {
                                     $stopForUrl = true;
+                                    break 2; // Bỏ qua URL này ngay
+                                }
+                                $consecutive404++;
+                                if ($consecutive404 >= 1) { // Giảm từ 2 xuống 1
+                                    $stopForUrl = true;
+                                }
+                                continue;
+                            }
+
+                            // 400 -> bỏ qua ngay nếu là Google Cloud Storage
+                            if ($httpCode === 400) {
+                                $lastError = 'HTTP 400 Bad Request';
+                                Log::warning('Vinpearl Scraper: HTTP 400 không hợp lệ cho ảnh');
+                                // Nếu là Google Cloud Storage, bỏ qua ngay
+                                if (strpos($attemptUrl, 'storage.googleapis.com') !== false || strpos($attemptUrl, 'STORAGE.GOOGLEAPIS.COM') !== false) {
+                                    $stopForUrl = true;
+                                    break 2; // Bỏ qua URL này ngay
                                 }
                                 continue;
                             }

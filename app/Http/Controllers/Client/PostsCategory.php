@@ -26,30 +26,30 @@ class PostsCategory extends Controller
             // Cache category - 1 ngày
             $category = Cache::remember('category_' . $slug, now()->addDay(), function () use ($slug) {
                 return Category::where('slug', $slug)
-                    ->where('status', 'active')
-                    ->firstOrFail();
+                ->where('status', 'active')
+                ->firstOrFail();
             });
 
             // Pagination với cache key theo page
             $page = $request->get('page', 1);
             $cacheKey = 'category_posts_' . $category->id . '_page_' . $page;
-            
+
             $posts = Cache::remember($cacheKey, now()->addHours(6), function () use ($category) {
                 return $category
-                    ->posts()
-                    ->where('status', 'published')
-                    ->orderBy('published_at', 'desc')
-                    ->select('id', 'category_id', 'account_id', 'slug', 'seo_title', 'seo_desc', 'seo_image', 'seo_keywords', 'published_at', 'views')
-                    ->with(['account:id,username', 'account.profile:id,account_id,name'])
-                    ->paginate(20);
+                ->posts()
+                ->where('status', 'published')
+                ->orderBy('published_at', 'desc')
+                ->select('id', 'category_id', 'account_id', 'slug', 'seo_title', 'seo_desc', 'seo_image', 'seo_keywords', 'published_at', 'views')
+                ->with(['account:id,username', 'account.profile:id,account_id,name'])
+                ->paginate(20);
             });
 
             // Cache sidebar data
             $postsViews = Cache::remember('category_posts_views', now()->addHours(6), function () {
                 return Post::where('status', 'published')
-                    ->orderBy('views', 'desc')
-                    ->select('id', 'category_id', 'account_id', 'views', 'slug', 'seo_title', 'seo_desc', 'seo_image', 'seo_keywords', 'published_at')
-                    ->take(15)->get();
+                ->orderBy('views', 'desc')
+                ->select('id', 'category_id', 'account_id', 'views', 'slug', 'seo_title', 'seo_desc', 'seo_image', 'seo_keywords', 'published_at')
+                ->take(15)->get();
             });
 
             // Editor's Picks - Cache theo category

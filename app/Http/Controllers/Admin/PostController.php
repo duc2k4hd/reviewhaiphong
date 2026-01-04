@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Services\AIArticleService;
+use App\Exports\PostsExport;
+use App\Imports\PostsImport;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -358,6 +361,25 @@ class PostController extends Controller
     }
 
     /**
+     * Xóa nhiều bài viết cùng lúc
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'post_ids' => 'required|array',
+            'post_ids.*' => 'required|integer|exists:posts,id'
+        ]);
+
+        $postIds = $request->input('post_ids');
+        $deletedCount = Post::whereIn('id', $postIds)->delete();
+        
+        // Xóa cache sau khi xóa bài viết
+        $this->clearCache();
+        
+        return back()->with('success', "Đã xoá {$deletedCount} bài viết");
+    }
+
+    /**
      * Test kết nối AI
      */
     public function testAI()
@@ -590,6 +612,140 @@ class PostController extends Controller
                 'success' => false,
                 'message' => 'Lỗi khi test AI: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Xuất bài viết ra file Excel
+     */
+    public function export(Request $request)
+    {
+        try {
+            $account = $this->loadAccount();
+            
+            // Lấy danh sách bài viết theo filter
+            $query = Post::with(['category', 'account']);
+            
+            // Apply filters nếu có
+            $status = $request->input('status');
+            $keyword = trim((string) $request->input('q', ''));
+            
+            if (!empty($status) && in_array($status, ['draft','published','archived','pending'])) {
+                $query->where('status', $status);
+            }
+            
+            if (!empty($keyword)) {
+                $like = '%' . str_replace(['%','_'], ['\%','\_'], $keyword) . '%';
+                $query->where(function ($q) use ($like) {
+                    $q->where('name', 'like', $like)
+                        ->orWhere('seo_title', 'like', $like)
+                        ->orWhere('seo_desc', 'like', $like)
+                        ->orWhere('slug', 'like', $like);
+                });
+            }
+            
+            $posts = $query->orderBy('created_at', 'desc')->get();
+            
+            $export = new PostsExport($posts);
+            $filename = 'bai-viet-' . date('Y-m-d-His') . '.xlsx';
+            $export->download($filename);
+            
+        } catch (\Exception $e) {
+            Log::error('Posts Export Error: ' . $e->getMessage());
+            return back()->withErrors(['export' => 'Lỗi khi xuất file Excel: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Nhập bài viết từ file Excel
+     */
+    public function import(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'file' => 'required|mimes:xlsx,xls|max:10240', // Max 10MB
+            ], [
+                'file.required' => 'Vui lòng chọn file Excel để nhập.',
+                'file.mimes' => 'File phải có định dạng .xlsx hoặc .xls.',
+                'file.max' => 'File không được vượt quá 10MB.',
+            ]);
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            $file = $request->file('file');
+            
+            // Đảm bảo thư mục temp tồn tại
+            $tempDir = storage_path('app/temp');
+            if (!file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
+            
+            // Lưu file với tên duy nhất (loại bỏ ký tự đặc biệt trong tên file)
+            $originalName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
+            $fileName = 'import_' . time() . '_' . uniqid() . '_' . $originalName;
+            
+            // Lưu file và lấy đường dẫn đầy đủ
+            $filePath = $file->storeAs('temp', $fileName, 'local');
+            
+            // Lấy đường dẫn đầy đủ từ storage
+            $fullPath = Storage::disk('local')->path($filePath);
+            
+            // Kiểm tra file đã được lưu thành công
+            if (!file_exists($fullPath)) {
+                Log::error('Posts Import - File không tồn tại sau khi lưu', [
+                    'filePath' => $filePath,
+                    'fullPath' => $fullPath,
+                    'originalName' => $file->getClientOriginalName()
+                ]);
+                throw new \Exception('Không thể lưu file. Vui lòng thử lại.');
+            }
+
+            Log::info('Posts Import - File đã được lưu', [
+                'filePath' => $filePath,
+                'fullPath' => $fullPath,
+                'fileSize' => filesize($fullPath)
+            ]);
+
+            try {
+                $import = new PostsImport();
+                $result = $import->import($fullPath);
+            } catch (\Exception $e) {
+                Log::error('Posts Import - Lỗi khi import', [
+                    'filePath' => $fullPath,
+                    'error' => $e->getMessage()
+                ]);
+                throw $e;
+            } finally {
+                // Xóa file temp sau khi xử lý xong (dù thành công hay thất bại)
+                if (file_exists($fullPath)) {
+                    @unlink($fullPath);
+                    Log::info('Posts Import - Đã xóa file temp', ['filePath' => $fullPath]);
+                }
+            }
+
+            if (!$result['success']) {
+                return back()->withErrors(['import' => $result['message']]);
+            }
+
+            // Clear cache
+            $this->clearCache();
+
+            $message = "Đã xử lý thành công {$result['successCount']} bài viết";
+            if ($result['skipCount'] > 0) {
+                $message .= ", bỏ qua {$result['skipCount']} bài viết";
+            }
+            if (!empty($result['errors'])) {
+                $message .= ", " . count($result['errors']) . " lỗi";
+            }
+            $message .= ". (Hệ thống sẽ tự động cập nhật bài viết đã tồn tại theo ID hoặc Slug)";
+
+            return back()->with('success', $message)->with('import_errors', $result['errors'] ?? []);
+
+        } catch (\Exception $e) {
+            Log::error('Posts Import Error: ' . $e->getMessage());
+            return back()->withErrors(['import' => 'Lỗi khi nhập file Excel: ' . $e->getMessage()]);
         }
     }
 }
