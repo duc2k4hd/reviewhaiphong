@@ -64,11 +64,28 @@ function processNextBatch() {
     fetch('{{ route("admin.vinpearl-scraper.scrape") }}', {
         method: 'POST',
         headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
         },
         body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+        // Kiểm tra Content-Type trước khi parse
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            // Nếu không phải JSON, đọc text và throw error
+            return response.text().then(text => {
+                throw new Error('Server trả về HTML thay vì JSON. Có thể do lỗi 500. Vui lòng kiểm tra log server.');
+            });
+        }
+        // Nếu status không OK, vẫn cố parse JSON để lấy message
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.message || 'Lỗi server: ' + response.status);
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         isProcessing = false;
         
@@ -110,23 +127,47 @@ function processNextBatch() {
             } else {
                 // Tiếp tục batch tiếp theo
                 batchIndex++;
+                // Đợi 2 giây trước khi xử lý batch tiếp theo để đảm bảo lock được giải phóng
                 setTimeout(() => {
                     processNextBatch();
-                }, 1000); // Đợi 1 giây trước khi xử lý batch tiếp theo
+                }, 2000);
             }
         } else {
-            document.getElementById('statusMessage').innerHTML = '<strong class="text-danger">Lỗi: ' + (data.message || 'Không xác định') + '</strong>';
+            // Nếu có retry flag, thử lại sau 2 giây
+            if (data.retry) {
+                setTimeout(() => {
+                    processNextBatch();
+                }, 2000);
+            } else {
+                document.getElementById('statusMessage').innerHTML = '<strong class="text-danger">Lỗi: ' + (data.message || 'Không xác định') + '</strong>';
+            }
         }
     })
     .catch(error => {
         isProcessing = false;
         console.error('Error:', error);
-        document.getElementById('statusMessage').innerHTML = '<strong class="text-danger">Lỗi kết nối: ' + error.message + '</strong>';
         
-        // Thử lại sau 3 giây
-        setTimeout(() => {
-            processNextBatch();
-        }, 3000);
+        let errorMessage = error.message || 'Lỗi không xác định';
+        
+        // Nếu là lỗi network, hiển thị thông báo khác
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            errorMessage = 'Lỗi kết nối mạng. Vui lòng kiểm tra kết nối internet.';
+        } else if (error.message.includes('HTML thay vì JSON')) {
+            errorMessage = 'Lỗi server (500). Vui lòng kiểm tra log server hoặc thử lại sau.';
+        }
+        
+        document.getElementById('statusMessage').innerHTML = '<strong class="text-danger">Lỗi: ' + errorMessage + '</strong>';
+        
+        // Chỉ thử lại nếu chưa xử lý hết
+        if (batchIndex < Math.ceil(totalUrls / 5)) {
+            // Thử lại sau 5 giây
+            setTimeout(() => {
+                processNextBatch();
+            }, 5000);
+        } else {
+            // Nếu đã xử lý hết nhưng có lỗi, dừng lại
+            document.getElementById('statusMessage').innerHTML += '<br><small>Đã dừng xử lý do lỗi. Vui lòng kiểm tra log và thử lại.</small>';
+        }
     });
 }
 

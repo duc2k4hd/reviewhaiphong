@@ -53,7 +53,7 @@
                     @foreach($navCategories as $category)
                         @php
                             $isActive = request()->is($category->slug . '*');
-                            $hasChildren = isset($category->children) && $category->children->count() > 0;
+                            $hasChildren = isset($category->children) && count($category->children) > 0;
                         @endphp
                         @if ($category->slug == 'hai-phong-life')
                             <li class="nav-item">

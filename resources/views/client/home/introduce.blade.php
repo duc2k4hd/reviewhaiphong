@@ -1,6 +1,6 @@
 @extends('client.layouts.main')
 
-@section('title', 'Giới thiệu tổng quát về Review Hải Phòng')
+@section('title', 'Review Hải Phòng – Giới thiệu du lịch &amp; ẩm thực thành phố Cảng')
 
 @section('header')
     @include('client.templates.header')

@@ -17,6 +17,13 @@
                     </div>
                 @endif
 
+                @if (session('info'))
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <strong>Thông tin:</strong> {{ session('info') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
                 @if ($errors->any())
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <ul class="mb-0">
@@ -55,31 +62,31 @@
                             <strong>Chọn danh mục để thêm bài viết:</strong>
                         </label>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="category" id="category-du-lich" value="du-lich" {{ old('category', 'du-lich') === 'du-lich' ? 'checked' : '' }}>
+                            <input class="form-check-input" type="radio" name="category" id="category-du-lich" value="du-lich" {{ old('category', 'du-lich') === 'du-lich' ? 'checked' : '' }} required>
                             <label class="form-check-label" for="category-du-lich">
                                 Du lịch
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="category" id="category-am-thuc" value="am-thuc" {{ old('category') === 'am-thuc' ? 'checked' : '' }}>
+                            <input class="form-check-input" type="radio" name="category" id="category-am-thuc" value="am-thuc" {{ old('category') === 'am-thuc' ? 'checked' : '' }} required>
                             <label class="form-check-label" for="category-am-thuc">
                                 Ẩm thực
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="category" id="category-check-in" value="check-in" {{ old('category') === 'check-in' ? 'checked' : '' }}>
+                            <input class="form-check-input" type="radio" name="category" id="category-check-in" value="check-in" {{ old('category') === 'check-in' ? 'checked' : '' }} required>
                             <label class="form-check-label" for="category-check-in">
                                 Check-in
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="category" id="category-dich-vu" value="dich-vu" {{ old('category') === 'dich-vu' ? 'checked' : '' }}>
+                            <input class="form-check-input" type="radio" name="category" id="category-dich-vu" value="dich-vu" {{ old('category') === 'dich-vu' ? 'checked' : '' }} required>
                             <label class="form-check-label" for="category-dich-vu">
                                 Dịch vụ
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="category" id="category-review-tong-hop" value="review-tong-hop" {{ old('category') === 'review-tong-hop' ? 'checked' : '' }}>
+                            <input class="form-check-input" type="radio" name="category" id="category-review-tong-hop" value="review-tong-hop" {{ old('category') === 'review-tong-hop' ? 'checked' : '' }} required>
                             <label class="form-check-label" for="category-review-tong-hop">
                                 Review tổng hợp
                             </label>
@@ -88,6 +95,21 @@
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    @if(isset($processedUrlsCount) && $processedUrlsCount > 0)
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong><i class="fas fa-info-circle"></i> Thông tin:</strong> 
+                            Đã có <strong>{{ $processedUrlsCount }}</strong> URL đã được cào trước đó trong database. 
+                            Các URL trùng lặp sẽ được tự động bỏ qua để tránh tốn dữ liệu.
+                            <br><small class="text-muted">Nếu bạn muốn cào lại các URL đã cào, vui lòng xóa danh sách URL đã cào trước.</small>
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="if(confirm('Bạn có chắc muốn xóa {{ $processedUrlsCount }} URL đã cào từ database?')) { document.getElementById('clearUrlsForm').submit(); }">
+                                    <i class="fas fa-trash"></i> Xóa danh sách ({{ $processedUrlsCount }} URL)
+                                </button>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
 
                     <div class="alert alert-info">
                         <h6 class="alert-heading"><i class="fas fa-info-circle"></i> Quy trình cào tự động:</h6>
@@ -119,6 +141,12 @@
                     </div>
                 </form>
 
+                @if(isset($processedUrlsCount) && $processedUrlsCount > 0)
+                <form action="{{ route('admin.vinpearl-scraper.clear-processed-urls') }}" method="POST" id="clearUrlsForm" style="display: none;">
+                    @csrf
+                </form>
+                @endif
+
                 <div id="loading" class="mt-4" style="display: none;">
                     <div class="text-center">
                         <div class="spinner-border text-primary" role="status">
@@ -133,14 +161,26 @@
 </div>
 
 <script>
-document.getElementById('scrapeForm').addEventListener('submit', function(e) {
-    const submitBtn = document.getElementById('submitBtn');
-    const loading = document.getElementById('loading');
+// Chỉ hiển thị loading sau khi form submit (HTML5 validation sẽ chặn nếu không hợp lệ)
+(function() {
+    var form = document.getElementById('scrapeForm');
+    if (form) {
+        form.addEventListener('submit', function() {
+            var btn = document.getElementById('submitBtn');
+            var load = document.getElementById('loading');
+            if (btn) btn.disabled = true;
+            if (load) load.style.display = 'block';
+        });
+    }
     
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
-    loading.style.display = 'block';
-});
+    // Ẩn loading khi có errors (khi trang reload)
+    if (document.querySelector('.alert-danger')) {
+        var load = document.getElementById('loading');
+        var btn = document.getElementById('submitBtn');
+        if (load) load.style.display = 'none';
+        if (btn) btn.disabled = false;
+    }
+})();
 </script>
 @endsection
 

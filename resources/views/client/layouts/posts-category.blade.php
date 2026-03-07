@@ -8,6 +8,10 @@
 
 @section('meta_author', $settings['seo_author'] ?? $settings['site_name'] ?? 'Review Hải Phòng')
 
+@if(isset($isSearchPage) && $isSearchPage)
+@section('meta_robots', 'noindex, nofollow')
+@endif
+
 @section('og_type', 'website')
 
 @section('og_url', url('/' . $category->slug))
@@ -703,7 +707,11 @@
     <div class="reviewhaiphong_category_main-content">
         <!-- Posts List -->
         <div>
-            <div class="reviewhaiphong_category_posts-count">+ {{ number_format($postsCount ?? 0) }} bài viết</div>
+            @if(isset($isSearchPage) && $isSearchPage)
+                <div class="reviewhaiphong_category_posts-count">Kết quả tìm kiếm cho từ khóa "{{ $keyword }}": {{ number_format($postsCount ?? 0) }} bài viết</div>
+            @else
+                <div class="reviewhaiphong_category_posts-count">+ {{ number_format($postsCount ?? 0) }} bài viết</div>
+            @endif
 
             @if($posts->count() > 0)
             <div class="reviewhaiphong_category_post-list">
@@ -713,7 +721,11 @@
                         <a href="/{{ $post->slug }}">
                             <img src="{{ $post->seo_image ? asset('/client/assets/images/posts/' . $post->seo_image) : asset('/client/assets/images/default-post.jpg') }}" alt="{{ $post->seo_title ?? 'Post' }}" loading="lazy">
                         </a>
-                        <span class="reviewhaiphong_category_post-tag">{{ strtoupper($category->name) }}</span>
+                        @if(!isset($isSearchPage) || !$isSearchPage)
+                            <span class="reviewhaiphong_category_post-tag">{{ strtoupper($category->name) }}</span>
+                        @else
+                            <span class="reviewhaiphong_category_post-tag">{{ strtoupper($post->category->name ?? '') }}</span>
+                        @endif
                             </div>
                     <div class="reviewhaiphong_category_post-content">
                         <h3 class="reviewhaiphong_category_post-title">
@@ -744,21 +756,21 @@
                 @if($posts->onFirstPage())
                 <span class="reviewhaiphong_category_page-btn" style="opacity: 0.5; cursor: not-allowed;"><i class="fa fa-chevron-left"></i></span>
                 @else
-                <a href="{{ $posts->previousPageUrl() }}" class="reviewhaiphong_category_page-btn"><i class="fa fa-chevron-left"></i></a>
+                <a href="{{ $posts->appends(request()->except('page'))->previousPageUrl() }}" class="reviewhaiphong_category_page-btn"><i class="fa fa-chevron-left"></i></a>
                         @endif
 
                 @foreach(range(1, $posts->lastPage()) as $page)
                     @if($page == $posts->currentPage())
                     <span class="reviewhaiphong_category_page-btn reviewhaiphong_category_active">{{ $page }}</span>
                     @elseif($page == 1 || $page == $posts->lastPage() || ($page >= $posts->currentPage() - 2 && $page <= $posts->currentPage() + 2))
-                    <a href="{{ $posts->url($page) }}" class="reviewhaiphong_category_page-btn">{{ $page }}</a>
+                    <a href="{{ $posts->appends(request()->except('page'))->url($page) }}" class="reviewhaiphong_category_page-btn">{{ $page }}</a>
                     @elseif($page == $posts->currentPage() - 3 || $page == $posts->currentPage() + 3)
                     <span class="reviewhaiphong_category_page-btn" style="cursor: default;">...</span>
                         @endif
                 @endforeach
 
                 @if($posts->hasMorePages())
-                <a href="{{ $posts->nextPageUrl() }}" class="reviewhaiphong_category_page-btn"><i class="fa fa-chevron-right"></i></a>
+                <a href="{{ $posts->appends(request()->except('page'))->nextPageUrl() }}" class="reviewhaiphong_category_page-btn"><i class="fa fa-chevron-right"></i></a>
                 @else
                 <span class="reviewhaiphong_category_page-btn" style="opacity: 0.5; cursor: not-allowed;"><i class="fa fa-chevron-right"></i></span>
                 @endif

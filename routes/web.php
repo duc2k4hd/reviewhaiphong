@@ -136,6 +136,7 @@ Route::prefix('/admin')->name('admin.')->group(function() {
     Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/vinpearl-scraper')->name('vinpearl-scraper.')->group((function() {
         Route::get('/', [VinpearlScraperController::class, 'index'])->name('index');
         Route::post('/scrape', [VinpearlScraperController::class, 'scrape'])->name('scrape');
+        Route::post('/clear-processed-urls', [VinpearlScraperController::class, 'clearProcessedUrls'])->name('clear-processed-urls');
     }));
 
     // Vinpearl Link Extractor routes
@@ -331,4 +332,5 @@ Route::get('/sitemap-posts-{number}.xml', function ($number) {
     return response('Sitemap not found', 404);
 })->where('number', '[0-9]+');
 
-
+// Fallback route - Trang 404 cho tất cả các URL không khớp
+Route::fallback(fn () => response()->view('clients.pages.errors.404', [], 404));

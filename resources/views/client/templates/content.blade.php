@@ -75,7 +75,7 @@
                         </div>
                         <div class="stat-item">
                             <i class="fas fa-comment"></i>
-                            <span>{{ $post->comments ? $post->comments->count() : 0 }} bình luận</span>
+                            <span>{{ isset($post->comments) ? count($post->comments) : 0 }} bình luận</span>
                         </div>
                         <div class="stat-item">
                             <i class="fas fa-share"></i>
@@ -147,7 +147,7 @@
                     <div class="comments-section">
                         <div class="comments-title">
                             <i class="fas fa-comments"></i>
-                            <span>Bình luận ({{ $post->comments ? $post->comments->count() : 0 }})</span>
+                            <span>Bình luận ({{ isset($post->comments) ? count($post->comments) : 0 }})</span>
                         </div>
                         @if(session('success'))
                             <div class="alert alert-success" style="margin-top:10px;padding:10px 12px;border-radius:6px;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;">
@@ -164,7 +164,7 @@
                             </div>
                         @endif
 
-                        @if(isset($post->comments) && $post->comments->count() > 0)
+                        @if(isset($post->comments) && count($post->comments) > 0)
                             <div id="comments-list" class="comments-list">
                                 @foreach($post->comments as $comment)
                                     <div id="comment-{{ $comment->id }}" class="comment-item" style="display:block;">
@@ -330,6 +330,5 @@
                     @endif
                 </div>
             </aside>
-        </div>
     </div>
 </div>

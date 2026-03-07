@@ -194,11 +194,19 @@ class MiaScraperController extends Controller
                 throw new \Exception('Không tìm thấy tiêu đề trên trang này: ' . $url);
             }
 
-            $seoTitle = $this->rewriteWithGemini($originalTitle, 'title');
+            // 2. Cào meta description gốc
+            $metaDescNodes = $xpath->query('//meta[@name="description"]/@content');
+            $originalDesc = $metaDescNodes->length > 0 ? trim($metaDescNodes->item(0)->value) : '';
             
-            // Thay thế MIA.vn hoặc mia.vn thành Review Hải Phòng trong title
+            // 3. Viết lại tiêu đề và mô tả SEO bằng AI với prompt mới (đọc cả 2 đoạn)
+            $seoTitle = $this->rewriteTitleWithGemini($originalTitle, $originalDesc);
+            $seoDesc = $this->rewriteDescriptionWithGemini($originalTitle, $originalDesc);
+            
+            // Thay thế MIA.vn hoặc mia.vn thành Review Hải Phòng
             $seoTitle = preg_replace('/\bMIA\.vn\b/i', 'Review Hải Phòng', $seoTitle);
             $seoTitle = preg_replace('/\bmia\.vn\b/i', 'Review Hải Phòng', $seoTitle);
+            $seoDesc = preg_replace('/\bMIA\.vn\b/i', 'Review Hải Phòng', $seoDesc);
+            $seoDesc = preg_replace('/\bmia\.vn\b/i', 'Review Hải Phòng', $seoDesc);
             
             $slug = Str::slug($seoTitle);
             
@@ -211,20 +219,7 @@ class MiaScraperController extends Controller
             $data['seo_title'] = $seoTitle;
             $data['slug'] = $slug;
             $data['title'] = $seoTitle; // Lưu title để dùng cho alt/title ảnh
-
-            // 2. Cào meta description và viết lại bằng AI
-            $metaDescNodes = $xpath->query('//meta[@name="description"]/@content');
-            $originalDesc = $metaDescNodes->length > 0 ? trim($metaDescNodes->item(0)->value) : '';
-            
-            if (!empty($originalDesc)) {
-                $seoDesc = $this->rewriteWithGemini($originalDesc, 'description');
-            } else {
-                $seoDesc = $this->rewriteWithGemini($originalTitle, 'description');
-            }
-
-            // Thay thế MIA.vn hoặc mia.vn thành Review Hải Phòng trong description
-            $seoDesc = preg_replace('/\bMIA\.vn\b/i', 'Review Hải Phòng', $seoDesc);
-            $seoDesc = preg_replace('/\bmia\.vn\b/i', 'Review Hải Phòng', $seoDesc);
+            $data['seo_desc'] = $seoDesc;
 
             $data['seo_desc'] = $seoDesc;
 
@@ -314,7 +309,10 @@ class MiaScraperController extends Controller
     /**
      * Viết lại text bằng Gemini AI
      */
-    private function rewriteWithGemini(string $text, string $type = 'title'): string
+    /**
+     * Viết lại tiêu đề SEO với prompt mới - đọc cả tiêu đề và mô tả gốc
+     */
+    private function rewriteTitleWithGemini(string $originalTitle, string $originalDesc = ''): string
     {
         // Thêm delay để tránh rate limit của Gemini API
         static $lastCallTime = 0;
@@ -324,6 +322,7 @@ class MiaScraperController extends Controller
             usleep(($minDelay - $timeSinceLastCall) * 1000000);
         }
         $lastCallTime = microtime(true);
+        
         try {
             $geminiApiKey = env('GEMINI_API_KEY');
             $geminiModel = env('GEMINI_MODEL', 'gemini-2.0-pro');
@@ -336,13 +335,16 @@ class MiaScraperController extends Controller
 
             if (empty($geminiApiKey)) {
                 Log::warning('GEMINI_API_KEY không được cấu hình');
-                return $text; // Trả về text gốc nếu không có API key
+                return $originalTitle; // Trả về text gốc nếu không có API key
             }
 
-            $maxLength = $type === 'title' ? 70 : 160;
-            $prompt = $type === 'title' 
-                ? "Viết lại tiêu đề sau thành tiêu đề SEO hay và tự nhiên dưới {$maxLength} ký tự, phù hợp với ngữ cảnh và từ khóa chính. Chỉ trả về tiêu đề, không giải thích: {$text}"
-                : "Viết lại mô tả sau thành mô tả SEO hay và tự nhiên dưới {$maxLength} ký tự, phù hợp với ngữ cảnh và từ khóa chính. Chỉ trả về mô tả, không giải thích: {$text}";
+            // Prompt mới theo yêu cầu
+            $prompt = "Đọc tiêu đề và mô tả tại: " . $originalTitle . " | " . $originalDesc . 
+                ". Hãy viết MỘT tiêu đề SEO duy nhất, dài tối đa 70 - 100 ký tự, văn phong tự nhiên, hấp dẫn, dễ click, chuẩn SEO.
+BẮT BUỘC: không được chứa năm, tháng, ngày hoặc mốc thời gian (ví dụ: 2024, 2025, tháng 1, năm nay, hiện nay).
+KHÔNG được thêm bất kỳ từ trang trí, nhãn, ký hiệu, hoặc chú thích nào như: [SEO], (SEO), [Chuẩn SEO], dấu ngoặc, emoji.
+KHÔNG dùng năm, tháng, ngày, mốc thời gian.
+Chỉ trả về tiêu đề, không giải thích, không ký tự thừa, không xuống dòng.";
 
             $payload = [
                 'contents' => [
@@ -363,25 +365,119 @@ class MiaScraperController extends Controller
                 $result = $response->json();
                 if (isset($result['candidates'][0]['content']['parts'][0]['text'])) {
                     $rewritten = trim($result['candidates'][0]['content']['parts'][0]['text']);
-                    // Loại bỏ dấu ngoặc kép nếu có
-                    $rewritten = trim($rewritten, '"\'');
-                    // Giới hạn độ dài
-                    if (mb_strlen($rewritten) > $maxLength) {
-                        $rewritten = mb_substr($rewritten, 0, $maxLength - 3) . '...';
+                    // Loại bỏ dấu ngoặc kép, ngoặc vuông, emoji nếu có
+                    $rewritten = trim($rewritten, '"\'[]()');
+                    // Loại bỏ các ký tự đặc biệt không mong muốn
+                    $rewritten = preg_replace('/\[SEO\]|\(SEO\)|\[Chuẩn SEO\]/i', '', $rewritten);
+                    $rewritten = trim($rewritten);
+                    // Giới hạn độ dài 70-100 ký tự
+                    if (mb_strlen($rewritten) > 100) {
+                        $rewritten = mb_substr($rewritten, 0, 100);
                     }
-                    return $rewritten;
+                    // Loại bỏ năm, tháng, ngày nếu còn sót
+                    $rewritten = preg_replace('/\b(20\d{2}|năm\s+\d{4}|tháng\s+\d{1,2}|ngày\s+\d{1,2})\b/i', '', $rewritten);
+                    $rewritten = trim($rewritten);
+                    return $rewritten ?: $originalTitle;
                 }
             }
 
-            Log::warning('Gemini API không trả về kết quả hợp lệ', [
+            Log::warning('Gemini API không trả về kết quả hợp lệ cho tiêu đề', [
                 'status' => $response->status(),
                 'response' => $response->body()
             ]);
-            return $text;
+            return $originalTitle;
 
         } catch (\Exception $e) {
-            Log::error('Gemini API Error: ' . $e->getMessage());
-            return $text; // Trả về text gốc nếu có lỗi
+            Log::error('Gemini API Error (Title): ' . $e->getMessage());
+            return $originalTitle; // Trả về text gốc nếu có lỗi
+        }
+    }
+
+    /**
+     * Viết lại mô tả SEO với prompt mới - đọc cả tiêu đề và mô tả gốc
+     */
+    private function rewriteDescriptionWithGemini(string $originalTitle, string $originalDesc = ''): string
+    {
+        // Thêm delay để tránh rate limit của Gemini API
+        static $lastCallTime = 0;
+        $minDelay = 1; // Delay tối thiểu 1 giây giữa các API call
+        $timeSinceLastCall = microtime(true) - $lastCallTime;
+        if ($timeSinceLastCall < $minDelay) {
+            usleep(($minDelay - $timeSinceLastCall) * 1000000);
+        }
+        $lastCallTime = microtime(true);
+        
+        try {
+            $geminiApiKey = env('GEMINI_API_KEY');
+            $geminiModel = env('GEMINI_MODEL', 'gemini-2.0-pro');
+            $geminiUrl = env('GEMINI_API_URL');
+            
+            // Nếu không có URL, tạo từ model
+            if (empty($geminiUrl)) {
+                $geminiUrl = 'https://generativelanguage.googleapis.com/v1/models/' . $geminiModel . ':generateContent';
+            }
+
+            if (empty($geminiApiKey)) {
+                Log::warning('GEMINI_API_KEY không được cấu hình');
+                return $originalDesc ?: $originalTitle; // Trả về text gốc nếu không có API key
+            }
+
+            // Prompt mới theo yêu cầu
+            $prompt = "Đây là website Review Hải Phòng. 
+Dựa trên tiêu đề và mô tả: " . $originalTitle . " | " . $originalDesc . 
+                ". Hãy viết MỘT tiêu đề bài review duy nhất, độ dài từ 180 đến 200 ký tự.
+Văn phong tự nhiên, gần gũi, đúng kiểu bài review địa điểm tại Hải Phòng, tập trung trải nghiệm thực tế, tạo cảm giác muốn đọc.
+YÊU CẦU BẮT BUỘC:
+- Không dùng năm, tháng, ngày, mốc thời gian
+- Không nhãn quảng cáo, không từ như SEO, chuẩn SEO, review chi tiết
+- Không dấu ngoặc, không emoji, không ký hiệu trang trí
+- Không giải thích, không xuống dòng
+Chỉ trả về đúng 1 tiêu đề thuần văn bản.";
+
+            $payload = [
+                'contents' => [
+                    [
+                        'parts' => [
+                            ['text' => $prompt]
+                        ]
+                    ]
+                ]
+            ];
+
+            $response = Http::timeout(60)
+                ->retry(2, 2000) // Retry 2 lần, delay 2 giây
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->post($geminiUrl . '?key=' . $geminiApiKey, $payload);
+
+            if ($response->successful()) {
+                $result = $response->json();
+                if (isset($result['candidates'][0]['content']['parts'][0]['text'])) {
+                    $rewritten = trim($result['candidates'][0]['content']['parts'][0]['text']);
+                    // Loại bỏ dấu ngoặc kép, ngoặc vuông, emoji nếu có
+                    $rewritten = trim($rewritten, '"\'[]()');
+                    // Loại bỏ các từ không mong muốn
+                    $rewritten = preg_replace('/\b(SEO|chuẩn SEO|review chi tiết)\b/i', '', $rewritten);
+                    $rewritten = trim($rewritten);
+                    // Giới hạn độ dài 180-200 ký tự
+                    if (mb_strlen($rewritten) > 200) {
+                        $rewritten = mb_substr($rewritten, 0, 200);
+                    }
+                    // Loại bỏ năm, tháng, ngày nếu còn sót
+                    $rewritten = preg_replace('/\b(20\d{2}|năm\s+\d{4}|tháng\s+\d{1,2}|ngày\s+\d{1,2})\b/i', '', $rewritten);
+                    $rewritten = trim($rewritten);
+                    return $rewritten ?: ($originalDesc ?: $originalTitle);
+                }
+            }
+
+            Log::warning('Gemini API không trả về kết quả hợp lệ cho mô tả', [
+                'status' => $response->status(),
+                'response' => $response->body()
+            ]);
+            return $originalDesc ?: $originalTitle;
+
+        } catch (\Exception $e) {
+            Log::error('Gemini API Error (Description): ' . $e->getMessage());
+            return $originalDesc ?: $originalTitle; // Trả về text gốc nếu có lỗi
         }
     }
 

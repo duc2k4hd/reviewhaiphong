@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\Setting;
+use App\Models\ScrapedUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -24,7 +25,20 @@ class VinpearlScraperController extends Controller
     public function index()
     {
         $account = $this->loadAccount();
-        return view('admin.vinpearl-scraper.index', compact('account'));
+        
+        // Lấy số lượng URL đã cào từ database
+        $processedUrlsCount = ScrapedUrl::countBySource('vinpearl');
+        
+        return view('admin.vinpearl-scraper.index', compact('account', 'processedUrlsCount'));
+    }
+    
+    /**
+     * Xóa danh sách URL đã cào
+     */
+    public function clearProcessedUrls(Request $request)
+    {
+        $deletedCount = ScrapedUrl::clearBySource('vinpearl');
+        return redirect()->route('admin.vinpearl-scraper.index')->with('success', "Đã xóa {$deletedCount} URL đã cào từ database.");
     }
 
     /**
@@ -32,15 +46,75 @@ class VinpearlScraperController extends Controller
      */
     public function scrape(Request $request)
     {
+        // Log để debug
+        Log::info('Vinpearl Scraper: scrape method called', [
+            'is_ajax' => $request->ajax(),
+            'has_batch_index' => $request->has('batch_index'),
+            'method' => $request->method(),
+            'has_urls' => $request->has('urls'),
+            'has_category' => $request->has('category')
+        ]);
+        
         // Nếu là AJAX request để xử lý batch
         if ($request->ajax() && $request->has('batch_index')) {
-            return $this->processBatch($request);
+            // Clean output buffer để tránh HTML lẫn vào JSON
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            
+            try {
+                return $this->processBatch($request);
+            } catch (\Throwable $e) {
+                Log::error('Vinpearl Scraper: Unhandled exception in scrape method', [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                
+                // Clean output buffer
+                while (ob_get_level() > 0) {
+                    ob_end_clean();
+                }
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Lỗi không mong đợi: ' . $e->getMessage()
+                ], 500)->header('Content-Type', 'application/json; charset=utf-8');
+            }
         }
 
-        $request->validate([
-            'urls' => 'required|string',
-            'category' => 'required|string|in:du-lich,am-thuc,check-in,dich-vu,review-tong-hop'
+        Log::info('Vinpearl Scraper: Starting validation', [
+            'urls_length' => strlen($request->input('urls', '')),
+            'category' => $request->input('category', ''),
+            'has_urls' => $request->has('urls'),
+            'has_category' => $request->has('category')
         ]);
+        
+        try {
+            // Kiểm tra URLs không được trống trước khi validate
+            $urlsText = trim($request->input('urls', ''));
+            if (empty($urlsText)) {
+                return back()->withErrors(['urls' => 'Vui lòng nhập ít nhất một URL hợp lệ.'])->withInput();
+            }
+            
+            $request->validate([
+                'urls' => 'required|string|min:10',
+                'category' => 'required|string|in:du-lich,am-thuc,check-in,dich-vu,review-tong-hop'
+            ], [
+                'urls.required' => 'Vui lòng nhập ít nhất một URL hợp lệ.',
+                'urls.min' => 'URL phải có ít nhất 10 ký tự.',
+                'category.required' => 'Vui lòng chọn một danh mục.',
+                'category.in' => 'Danh mục không hợp lệ.'
+            ]);
+            
+            Log::info('Vinpearl Scraper: Validation passed');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Vinpearl Scraper: Validation failed', [
+                'errors' => $e->errors()
+            ]);
+            return back()->withErrors($e->errors())->withInput();
+        }
 
         try {
             // Lấy danh sách URLs từ textarea (mỗi dòng 1 URL)
@@ -68,16 +142,63 @@ class VinpearlScraperController extends Controller
                 return back()->withErrors(['urls' => 'Không có URL hợp lệ nào. Vui lòng kiểm tra lại định dạng URL (phải là link từ vinpearl.com).']);
             }
 
-            // Lưu URLs vào session để xử lý batch
-            $request->session()->put('scraper_urls', $validUrls);
+            // Xóa toàn bộ session cũ để tránh xung đột
+            $request->session()->forget([
+                'scraper_processing_lock',
+                'scraper_urls',
+                'scraper_category',
+                'scraper_total',
+                'scraper_success',
+                'scraper_errors'
+            ]);
+            
+            // Lọc bỏ các URL đã được cào trước đó (check từ database)
+            $newUrls = [];
+            $skippedUrls = [];
+            foreach ($validUrls as $url) {
+                $url = trim($url);
+                if (empty($url)) continue;
+                
+                if (ScrapedUrl::isUrlScraped($url, 'vinpearl')) {
+                    $normalizedUrl = ScrapedUrl::normalizeUrl($url);
+                    $skippedUrls[] = $normalizedUrl;
+                    Log::info("Vinpearl Scraper: Bỏ qua URL đã cào trước đó: {$normalizedUrl}");
+                } else {
+                    // Lưu URL gốc (không normalize) để giữ nguyên format
+                    $newUrls[] = $url;
+                }
+            }
+            
+            if (empty($newUrls)) {
+                $message = 'Tất cả các URL đã được cào trước đó. Không có URL mới để xử lý.';
+                if (count($skippedUrls) > 0) {
+                    $message .= ' Đã bỏ qua ' . count($skippedUrls) . ' URL trùng lặp.';
+                }
+                $message .= ' Vui lòng nhập URL mới hoặc xóa danh sách URL đã cào để cào lại.';
+                return back()->withErrors(['urls' => $message])->withInput();
+            }
+            
+            if (count($skippedUrls) > 0) {
+                Log::info("Vinpearl Scraper: Đã bỏ qua " . count($skippedUrls) . " URL đã cào trước đó");
+                // Thêm thông báo thành công về số URL đã bỏ qua
+                session()->flash('info', 'Đã bỏ qua ' . count($skippedUrls) . ' URL đã cào trước đó. Sẽ xử lý ' . count($newUrls) . ' URL mới.');
+            }
+            
+            // Lưu URLs mới vào session để xử lý batch
+            $request->session()->put('scraper_urls', $newUrls);
             $request->session()->put('scraper_category', $request->input('category', 'du-lich'));
-            $request->session()->put('scraper_total', count($validUrls));
+            $request->session()->put('scraper_total', count($newUrls));
             $request->session()->put('scraper_success', 0);
             $request->session()->put('scraper_errors', []);
 
+            Log::info('Vinpearl Scraper: Returning processing view', [
+                'totalUrls' => count($newUrls),
+                'category' => $request->input('category', 'du-lich')
+            ]);
+
             // Trả về view với JavaScript để xử lý batch
             return view('admin.vinpearl-scraper.processing', [
-                'totalUrls' => count($validUrls),
+                'totalUrls' => count($newUrls),
                 'category' => $request->input('category', 'du-lich')
             ]);
 
@@ -96,19 +217,54 @@ class VinpearlScraperController extends Controller
      */
     private function processBatch(Request $request)
     {
+        // Clean output buffer ngay từ đầu để tránh HTML lẫn vào JSON
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        
+        // Đảm bảo response luôn là JSON ngay từ đầu
         try {
             $batchIndex = (int) $request->input('batch_index', 0);
             $batchSize = 5; // Xử lý 5 URL mỗi batch
+            
+            // Kiểm tra lock để tránh xử lý song song
+            $lockKey = 'scraper_processing_lock';
+            $currentLock = $request->session()->get($lockKey);
+            $currentTime = time();
+            
+            // Nếu có lock và chưa hết hạn (30 giây), kiểm tra xem có phải batch đang được xử lý không
+            if ($currentLock && isset($currentLock['batch_index']) && isset($currentLock['expires_at'])) {
+                if ($currentLock['expires_at'] > $currentTime) {
+                    // Có batch khác đang được xử lý
+                    if ($currentLock['batch_index'] != $batchIndex) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Đang xử lý batch khác, vui lòng đợi...',
+                            'retry' => true
+                        ], 200);
+                    }
+                } else {
+                    // Lock đã hết hạn, xóa lock
+                    $request->session()->forget($lockKey);
+                }
+            }
+            
+            // Tạo lock mới cho batch này (30 giây)
+            $request->session()->put($lockKey, [
+                'batch_index' => $batchIndex,
+                'expires_at' => $currentTime + 30
+            ]);
             
             $validUrls = $request->session()->get('scraper_urls', []);
             $categorySlug = $request->session()->get('scraper_category', 'du-lich');
             $totalUrls = count($validUrls);
             
             if (empty($validUrls)) {
+                $request->session()->forget($lockKey);
                 return response()->json([
                     'success' => false,
                     'message' => 'Không có URL nào để xử lý'
-                ]);
+                ], 200);
             }
 
             // Tính toán batch hiện tại
@@ -121,11 +277,15 @@ class VinpearlScraperController extends Controller
                 $successCount = $request->session()->get('scraper_success', 0);
                 $errors = $request->session()->get('scraper_errors', []);
                 
-                // Clear session
-                $request->session()->forget(['scraper_urls', 'scraper_category', 'scraper_total', 'scraper_success', 'scraper_errors']);
+                // Clear session và lock (danh sách URL đã cào được lưu trong database, không cần giữ trong session)
+                $request->session()->forget(['scraper_urls', 'scraper_category', 'scraper_total', 'scraper_success', 'scraper_errors', $lockKey]);
                 
                 // Clear cache
-                $this->clearCache();
+                try {
+                    $this->clearCache();
+                } catch (\Exception $e) {
+                    Log::warning('Error clearing cache: ' . $e->getMessage());
+                }
                 
                 return response()->json([
                     'success' => true,
@@ -134,10 +294,20 @@ class VinpearlScraperController extends Controller
                     'successCount' => $successCount,
                     'errorCount' => count($errors),
                     'errors' => $errors
-                ]);
+                ], 200);
             }
 
-            $account = $this->loadAccount();
+            $account = null;
+            try {
+                $account = $this->loadAccount();
+            } catch (\Exception $e) {
+                Log::error('Error loading account: ' . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Lỗi khi tải tài khoản: ' . $e->getMessage()
+                ], 500);
+            }
+            
             $successCount = $request->session()->get('scraper_success', 0);
             $errors = $request->session()->get('scraper_errors', []);
             
@@ -148,16 +318,41 @@ class VinpearlScraperController extends Controller
             // Xử lý từng URL trong batch
             foreach ($batchUrls as $index => $url) {
                 try {
-                    Log::info("Vinpearl Scraper: Đang xử lý URL " . ($startIndex + $index + 1) . "/{$totalUrls}: {$url}");
+                    $originalUrl = trim($url);
                     
-                    $result = $this->scrapeSingleUrl($url, $account, $categorySlug);
-                    if ($result) {
-                        $successCount++;
-                    } elseif ($result === null) {
-                        // Bài viết đã tồn tại (slug trùng), không tính là lỗi
-                        Log::info("Vinpearl Scraper: Bỏ qua URL vì slug đã tồn tại: {$url}");
-                    } else {
-                        $errors[] = $url . ': Không thể cào dữ liệu';
+                    // Kiểm tra xem URL đã được cào chưa (check từ database)
+                    if (ScrapedUrl::isUrlScraped($originalUrl, 'vinpearl')) {
+                        Log::info("Vinpearl Scraper: Bỏ qua URL đã cào trước đó: {$originalUrl}");
+                        continue; // Bỏ qua URL này
+                    }
+                    
+                    Log::info("Vinpearl Scraper: Đang xử lý URL " . ($startIndex + $index + 1) . "/{$totalUrls}: {$originalUrl}");
+                    
+                    try {
+                        $result = $this->scrapeSingleUrl($originalUrl, $account, $categorySlug);
+                        if ($result && $result instanceof Post) {
+                            // Cào thành công, lưu vào database với post_id
+                            $successCount++;
+                            ScrapedUrl::markAsScraped($originalUrl, 'vinpearl', $result->id);
+                            Log::info("Vinpearl Scraper: Đã cào thành công và lưu vào database - URL: {$originalUrl}, Post ID: {$result->id}");
+                        } elseif ($result === null) {
+                            // Bài viết đã tồn tại (slug trùng), không tính là lỗi
+                            Log::info("Vinpearl Scraper: Bỏ qua URL vì slug đã tồn tại: {$originalUrl}");
+                            // Vẫn lưu URL vào database để tránh cào lại (không có post_id vì không tạo mới)
+                            ScrapedUrl::markAsScraped($originalUrl, 'vinpearl', null);
+                        } elseif ($result === false) {
+                            // Lỗi khi xử lý URL
+                            $errors[] = $originalUrl . ': Lỗi khi xử lý URL';
+                            // Không lưu URL vào database nếu có lỗi (để có thể thử lại)
+                        } else {
+                            $errors[] = $originalUrl . ': Không thể cào dữ liệu';
+                            // Không lưu URL vào database nếu có lỗi (để có thể thử lại)
+                        }
+                    } catch (\Throwable $e) {
+                        $errorMsg = $e->getMessage();
+                        $errors[] = $originalUrl . ': ' . $errorMsg;
+                        Log::error('Vinpearl Scraper Error for URL ' . $originalUrl . ': ' . $errorMsg . ' | Trace: ' . $e->getTraceAsString());
+                        // Không lưu URL vào database nếu có lỗi (để có thể thử lại)
                     }
                     
                     // Delay nhỏ giữa các URL
@@ -165,16 +360,32 @@ class VinpearlScraperController extends Controller
                         usleep(300000); // 0.3 giây
                     }
                     
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $errorMsg = $e->getMessage();
                     $errors[] = $url . ': ' . $errorMsg;
-                    Log::error('Vinpearl Scraper Error for URL ' . $url . ': ' . $errorMsg);
+                    Log::error('Vinpearl Scraper Error for URL ' . $url . ': ' . $errorMsg . ' | Trace: ' . $e->getTraceAsString());
                 }
             }
             
             // Cập nhật session
-            $request->session()->put('scraper_success', $successCount);
-            $request->session()->put('scraper_errors', $errors);
+            try {
+                $request->session()->put('scraper_success', $successCount);
+                $request->session()->put('scraper_errors', $errors);
+            } catch (\Exception $e) {
+                Log::warning('Error updating session: ' . $e->getMessage());
+            }
+            
+            // Xóa lock sau khi xử lý xong batch
+            try {
+                $request->session()->forget($lockKey);
+            } catch (\Exception $e) {
+                Log::warning('Error removing lock: ' . $e->getMessage());
+            }
+            
+            // Clean output buffer trước khi trả về
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
             
             return response()->json([
                 'success' => true,
@@ -185,14 +396,37 @@ class VinpearlScraperController extends Controller
                 'successCount' => $successCount,
                 'errorCount' => count($errors),
                 'message' => "Đã xử lý {$endIndex}/{$totalUrls} URL..."
+            ], 200)->header('Content-Type', 'application/json; charset=utf-8');
+            
+        } catch (\Throwable $e) {
+            // Xóa lock khi có lỗi
+            try {
+                $request->session()->forget('scraper_processing_lock');
+            } catch (\Exception $ex) {
+                // Ignore
+            }
+            
+            Log::error('Vinpearl Scraper Batch Error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
             ]);
             
-        } catch (\Exception $e) {
-            Log::error('Vinpearl Scraper Batch Error: ' . $e->getMessage());
+            // Clean output buffer trước khi trả về
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            
+            // Đảm bảo luôn trả về JSON, kể cả khi có lỗi
             return response()->json([
                 'success' => false,
-                'message' => 'Lỗi khi xử lý batch: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Lỗi khi xử lý batch: ' . $e->getMessage(),
+                'error' => config('app.debug') ? [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ] : null
+            ], 500)->header('Content-Type', 'application/json; charset=utf-8');
         }
     }
 
@@ -354,10 +588,21 @@ class VinpearlScraperController extends Controller
             // Loại bỏ các text liên quan đến vinpearl.com trước khi gửi AI
             $originalTitle = $this->removeVinpearlReferences($originalTitle);
             
-            $seoTitle = $this->rewriteWithGemini($originalTitle, 'title');
+            // 2. Cào meta description gốc
+            $metaDescNodes = $xpath->query('//meta[@name="description"]/@content');
+            $originalDesc = $metaDescNodes->length > 0 ? trim($metaDescNodes->item(0)->value) : '';
             
-            // Thay thế vinpearl.com thành Review Hải Phòng trong title
+            if (!empty($originalDesc)) {
+                $originalDesc = $this->removeVinpearlReferences($originalDesc);
+            }
+            
+            // 3. Viết lại tiêu đề và mô tả SEO bằng AI với prompt mới (đọc cả 2 đoạn)
+            $seoTitle = $this->rewriteTitleWithGemini($originalTitle, $originalDesc);
+            $seoDesc = $this->rewriteDescriptionWithGemini($originalTitle, $originalDesc);
+            
+            // Thay thế vinpearl.com thành Review Hải Phòng
             $seoTitle = $this->replaceVinpearlWithReviewHaiPhong($seoTitle);
+            $seoDesc = $this->replaceVinpearlWithReviewHaiPhong($seoDesc);
             
             $slug = Str::slug($seoTitle);
             
@@ -370,20 +615,7 @@ class VinpearlScraperController extends Controller
             $data['seo_title'] = $seoTitle;
             $data['slug'] = $slug;
             $data['title'] = $seoTitle; // Lưu title để dùng cho alt/title ảnh
-
-            // 2. Cào meta description và viết lại bằng AI
-            $metaDescNodes = $xpath->query('//meta[@name="description"]/@content');
-            $originalDesc = $metaDescNodes->length > 0 ? trim($metaDescNodes->item(0)->value) : '';
-            
-            if (!empty($originalDesc)) {
-                $originalDesc = $this->removeVinpearlReferences($originalDesc);
-                $seoDesc = $this->rewriteWithGemini($originalDesc, 'description');
-            } else {
-                $seoDesc = $this->rewriteWithGemini($originalTitle, 'description');
-            }
-
-            // Thay thế vinpearl.com thành Review Hải Phòng trong description
-            $seoDesc = $this->replaceVinpearlWithReviewHaiPhong($seoDesc);
+            $data['seo_desc'] = $seoDesc;
 
             $data['seo_desc'] = $seoDesc;
 
@@ -423,6 +655,15 @@ class VinpearlScraperController extends Controller
                         }
                     }
                     
+                    // Chuyển đổi URL từ storage.googleapis.com sang statics.vinpearl.com
+                    // Ví dụ: https://storage.googleapis.com/vinpearl-data-01/le-hoi-hai-phong-1.jpg
+                    // → https://statics.vinpearl.com/le-hoi-hai-phong-1.jpg
+                    if (preg_match('/https?:\/\/storage\.googleapis\.com\/vinpearl-data-01\/(.+)$/i', $imageUrl, $matches)) {
+                        $imageName = $matches[1];
+                        $imageUrl = 'https://statics.vinpearl.com/' . $imageName;
+                        Log::info('Vinpearl Scraper: Chuyển đổi og:image từ Google Cloud Storage sang statics.vinpearl.com: ' . $imageUrl);
+                    }
+                    
                     Log::info('Vinpearl Scraper: Tìm thấy og:image: ' . $imageUrl);
                     $cookieFile = storage_path('app/temp/vinpearl_cookies.txt');
                     $seoImage = $this->downloadImage($imageUrl, $slug, $cookieFile);
@@ -459,6 +700,22 @@ class VinpearlScraperController extends Controller
                         $imageUrl = $firstImg->getAttribute('data-src');
                     }
                     if (!empty($imageUrl)) {
+                        // Xử lý URL relative
+                        if (strpos($imageUrl, 'http') !== 0) {
+                            if (strpos($imageUrl, '//') === 0) {
+                                $imageUrl = 'https:' . $imageUrl;
+                            } else {
+                                $imageUrl = 'https://vinpearl.com/' . ltrim($imageUrl, '/');
+                            }
+                        }
+                        
+                        // Chuyển đổi URL từ storage.googleapis.com sang statics.vinpearl.com
+                        if (preg_match('/https?:\/\/storage\.googleapis\.com\/vinpearl-data-01\/(.+)$/i', $imageUrl, $matches)) {
+                            $imageName = $matches[1];
+                            $imageUrl = 'https://statics.vinpearl.com/' . $imageName;
+                            Log::info('Vinpearl Scraper: Chuyển đổi ảnh đầu tiên từ Google Cloud Storage sang statics.vinpearl.com: ' . $imageUrl);
+                        }
+                        
                         Log::info('Vinpearl Scraper: Lấy ảnh đầu tiên trong content: ' . $imageUrl);
                         $cookieFile = storage_path('app/temp/vinpearl_cookies.txt');
                         $seoImage = $this->downloadImage($imageUrl, $slug, $cookieFile);
@@ -472,6 +729,22 @@ class VinpearlScraperController extends Controller
                 if ($featuredImgNodes->length > 0) {
                     $imageUrl = $featuredImgNodes->item(0)->getAttribute('src');
                     if (!empty($imageUrl)) {
+                        // Xử lý URL relative
+                        if (strpos($imageUrl, 'http') !== 0) {
+                            if (strpos($imageUrl, '//') === 0) {
+                                $imageUrl = 'https:' . $imageUrl;
+                            } else {
+                                $imageUrl = 'https://vinpearl.com/' . ltrim($imageUrl, '/');
+                            }
+                        }
+                        
+                        // Chuyển đổi URL từ storage.googleapis.com sang statics.vinpearl.com
+                        if (preg_match('/https?:\/\/storage\.googleapis\.com\/vinpearl-data-01\/(.+)$/i', $imageUrl, $matches)) {
+                            $imageName = $matches[1];
+                            $imageUrl = 'https://statics.vinpearl.com/' . $imageName;
+                            Log::info('Vinpearl Scraper: Chuyển đổi ảnh featured từ Google Cloud Storage sang statics.vinpearl.com: ' . $imageUrl);
+                        }
+                        
                         $cookieFile = storage_path('app/temp/vinpearl_cookies.txt');
                         $seoImage = $this->downloadImage($imageUrl, $slug, $cookieFile);
                     }
@@ -497,6 +770,19 @@ class VinpearlScraperController extends Controller
             // Loại bỏ ký tự không hợp lệ
             $seoKeywords = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $seoKeywords);
             
+            // Log để debug: kiểm tra ảnh trong content trước khi lưu vào database
+            $imgCountBeforeSave = preg_match_all('/<img[^>]*>/i', $content);
+            Log::info('Vinpearl Scraper: Số ảnh trong content TRƯỚC KHI LƯU vào database: ' . $imgCountBeforeSave);
+            if ($imgCountBeforeSave > 0) {
+                preg_match_all('/<img[^>]*src=["\']([^"\']+)["\'][^>]*>/i', $content, $imgMatchesBeforeSave);
+                if (!empty($imgMatchesBeforeSave[1])) {
+                    $imagesBeforeSave = array_slice($imgMatchesBeforeSave[1], 0, 5);
+                    Log::info('Vinpearl Scraper: Ảnh trong content TRƯỚC KHI LƯU: ' . implode(', ', $imagesBeforeSave));
+                }
+            } else {
+                Log::warning('Vinpearl Scraper: KHÔNG CÓ ẢNH trong content trước khi lưu vào database!');
+            }
+            
             // Tạo bài viết
             $post = Post::create([
                 'name' => $seoTitle,
@@ -514,15 +800,34 @@ class VinpearlScraperController extends Controller
                 'last_updated_by' => $account->id,
                 'type' => '', // Field type không có default value
             ]);
+            
+            // Log để debug: kiểm tra ảnh trong content SAU KHI LƯU vào database
+            $savedContent = $post->content;
+            $imgCountAfterSave = preg_match_all('/<img[^>]*>/i', $savedContent);
+            Log::info('Vinpearl Scraper: Số ảnh trong content SAU KHI LƯU vào database: ' . $imgCountAfterSave);
+            if ($imgCountAfterSave > 0) {
+                preg_match_all('/<img[^>]*src=["\']([^"\']+)["\'][^>]*>/i', $savedContent, $imgMatchesAfterSave);
+                if (!empty($imgMatchesAfterSave[1])) {
+                    $imagesAfterSave = array_slice($imgMatchesAfterSave[1], 0, 5);
+                    Log::info('Vinpearl Scraper: Ảnh trong content SAU KHI LƯU: ' . implode(', ', $imagesAfterSave));
+                }
+            } else {
+                Log::warning('Vinpearl Scraper: KHÔNG CÓ ẢNH trong content sau khi lưu vào database! Content length: ' . strlen($savedContent));
+                // Log một phần content để debug
+                Log::info('Vinpearl Scraper: Một phần content (500 ký tự đầu): ' . substr($savedContent, 0, 500));
+            }
 
             return $post;
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Vinpearl Scraper Single URL Error: ' . $e->getMessage(), [
                 'url' => $url,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
             ]);
-            throw $e;
+            // Không re-throw, trả về false để processBatch có thể xử lý
+            return false;
         }
     }
 
@@ -561,16 +866,21 @@ class VinpearlScraperController extends Controller
     /**
      * Viết lại text bằng Gemini AI
      */
-    private function rewriteWithGemini(string $text, string $type = 'title'): string
+    /**
+     * Viết lại tiêu đề SEO với prompt mới - đọc cả tiêu đề và mô tả gốc
+     */
+    private function rewriteTitleWithGemini(string $originalTitle, string $originalDesc = ''): string
     {
         // Thêm delay để tránh rate limit của Gemini API
+        // Dùng static variable chung cho cả 2 method để tránh gọi quá nhanh
         static $lastCallTime = 0;
-        $minDelay = 1; // Delay tối thiểu 1 giây giữa các API call
+        $minDelay = 1.5; // Delay tối thiểu 1.5 giây giữa các API call (cho cả title và description)
         $timeSinceLastCall = microtime(true) - $lastCallTime;
         if ($timeSinceLastCall < $minDelay) {
             usleep(($minDelay - $timeSinceLastCall) * 1000000);
         }
         $lastCallTime = microtime(true);
+        
         try {
             $geminiApiKey = env('GEMINI_API_KEY');
             $geminiModel = env('GEMINI_MODEL', 'gemini-2.0-pro');
@@ -583,13 +893,16 @@ class VinpearlScraperController extends Controller
 
             if (empty($geminiApiKey)) {
                 Log::warning('GEMINI_API_KEY không được cấu hình');
-                return $text; // Trả về text gốc nếu không có API key
+                return $originalTitle; // Trả về text gốc nếu không có API key
             }
 
-            $maxLength = $type === 'title' ? 70 : 160;
-            $prompt = $type === 'title' 
-                ? "Viết lại tiêu đề sau thành tiêu đề SEO hay và tự nhiên dưới {$maxLength} ký tự, phù hợp với ngữ cảnh và từ khóa chính. Chỉ trả về tiêu đề, không giải thích: {$text}"
-                : "Viết lại mô tả sau thành mô tả SEO hay và tự nhiên dưới {$maxLength} ký tự, phù hợp với ngữ cảnh và từ khóa chính. Chỉ trả về mô tả, không giải thích: {$text}";
+            // Prompt mới theo yêu cầu
+            $prompt = "Đọc tiêu đề và mô tả tại: " . $originalTitle . " | " . $originalDesc . 
+                ". Hãy viết MỘT tiêu đề SEO duy nhất, dài tối đa 70 - 100 ký tự, văn phong tự nhiên, hấp dẫn, dễ click, chuẩn SEO.
+BẮT BUỘC: không được chứa năm, tháng, ngày hoặc mốc thời gian (ví dụ: 2024, 2025, tháng 1, năm nay, hiện nay).
+KHÔNG được thêm bất kỳ từ trang trí, nhãn, ký hiệu, hoặc chú thích nào như: [SEO], (SEO), [Chuẩn SEO], dấu ngoặc, emoji.
+KHÔNG dùng năm, tháng, ngày, mốc thời gian.
+Chỉ trả về tiêu đề, không giải thích, không ký tự thừa, không xuống dòng.";
 
             $payload = [
                 'contents' => [
@@ -601,8 +914,9 @@ class VinpearlScraperController extends Controller
                 ]
             ];
 
+            // Chỉ retry 1 lần (tổng 2 lần thử) - giảm từ 2 lần retry xuống 1 lần để giảm số request
             $response = Http::timeout(60)
-                ->retry(2, 2000) // Retry 2 lần, delay 2 giây
+                ->retry(1, 1000) // Retry 1 lần, delay 1 giây
                 ->withHeaders(['Content-Type' => 'application/json'])
                 ->post($geminiUrl . '?key=' . $geminiApiKey, $payload);
 
@@ -610,25 +924,124 @@ class VinpearlScraperController extends Controller
                 $result = $response->json();
                 if (isset($result['candidates'][0]['content']['parts'][0]['text'])) {
                     $rewritten = trim($result['candidates'][0]['content']['parts'][0]['text']);
-                    // Loại bỏ dấu ngoặc kép nếu có
-                    $rewritten = trim($rewritten, '"\'');
-                    // Giới hạn độ dài
-                    if (mb_strlen($rewritten) > $maxLength) {
-                        $rewritten = mb_substr($rewritten, 0, $maxLength - 3) . '...';
+                    // Loại bỏ dấu ngoặc kép, ngoặc vuông, emoji nếu có
+                    $rewritten = trim($rewritten, '"\'[]()');
+                    // Loại bỏ các ký tự đặc biệt không mong muốn
+                    $rewritten = preg_replace('/\[SEO\]|\(SEO\)|\[Chuẩn SEO\]/i', '', $rewritten);
+                    $rewritten = trim($rewritten);
+                    // Giới hạn độ dài 70-100 ký tự
+                    if (mb_strlen($rewritten) > 100) {
+                        $rewritten = mb_substr($rewritten, 0, 100);
                     }
-                    return $rewritten;
+                    // Loại bỏ năm, tháng, ngày nếu còn sót
+                    $rewritten = preg_replace('/\b(20\d{2}|năm\s+\d{4}|tháng\s+\d{1,2}|ngày\s+\d{1,2})\b/i', '', $rewritten);
+                    $rewritten = trim($rewritten);
+                    return $rewritten ?: $originalTitle;
                 }
             }
 
-            Log::warning('Gemini API không trả về kết quả hợp lệ', [
+            Log::warning('Gemini API không trả về kết quả hợp lệ cho tiêu đề', [
                 'status' => $response->status(),
                 'response' => $response->body()
             ]);
-            return $text;
+            return $originalTitle;
 
         } catch (\Exception $e) {
-            Log::error('Gemini API Error: ' . $e->getMessage());
-            return $text; // Trả về text gốc nếu có lỗi
+            Log::error('Gemini API Error (Title): ' . $e->getMessage());
+            return $originalTitle; // Trả về text gốc nếu có lỗi
+        }
+    }
+
+    /**
+     * Viết lại mô tả SEO với prompt mới - đọc cả tiêu đề và mô tả gốc
+     */
+    private function rewriteDescriptionWithGemini(string $originalTitle, string $originalDesc = ''): string
+    {
+        // Thêm delay để tránh rate limit của Gemini API
+        // Dùng static variable chung cho cả 2 method để tránh gọi quá nhanh
+        static $lastCallTime = 0;
+        $minDelay = 1.5; // Delay tối thiểu 1.5 giây giữa các API call (cho cả title và description)
+        $timeSinceLastCall = microtime(true) - $lastCallTime;
+        if ($timeSinceLastCall < $minDelay) {
+            usleep(($minDelay - $timeSinceLastCall) * 1000000);
+        }
+        $lastCallTime = microtime(true);
+        
+        try {
+            $geminiApiKey = env('GEMINI_API_KEY');
+            $geminiModel = env('GEMINI_MODEL', 'gemini-2.0-pro');
+            $geminiUrl = env('GEMINI_API_URL');
+            
+            // Nếu không có URL, tạo từ model
+            if (empty($geminiUrl)) {
+                $geminiUrl = 'https://generativelanguage.googleapis.com/v1/models/' . $geminiModel . ':generateContent';
+            }
+
+            if (empty($geminiApiKey)) {
+                Log::warning('GEMINI_API_KEY không được cấu hình');
+                return $originalDesc ?: $originalTitle; // Trả về text gốc nếu không có API key
+            }
+
+            // Prompt mới theo yêu cầu
+            $prompt = "Đây là website Review Hải Phòng. 
+Dựa trên tiêu đề và mô tả: " . $originalTitle . " | " . $originalDesc . 
+                ". Hãy viết MỘT tiêu đề bài review duy nhất, độ dài từ 180 đến 200 ký tự.
+Văn phong tự nhiên, gần gũi, đúng kiểu bài review địa điểm tại Hải Phòng, tập trung trải nghiệm thực tế, tạo cảm giác muốn đọc.
+YÊU CẦU BẮT BUỘC:
+- Không dùng năm, tháng, ngày, mốc thời gian
+- Không nhãn quảng cáo, không từ như SEO, chuẩn SEO, review chi tiết
+- Không dấu ngoặc, không emoji, không ký hiệu trang trí
+- Không giải thích, không xuống dòng
+Chỉ trả về đúng 1 tiêu đề thuần văn bản.";
+
+            $payload = [
+                'contents' => [
+                    [
+                        'parts' => [
+                            ['text' => $prompt]
+                        ]
+                    ]
+                ]
+            ];
+
+            // Chỉ retry 1 lần (tổng 2 lần thử) - giảm từ 2 lần retry xuống 1 lần để giảm số request
+            $response = Http::timeout(60)
+                ->retry(1, 1000) // Retry 1 lần, delay 1 giây
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->post($geminiUrl . '?key=' . $geminiApiKey, $payload);
+
+            if ($response->successful()) {
+                $result = $response->json();
+                if (isset($result['candidates'][0]['content']['parts'][0]['text'])) {
+                    $rewritten = trim($result['candidates'][0]['content']['parts'][0]['text']);
+                    // Loại bỏ dấu ngoặc kép, ngoặc vuông, emoji nếu có
+                    $rewritten = trim($rewritten, '"\'[]()');
+                    // Loại bỏ các từ không mong muốn
+                    $rewritten = preg_replace('/\b(SEO|chuẩn SEO|review chi tiết)\b/i', '', $rewritten);
+                    $rewritten = trim($rewritten);
+                    // Giới hạn độ dài 180-200 ký tự
+                    if (mb_strlen($rewritten) > 200) {
+                        $rewritten = mb_substr($rewritten, 0, 200);
+                    }
+                    if (mb_strlen($rewritten) < 180 && mb_strlen($rewritten) > 0) {
+                        // Nếu quá ngắn, giữ nguyên (có thể AI đã tối ưu)
+                    }
+                    // Loại bỏ năm, tháng, ngày nếu còn sót
+                    $rewritten = preg_replace('/\b(20\d{2}|năm\s+\d{4}|tháng\s+\d{1,2}|ngày\s+\d{1,2})\b/i', '', $rewritten);
+                    $rewritten = trim($rewritten);
+                    return $rewritten ?: ($originalDesc ?: $originalTitle);
+                }
+            }
+
+            Log::warning('Gemini API không trả về kết quả hợp lệ cho mô tả', [
+                'status' => $response->status(),
+                'response' => $response->body()
+            ]);
+            return $originalDesc ?: $originalTitle;
+
+        } catch (\Exception $e) {
+            Log::error('Gemini API Error (Description): ' . $e->getMessage());
+            return $originalDesc ?: $originalTitle; // Trả về text gốc nếu có lỗi
         }
     }
 
@@ -1028,8 +1441,10 @@ class VinpearlScraperController extends Controller
         
         // Xử lý tất cả ảnh trước (download và thay đổi src)
         $imgNodes = $newXpath->query('//img');
+        $totalImages = $imgNodes->length;
         $imgCount = 0;
-        foreach ($imgNodes as $img) {
+        Log::info('Vinpearl Scraper: Tìm thấy ' . $totalImages . ' ảnh trong content');
+        foreach ($imgNodes as $index => $img) {
             $src = $img->getAttribute('src');
             if (empty($src)) {
                 $src = $img->getAttribute('data-src');
@@ -1039,6 +1454,17 @@ class VinpearlScraperController extends Controller
                 $src = preg_replace('/statics\.Review\s+Hải\s+Phòng\.com/i', 'statics.vinpearl.com', $src);
                 $src = preg_replace('/statics\.reviewhaiphong\.com/i', 'statics.vinpearl.com', $src);
                 
+                // Chuyển đổi URL từ storage.googleapis.com sang statics.vinpearl.com
+                // Ví dụ: https://storage.googleapis.com/vinpearl-data-01/le-hoi-hai-phong-1.jpg
+                // → https://statics.vinpearl.com/le-hoi-hai-phong-1.jpg
+                if (preg_match('/https?:\/\/storage\.googleapis\.com\/vinpearl-data-01\/(.+)$/i', $src, $matches)) {
+                    $imageName = $matches[1];
+                    $src = 'https://statics.vinpearl.com/' . $imageName;
+                    Log::info('Vinpearl Scraper: Chuyển đổi URL từ Google Cloud Storage sang statics.vinpearl.com: ' . $src);
+                }
+                
+                Log::info('Vinpearl Scraper: Xử lý ảnh #' . ($index + 1) . '/' . $totalImages . ' - URL gốc: ' . $src);
+                
                 // Delay giữa các request download ảnh để tránh bị chặn
                 if ($imgCount > 0) {
                     usleep(300000); // Delay 0.3 giây giữa các ảnh
@@ -1047,18 +1473,28 @@ class VinpearlScraperController extends Controller
                 // Download ảnh
                 $imageName = $this->downloadImage($src, $slug, $cookieFile);
                 if ($imageName) {
-                    $img->setAttribute('src', 'https://reviewhaiphong.io.vn/client/assets/images/posts/' . $imageName);
+                    $newSrc = 'https://reviewhaiphong.io.vn/client/assets/images/posts/' . $imageName;
+                    $img->setAttribute('src', $newSrc);
                     $img->setAttribute('alt', $title);
                     $img->setAttribute('title', $title);
+                    Log::info('Vinpearl Scraper: Đã thay thế src ảnh thành: ' . $newSrc);
                     $imgCount++;
                 } else {
+                    Log::warning('Vinpearl Scraper: Không thể download ảnh, xóa ảnh khỏi content - URL: ' . $src);
                     // Nếu không download được, xóa ảnh
                     if ($img->parentNode) {
                         $img->parentNode->removeChild($img);
                     }
                 }
+            } else {
+                Log::warning('Vinpearl Scraper: Ảnh không có src hoặc data-src, xóa ảnh');
+                // Xóa ảnh không có src
+                if ($img->parentNode) {
+                    $img->parentNode->removeChild($img);
+                }
             }
         }
+        Log::info('Vinpearl Scraper: Đã xử lý xong ' . $imgCount . ' ảnh trong content');
         
 
         // Xử lý các link "Xem thêm" - thay thế bằng bài viết random từ database
@@ -1145,10 +1581,17 @@ class VinpearlScraperController extends Controller
             }
             
             // Loại bỏ class, style, id, data-*, onclick, onerror, etc. cho các thẻ khác
+            // NHƯNG giữ lại data-xem-them-link và data-kham-pha-ngay-link cho thẻ <a>
             $attributesToRemove = [];
             foreach ($node->attributes as $attr) {
-                if (in_array($attr->name, ['class', 'style', 'id', 'onclick', 'onerror', 'onload']) || 
-                    strpos($attr->name, 'data-') === 0) {
+                if (in_array($attr->name, ['class', 'style', 'id', 'onclick', 'onerror', 'onload'])) {
+                    $attributesToRemove[] = $attr->name;
+                } elseif (strpos($attr->name, 'data-') === 0) {
+                    // Giữ lại data-xem-them-link và data-kham-pha-ngay-link cho thẻ <a>
+                    if ($node->nodeName === 'a' && 
+                        ($attr->name === 'data-xem-them-link' || $attr->name === 'data-kham-pha-ngay-link')) {
+                        continue; // Giữ lại attribute này
+                    }
                     $attributesToRemove[] = $attr->name;
                 }
             }
@@ -1171,7 +1614,7 @@ class VinpearlScraperController extends Controller
             // Luôn đảm bảo có 3px;
             if (empty($currentStyle)) {
                 // Nếu chưa có style, thêm mới
-                $strongNode->setAttribute('style', '3px;');
+                $strongNode->setAttribute('style', 'padding: 3px;');
             } else {
                 // Nếu đã có style, thay thế tất cả padding bằng 3px;
                 // Loại bỏ tất cả padding hiện có
@@ -1186,10 +1629,10 @@ class VinpearlScraperController extends Controller
                     if (!preg_match('/;\s*$/', $newStyle)) {
                         $newStyle .= ';';
                     }
-                    $newStyle .= ' 3px;';
+                    $newStyle .= ' padding: 3px;';
                 } else {
                     // Nếu không còn style nào, chỉ có padding
-                    $newStyle = '3px;';
+                    $newStyle = 'padding: 3px;';
                 }
                 // Loại bỏ các dấu ; thừa một lần nữa
                 $newStyle = preg_replace('/;\s*;/', ';', $newStyle);
@@ -1270,12 +1713,72 @@ class VinpearlScraperController extends Controller
         $html = preg_replace('/https?:\/\/statics\.Review\s+Hải\s+Phòng\.com[^\s"\'<>]*/i', '', $html);
         $html = preg_replace('/https?:\/\/statics\.reviewhaiphong\.com[^\s"\'<>]*/i', '', $html);
         
-        // Xóa các ảnh có src rỗng hoặc không hợp lệ
+        // Xóa các ảnh có src rỗng hoặc không hợp lệ (chỉ xóa nếu src thực sự rỗng)
         $html = preg_replace('/<img[^>]*src=["\']\s*["\'][^>]*>/i', '', $html);
+        
+        // Log để debug: đếm số ảnh trong HTML sau khi xử lý
+        $imgCountInHtml = preg_match_all('/<img[^>]*>/i', $html);
+        Log::info('Vinpearl Scraper: Số ảnh trong HTML sau khi xử lý: ' . $imgCountInHtml);
+        
+        // Log một vài ảnh đầu tiên để debug
+        if ($imgCountInHtml > 0) {
+            preg_match_all('/<img[^>]*src=["\']([^"\']+)["\'][^>]*>/i', $html, $imgMatches);
+            if (!empty($imgMatches[1])) {
+                $firstFewImages = array_slice($imgMatches[1], 0, 3);
+                Log::info('Vinpearl Scraper: Một vài ảnh đầu tiên trong HTML: ' . implode(', ', $firstFewImages));
+            }
+        }
 
         // THAY THẾ LINK URL CUỐI CÙNG - sau khi đã xử lý xong tất cả
-        // Loại bỏ tất cả URL vinpearl.com trong HTML (không chỉ trong link)
+        // Loại bỏ tất cả URL vinpearl.com trong HTML (KHÔNG xóa trong thuộc tính src của ảnh)
+        // Cách an toàn: tách HTML thành các phần (img tags và phần còn lại), chỉ xóa URL trong phần không phải img
+        // Bước 1: Tìm và lưu tất cả img tags với placeholder (dùng base64 để tránh conflict)
+        $imgPlaceholders = [];
+        $imgIndex = 0;
+        $html = preg_replace_callback(
+            '/<img[^>]*>/i',
+            function($matches) use (&$imgPlaceholders, &$imgIndex) {
+                $imgTag = $matches[0];
+                // Tạo placeholder unique bằng base64 encode
+                $placeholder = '___IMG_' . base64_encode($imgTag . '_' . $imgIndex . '_' . time()) . '___';
+                $imgPlaceholders[$placeholder] = $imgTag;
+                $imgIndex++;
+                Log::info('Vinpearl Scraper: Tạo placeholder cho ảnh #' . $imgIndex . ': ' . substr($placeholder, 0, 50) . '...');
+                return $placeholder;
+            },
+            $html
+        );
+        
+        Log::info('Vinpearl Scraper: Đã tạo ' . count($imgPlaceholders) . ' placeholder cho ảnh');
+        
+        // Bước 2: Xóa tất cả URL vinpearl.com trong HTML (không còn img tags nữa)
         $html = preg_replace('/https?:\/\/(www\.)?vinpearl\.com[^\s<>"\']*/i', '', $html);
+        
+        // Bước 3: Thay thế lại các img tags (theo thứ tự ngược để tránh conflict)
+        $replacedCount = 0;
+        foreach ($imgPlaceholders as $placeholder => $imgTag) {
+            if (strpos($html, $placeholder) !== false) {
+                $html = str_replace($placeholder, $imgTag, $html);
+                $replacedCount++;
+            } else {
+                Log::warning('Vinpearl Scraper: Không tìm thấy placeholder trong HTML: ' . substr($placeholder, 0, 50));
+            }
+        }
+        Log::info('Vinpearl Scraper: Đã thay thế ' . $replacedCount . '/' . count($imgPlaceholders) . ' placeholder');
+        
+        // Log để debug: đếm số ảnh sau khi xóa URL vinpearl.com
+        $imgCountAfterClean = preg_match_all('/<img[^>]*>/i', $html);
+        Log::info('Vinpearl Scraper: Số ảnh trong HTML sau khi xóa URL vinpearl.com: ' . $imgCountAfterClean);
+        
+        if ($imgCountAfterClean > 0) {
+            preg_match_all('/<img[^>]*src=["\']([^"\']+)["\'][^>]*>/i', $html, $imgMatchesAfter);
+            if (!empty($imgMatchesAfter[1])) {
+                $firstFewImagesAfter = array_slice($imgMatchesAfter[1], 0, 3);
+                Log::info('Vinpearl Scraper: Ảnh sau khi xóa URL vinpearl.com: ' . implode(', ', $firstFewImagesAfter));
+            }
+        } else {
+            Log::warning('Vinpearl Scraper: Ảnh bị mất sau khi xóa URL vinpearl.com!');
+        }
         
         // Thay thế các link URL từ vinpearl.com thành reviewhaiphong.io.vn (nếu còn sót)
         $html = preg_replace_callback(
@@ -1310,6 +1813,20 @@ class VinpearlScraperController extends Controller
         $html = preg_replace('/\s*<p>\s*<\/p>\s*/i', '', $html);
         $html = preg_replace('/\s*<p>\s*&nbsp;\s*<\/p>\s*/i', '', $html);
         $html = preg_replace('/\s*<p>\s*\.\s*<\/p>\s*/i', '', $html);
+        
+        // Log cuối cùng: đếm số ảnh trước khi return
+        $finalImgCount = preg_match_all('/<img[^>]*>/i', $html);
+        Log::info('Vinpearl Scraper: Số ảnh trong HTML cuối cùng (trước khi return): ' . $finalImgCount);
+        
+        if ($finalImgCount > 0) {
+            preg_match_all('/<img[^>]*src=["\']([^"\']+)["\'][^>]*>/i', $html, $finalImgMatches);
+            if (!empty($finalImgMatches[1])) {
+                $finalImages = array_slice($finalImgMatches[1], 0, 5);
+                Log::info('Vinpearl Scraper: Ảnh cuối cùng trong HTML: ' . implode(', ', $finalImages));
+            }
+        } else {
+            Log::warning('Vinpearl Scraper: KHÔNG CÓ ẢNH trong HTML cuối cùng!');
+        }
 
         return trim($html);
     }
@@ -1403,10 +1920,22 @@ class VinpearlScraperController extends Controller
             // Kiểm tra xem link có data-kham-pha-ngay-link không (link "Khám phá ngay" đã được tạo)
             $isKhamPhaNgayLink = $link->getAttribute('data-kham-pha-ngay-link') === '1';
             
-            Log::info('Vinpearl Scraper: Link #' . ($i + 1) . ' - href: ' . ($href ?: 'empty') . ', text: ' . substr($linkText, 0, 50) . ', isXemThem: ' . ($isXemThemLink ? 'yes' : 'no') . ', isKhamPhaNgay: ' . ($isKhamPhaNgayLink ? 'yes' : 'no'));
+            // Kiểm tra xem link có phải là internal link từ reviewhaiphong.io.vn không
+            $isInternalLink = false;
+            if ($href && (strpos($href, 'reviewhaiphong.io.vn') !== false || strpos($href, '/') === 0)) {
+                $isInternalLink = true;
+            }
             
-            // Chỉ xóa link nếu không phải "Xem thêm" và không phải "Khám phá ngay"
-            if (!$isXemThemLink && !$isKhamPhaNgayLink) {
+            Log::info('Vinpearl Scraper: Link #' . ($i + 1) . ' - href: ' . ($href ?: 'empty') . ', text: ' . substr($linkText, 0, 50) . ', isXemThem: ' . ($isXemThemLink ? 'yes' : 'no') . ', isKhamPhaNgay: ' . ($isKhamPhaNgayLink ? 'yes' : 'no') . ', isInternal: ' . ($isInternalLink ? 'yes' : 'no'));
+            
+            // Kiểm tra xem link có phải là internal link từ reviewhaiphong.io.vn không
+            $isInternalLink = false;
+            if ($href && (strpos($href, 'reviewhaiphong.io.vn') !== false || strpos($href, '/') === 0)) {
+                $isInternalLink = true;
+            }
+            
+            // Chỉ xóa link nếu không phải "Xem thêm", không phải "Khám phá ngay", và không phải internal link
+            if (!$isXemThemLink && !$isKhamPhaNgayLink && !$isInternalLink) {
                 Log::info('Vinpearl Scraper: Xóa link - href: ' . ($href ?: 'empty') . ', text: ' . substr($linkText, 0, 50));
                 
                 // Tạo text node mới chứa text của link
@@ -1417,7 +1946,11 @@ class VinpearlScraperController extends Controller
                     $link->parentNode->replaceChild($textNode, $link);
                 }
             } else {
-                Log::info('Vinpearl Scraper: Giữ lại link - href: ' . ($href ?: 'empty') . ', text: ' . substr($linkText, 0, 50));
+                if ($isInternalLink) {
+                    Log::info('Vinpearl Scraper: Giữ lại internal link - href: ' . ($href ?: 'empty') . ', text: ' . substr($linkText, 0, 50));
+                } else {
+                    Log::info('Vinpearl Scraper: Giữ lại link - href: ' . ($href ?: 'empty') . ', text: ' . substr($linkText, 0, 50));
+                }
             }
         }
     }
@@ -1587,38 +2120,38 @@ class VinpearlScraperController extends Controller
                 }
             }
 
-            // Nếu URL là từ statics.vinpearl.com, truy cập subdomain trước để lấy cookie (chỉ một lần)
-            if (strpos($url, 'statics.vinpearl.com') !== false && $cookieFile && file_exists($cookieFile) && !self::$staticDomainAccessed) {
-                $staticCh = curl_init();
-                curl_setopt_array($staticCh, [
-                    CURLOPT_URL => 'https://statics.vinpearl.com/',
+            // Nếu URL là từ statics.vinpearl.com hoặc storage.googleapis.com, đảm bảo có cookie từ vinpearl.com
+            // (cả 2 domain này đều có thể cần cookie để truy cập)
+            if (($url && (strpos($url, 'statics.vinpearl.com') !== false || strpos($url, 'storage.googleapis.com') !== false)) 
+                && $cookieFile && file_exists($cookieFile) && !self::$staticDomainAccessed) {
+                // Truy cập trang chủ vinpearl.com để đảm bảo có cookie
+                $homeCh = curl_init();
+                curl_setopt_array($homeCh, [
+                    CURLOPT_URL => 'https://vinpearl.com/',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_TIMEOUT => 30,
                     CURLOPT_CONNECTTIMEOUT => 10,
                     CURLOPT_SSL_VERIFYPEER => false,
                     CURLOPT_SSL_VERIFYHOST => false,
-                    CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+                    CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
                     CURLOPT_COOKIEFILE => $cookieFile,
                     CURLOPT_COOKIEJAR => $cookieFile,
                     CURLOPT_HTTPHEADER => [
                         'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                         'Accept-Language: en-US,en;q=0.9',
-                        'Referer: https://vinpearl.com/',
+                        'Referer: https://www.google.com/',
                     ],
                 ]);
-                curl_exec($staticCh);
-                curl_close($staticCh);
+                curl_exec($homeCh);
+                curl_close($homeCh);
                 usleep(500000); // Đợi 0.5 giây
                 self::$staticDomainAccessed = true;
-                Log::info('Vinpearl Scraper: Đã truy cập statics.vinpearl.com để lấy cookie cho subdomain');
+                Log::info('Vinpearl Scraper: Đã truy cập vinpearl.com để lấy cookie cho ảnh');
             }
 
-            // Bỏ qua ảnh từ Google Cloud Storage nếu URL chứa storage.googleapis.com (thường bị 404/400)
-            if (strpos($url, 'storage.googleapis.com') !== false || strpos($url, 'STORAGE.GOOGLEAPIS.COM') !== false) {
-                Log::info('Vinpearl Scraper: Bỏ qua ảnh từ Google Cloud Storage (thường không có): ' . $url);
-                return null;
-            }
+            // KHÔNG bỏ qua ảnh từ Google Cloud Storage nữa - thử download trước, chỉ bỏ qua nếu thực sự fail
+            // (Vinpearl thường host ảnh trên Google Cloud Storage và vẫn có thể tải được)
 
             // Các biến thể URL tiềm năng
             $candidateUrls = $this->buildCandidateUrls($url, true);
@@ -1783,31 +2316,24 @@ class VinpearlScraperController extends Controller
                                 continue;
                             }
 
-                            // 404 -> bỏ qua ngay nếu là Google Cloud Storage (thường không có)
+                            // 404 -> thử URL candidate khác hoặc bỏ qua nếu đã thử nhiều lần
                             if ($httpCode === 404) {
                                 $lastError = '404 Not Found';
-                                Log::warning('Vinpearl Scraper: 404 Not Found');
-                                // Nếu là Google Cloud Storage, bỏ qua ngay không thử nữa
-                                if (strpos($attemptUrl, 'storage.googleapis.com') !== false || strpos($attemptUrl, 'STORAGE.GOOGLEAPIS.COM') !== false) {
-                                    $stopForUrl = true;
-                                    break 2; // Bỏ qua URL này ngay
-                                }
+                                Log::warning('Vinpearl Scraper: 404 Not Found - URL: ' . $attemptUrl);
                                 $consecutive404++;
-                                if ($consecutive404 >= 1) { // Giảm từ 2 xuống 1
+                                // Chỉ bỏ qua URL này nếu đã thử nhiều lần (không phân biệt domain)
+                                if ($consecutive404 >= 2) {
                                     $stopForUrl = true;
+                                    Log::info('Vinpearl Scraper: Bỏ qua URL sau ' . $consecutive404 . ' lần 404: ' . $attemptUrl);
                                 }
                                 continue;
                             }
 
-                            // 400 -> bỏ qua ngay nếu là Google Cloud Storage
+                            // 400 -> thử URL candidate khác
                             if ($httpCode === 400) {
                                 $lastError = 'HTTP 400 Bad Request';
-                                Log::warning('Vinpearl Scraper: HTTP 400 không hợp lệ cho ảnh');
-                                // Nếu là Google Cloud Storage, bỏ qua ngay
-                                if (strpos($attemptUrl, 'storage.googleapis.com') !== false || strpos($attemptUrl, 'STORAGE.GOOGLEAPIS.COM') !== false) {
-                                    $stopForUrl = true;
-                                    break 2; // Bỏ qua URL này ngay
-                                }
+                                Log::warning('Vinpearl Scraper: HTTP 400 - URL: ' . $attemptUrl);
+                                // Thử URL candidate tiếp theo thay vì bỏ qua ngay
                                 continue;
                             }
 

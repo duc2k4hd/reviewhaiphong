@@ -15,6 +15,23 @@ class PostsImport
     protected $successCount = 0;
     protected $skipCount = 0;
 
+    public function getSuccessCount()
+    {
+        return $this->successCount;
+    }
+
+    public function getSkipCount()
+    {
+        return $this->skipCount;
+    }
+
+    public function resetCounters()
+    {
+        $this->successCount = 0;
+        $this->skipCount = 0;
+        $this->errors = [];
+    }
+
     public function import($filePath)
     {
         try {
@@ -67,7 +84,7 @@ class PostsImport
         }
     }
 
-    protected function importRow($row, $rowNumber)
+    public function importRow($row, $rowNumber)
     {
         // Map columns: ID, Tiêu đề, Slug, Nội dung, SEO Title, SEO Description, SEO Keywords, SEO Image, Tags, Danh mục, Trạng thái, Ngày xuất bản, Lượt xem, Type
         $id = isset($row[0]) ? trim((string)$row[0]) : null;

@@ -17,13 +17,13 @@ class SlugRouterController extends Controller
     {
         // Kiểm tra slug không hợp lệ
         if (strpos($slug, '/') !== false || preg_match('/\.(jpg|jpeg|png|gif|webp|css|js|ico|svg|woff|woff2|ttf|eot)$/i', $slug)) {
-            abort(404);
+            return view('client.templates.errors.404');
         }
         
         // Loại trừ các route đặc biệt
         $excluded = ['admin', 'bai-viet', 'danh-muc', 'trang-chu', 'gioi-thieu', 'lien-he', 'tim-kiem', 'user', 'storage', 'client', 'assets', 'vendor', 'public'];
         if (in_array($slug, $excluded)) {
-            abort(404);
+            return view('client.templates.errors.404');
         }
         
         // Kiểm tra xem slug có phải là post không (cache 1 giờ)
@@ -53,7 +53,7 @@ class SlugRouterController extends Controller
         }
         
         // Nếu không phải cả post và category, 404
-        abort(404);
+        return view('client.templates.errors.404');
     }
 }
 

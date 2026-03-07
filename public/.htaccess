@@ -4,7 +4,7 @@
     </IfModule>
 
     RewriteEngine On
-    
+
     # Tăng timeout cho các request dài (scraper)
     <IfModule mod_php.c>
         php_value max_execution_time 0

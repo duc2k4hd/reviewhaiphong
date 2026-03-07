@@ -180,10 +180,10 @@
             @endif
             "inLanguage": "vi",
                 "wordCount": {{ str_word_count(strip_tags($post->content ?? '')) }},
-            "commentCount": {{ $post->comments ? $post->comments->count() : 0 }},
-            @if($post->comments && $post->comments->count() > 0)
+            "commentCount": {{ isset($post->comments) ? count($post->comments) : 0 }},
+            @if(isset($post->comments) && count($post->comments) > 0)
             "comment": [
-                    @foreach ($post->comments->take(10) as $comment)
+                    @foreach (array_slice($post->comments, 0, 10) as $comment)
                 {
                     "@type": "Comment",
                         "@id": "{{ url('/' . $post->slug) . '#comment-' . $comment->id }}",
@@ -260,12 +260,12 @@
                     }
                 ]
             }
-            @if(isset($relatedPosts) && $relatedPosts->count() > 0)
+            @if(isset($relatedPosts) && count($relatedPosts) > 0)
             ,{
                 "@type": "ItemList",
                 "name": "Bài viết liên quan",
                 "itemListElement": [
-                    @foreach($relatedPosts->take(6) as $index => $relatedPost)
+                    @foreach(array_slice($relatedPosts, 0, 6) as $index => $relatedPost)
                     {
                         "@type": "ListItem",
                         "position": {{ $index + 1 }},
@@ -418,7 +418,7 @@
             border-right: 1px solid #e5e5e5;
             flex-shrink: 0;
             position: sticky;
-            top: 60px;
+            top: 118.5px;
             height: fit-content;
             overflow-y: auto;
         }
@@ -2210,7 +2210,7 @@
                             <i class="fa fa-folder"></i>
                             <span>{{ $category->name }}</span>
                         </a>
-                        @if(isset($category->children) && $category->children->count() > 0)
+                        @if(isset($category->children) && count($category->children) > 0)
                             <div class="reviewhaiphong_blog_submenu">
                                 @foreach($category->children as $child)
                                     <a href="/{{ $child->slug }}" class="reviewhaiphong_blog_menu-item">{{ $child->name }}</a>
@@ -2316,7 +2316,7 @@
                         <span style="margin: 0 10px;">|</span>
                         <i class="fa fa-eye"></i> {{ $post->views ?? 0 }} lượt xem
                         <span style="margin: 0 10px;">|</span>
-                        <i class="fa fa-comment"></i> {{ $post->comments ? $post->comments->count() : 0 }} bình luận
+                        <i class="fa fa-comment"></i> {{ isset($post->comments) ? count($post->comments) : 0 }} bình luận
                     </div>
 
                     <!-- Table of Contents -->
@@ -2338,14 +2338,14 @@
             </article>
 
             <!-- Related Posts Section -->
-            @if(isset($categoryPosts) && count($categoryPosts) > 0)
+            @if(isset($relatedPosts) && count($relatedPosts) > 0)
             <div class="reviewhaiphong_blog_comments-section" style="border-top: 1px solid #e5e5e5; margin-top: 0;">
                 <h3 class="reviewhaiphong_blog_comments-title">
                     <i class="fa fa-list"></i>
                     <span>Bài viết liên quan</span>
                 </h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
-                    @foreach($categoryPosts as $relatedPost)
+                    @foreach($relatedPosts as $relatedPost)
                         <div style="border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; transition: transform 0.3s;">
                             <a href="/{{ $relatedPost->slug }}" style="text-decoration: none; color: inherit;">
                                 @if(!empty($relatedPost->seo_image))
@@ -2375,7 +2375,7 @@
             <div class="reviewhaiphong_blog_comments-section" id="comments">
                 <h3 class="reviewhaiphong_blog_comments-title">
                     <i class="fa fa-comments"></i>
-                    <span>Bình luận ({{ $post->comments ? $post->comments->count() : 0 }})</span>
+                    <span>Bình luận ({{ isset($post->comments) ? count($post->comments) : 0 }})</span>
                 </h3>
 
                 @if(session('success'))
@@ -2394,7 +2394,7 @@
                     </div>
                 @endif
 
-                @if(isset($post->comments) && $post->comments->count() > 0)
+                @if(isset($post->comments) && count($post->comments) > 0)
                     <div id="comments-list">
                         @foreach($post->comments as $comment)
                             <div id="comment-{{ $comment->id }}" class="reviewhaiphong_blog_comment-item">
@@ -2775,6 +2775,7 @@
             });
         }
     </script>
+
 
     <!-- Footer chung -->
     @include('client.templates.footer')
