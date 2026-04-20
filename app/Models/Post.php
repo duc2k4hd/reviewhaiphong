@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
 
 class Post extends Model
 {
@@ -16,6 +17,20 @@ class Post extends Model
         'published_at' => 'datetime',
         'created_at' => 'datetime',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function (Post $post) {
+            if (!empty($post->seo_image)) {
+                $imagePath = public_path('client/assets/images/posts/' . $post->seo_image);
+                if (File::exists($imagePath)) {
+                    File::delete($imagePath);
+                }
+            }
+        });
+    }
 
     public function account() {
         return $this->belongsTo(Account::class);

@@ -98,6 +98,16 @@
                             <div data-i18n="Vinpearl Link Extractor"><i class="fas fa-link"></i> Trích xuất link Vinpearl</div>
                           </a>
                         </li>
+                        <li class="menu-item">
+                          <a href="{{ route('admin.traveloka-scraper.index') }}" class="menu-link">
+                            <div data-i18n="Traveloka Scraper"><i class="fas fa-download"></i> Cào từ Traveloka.com</div>
+                          </a>
+                        </li>
+                        <li class="menu-item">
+                          <a href="{{ route('admin.traveloka-link-extractor.index') }}" class="menu-link">
+                            <div data-i18n="Traveloka Link Extractor"><i class="fas fa-link"></i> Trích xuất link Traveloka</div>
+                          </a>
+                        </li>
                       </ul>
                     </li>
                     <li class="menu-item">

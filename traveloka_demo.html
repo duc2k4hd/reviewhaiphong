@@ -1,0 +1,1647 @@
+<!-- ═══════════════════════════════════════════════════ HOOK MỞ BÀI (5 câu) ═══════════════════════════════════════════════════ -->
+<p style="font-size: 1.05rem;">Dây chuyền đóng gói sản phẩm nhựa gia dụng chạy 80 sản phẩm/phút, băng tải hẹp 250mm, vật
+  thể cao chỉ 15mm — đủ điều kiện để bất kỳ cảm biến nào "ngại" nhận việc.
+  Kỹ sư thử cảm biến quang khuếch tán 3 hãng khác nhau: một cái báo nhầm khi ánh đèn xưởng thay đổi, một cái rung tín
+  hiệu mỗi khi băng tải rung nhẹ, cái thứ ba chịu được ba tháng rồi ẩm chân IC chết hẳn.
+  Thay bằng Omron E3Z-D61 chính hãng — ba tháng sau vẫn chạy ngon, không cần chỉnh lại một lần.
+  Đúng cảm biến không chỉ là "chọn đúng thông số" mà còn là chọn đúng hãng, đúng mã, đúng bối cảnh — và đó là lý do
+  trang này tổng hợp 99 mã thực tế từ 6 hãng lớn đang chạy tốt tại các nhà máy Việt Nam.
+  Sau khi đọc xong, bạn sẽ biết cụ thể từng mã dùng để làm gì, tránh được các lỗi chọn sai phổ biến nhất, và rút ngắn
+  thời gian chọn cảm biến từ vài ngày xuống còn vài phút.</p>
+<!-- ═══════════════════════════════════════════════════ MỤC LỤC ═══════════════════════════════════════════════════ -->
+
+<nav style="background: #f0f6fc; border: 1px solid #c5ddf0; border-radius: 8px; padding: 20px 24px; margin: 28px 0;">
+  <p style="font-weight: bold; color: #3581b7; margin: 0 0 10px; font-size: 1rem;">📋 MỤC LỤC</p>
+
+  <ol style="margin: 0; padding-left: 20px; line-height: 2;">
+    <li><a style="color: #3581b7; text-decoration: none;" href="#cam-bien-quang">Cảm biến quang – Mã 01 đến 25</a></li>
+    <li><a style="color: #3581b7; text-decoration: none;" href="#cam-bien-tiem-can-cam-ung">Cảm biến tiệm cận cảm ứng –
+        Mã 26 đến 45</a></li>
+    <li><a style="color: #3581b7; text-decoration: none;" href="#cam-bien-tiem-can-dien-dung">Cảm biến tiệm cận điện
+        dung – Mã 46 đến 50</a></li>
+    <li><a style="color: #3581b7; text-decoration: none;" href="#cam-bien-nhiet-do">Cảm biến nhiệt độ – Mã 51 đến 70</a>
+    </li>
+    <li><a style="color: #3581b7; text-decoration: none;" href="#cam-bien-ap-suat">Cảm biến áp suất – Mã 71 đến 85</a>
+    </li>
+    <li><a style="color: #3581b7; text-decoration: none;" href="#cam-bien-dac-biet">Siêu âm, laser, màu sắc – Mã 86 đến
+        99</a></li>
+    <li><a style="color: #3581b7; text-decoration: none;" href="#bang-so-sanh">Bảng so sánh theo ứng dụng nhà máy</a>
+    </li>
+    <li><a style="color: #3581b7; text-decoration: none;" href="#ket-bai">Kết bài</a></li>
+  </ol>
+</nav>
+<!-- ═══════════════════════════════════════════════════ SECTION 1 — CẢM BIẾN QUANG ═══════════════════════════════════════════════════ -->
+<h2 id="cam-bien-quang"
+  style="font-size: 1.5rem; font-weight: bold; color: #0f1e30; border-left: 4px solid #3581b7; padding-left: 14px; margin-top: 40px;">
+  Cảm biến quang chính hãng – Mã 01 đến 25</h2>
+Trong nhóm <a style="color: #3581b7;" href="https://haiphongtech.vn/cam-bien-quang-autonics/">cảm biến quang</a>, điểm
+khác biệt giữa hàng chính hãng và hàng không rõ nguồn gốc thường nằm ở bộ lọc ánh sáng và mạch xử lý tín hiệu — hai thứ
+không nhìn thấy bằng mắt nhưng quyết định cảm biến có chạy được 3 năm hay không.
+<blockquote
+  style="border-left: 4px solid #3581b7; margin: 20px 0; padding: 14px 18px; background: #f0f6fc; border-radius: 0 6px 6px 0;">
+  💡 <strong>Kinh nghiệm thực tế:</strong> Với line sản xuất chạy &gt;20 triệu chu kỳ/năm, 1% sai biệt về tần số đáp ứng
+  đồng nghĩa với 200.000 sản phẩm bị phát hiện sai. Chọn cảm biến quang theo tần số thực tế của băng tải trước tiên.
+</blockquote>
+<!-- Sensor 01 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">01. Omron E3Z-D61 — Cảm biến quang khuếch tán M18</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Khoảng cách phát hiện Sn = 100mm, ngõ ra NPN hoặc PNP tuỳ đấu dây —
+    không cần mua hai mã khác nhau cho hai loại PLC. Đây là cảm biến chạy trên 90% dây chuyền bao bì gói mì ăn liền tại
+    miền Bắc, đếm được 1.200 gói/phút mà không cần hiệu chỉnh lại sau khi cài ban đầu.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;"><img class="aligncenter wp-image-20493"
+        src="https://haiphongtech.vn/wp-content/uploads/2024/06/OMRON-E3Z-D61-2M.jpg" alt="OMRON-E3Z-D61-2M" width="564"
+        height="565" /></p>
+  </figure>
+</section><!-- Sensor 02 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">02. Omron E3Z-T61 — Thu-phát M18, khoảng cách 5m</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Thời gian đáp ứng 1ms, bộ lọc ánh sáng mặt trời tích hợp — đặt hai đầu
+    cổng cân băng tải ngoài trời, hoạt động chính xác kể cả lúc nắng ngược chiều. Ở nhà máy nước giải khát Hải Phòng, nó
+    đếm liên tục 600 lon/phút mà không một lon nào lọt qua không bị đếm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;"><img class="aligncenter wp-image-21651"
+        src="https://haiphongtech.vn/wp-content/uploads/2024/06/Omron_E3Z-T61A-2M.jpg" alt="Omron_E3Z-T61A-2M"
+        width="579" height="589" /></p>
+  </figure>
+</section><!-- Sensor 03 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">03. Omron E3Z-R61 — Phản xạ gương M18, 2m</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Tích hợp bộ lọc phân cực — nhìn thấy vật thể bề mặt bóng như màng
+    shrink-wrap mà không báo nhiễu ánh sáng phản chiều. Lắp đặt trên line bọc màng co nhiệt lon nước ngọt: phát hiện
+    đúng vị trí lon kể cả khi màng co làm bề mặt biến dạng nhẹ.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;"><img class="aligncenter wp-image-21666"
+        src="https://haiphongtech.vn/wp-content/uploads/2024/06/OMRON_E3Z-R61-2M.jpg" alt="OMRON_E3Z-R61-2M" width="580"
+        height="590" /></p>
+  </figure>
+</section><!-- Sensor 04 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">04. Omron E3Z-LS61 — Laser khuếch tán, tầm 30–200mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Vệt sáng laser hội tụ chỉ 1mm — phát hiện vít M3 trên PCB đang di
+    chuyển mà cảm biến LED thông thường bỏ qua. Điều chỉnh khoảng cách bằng chiết áp mặt trước, không cần tháo cảm biến
+    ra khỏi giá đỡ khi hiệu chỉnh lại.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    [gallery columns="2" size="medium" link="none" ids="269031,235979"]</figure>
+</section><!-- Sensor 05 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">05. Omron E3F3-D12 — Trụ M18, khuếch tán 200mm, IP67
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Thân M18 inox, kín nước hoàn toàn — chọn cho các trạm đếm chai nước
+    suối trước khi đóng thùng carton, chịu được phun nước rửa trực tiếp mỗi ca. Tầm đo 200mm giúp lắp đặt linh hoạt khi
+    băng tải có che chắn hai bên.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_235937" align="aligncenter" width="469"]<img class=" wp-image-235937"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/08/E3F3-D12-2M.webp" alt="E3F3-D12-2M | Hải Phòng Tech"
+      width="469" height="469" /> E3F3-D12-2M | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 06 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">06. Omron E3S-CR11 — Khuếch tán nhỏ gọn, Sn = 30mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Thân nhỏ lắp vừa rãnh nhỏ hẹp, phát hiện viên nang dược phẩm đường
+    kính 6mm trên máy sắp xếp. Thường được lựa chọn khi không gian lắp đặt bị giới hạn dưới 20mm chiều rộng.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_94966" align="aligncenter" width="480"]<img class=" wp-image-94966"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/03/E3S-CR11-2M-1.jpg" alt="E3S-CR11-2M Hải Phòng Tech"
+      width="480" height="480" /> E3S-CR11-2M | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 07 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">07. Omron E3NX-FA11 — Bộ khuếch đại cáp quang 2 kênh
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Hiển thị giá trị cường độ ánh sáng bằng số, tinh chỉnh ngưỡng từ xa
+    ngay trên màn hình khuếch đại mà không cần vào tủ điện. Mỗi bộ chạy 2 sợi quang độc lập — giảm 50% số lượng bộ
+    khuếch đại cần lắp trên một tủ.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_92454" align="aligncenter" width="501"]<img class=" wp-image-92454"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/03/E3NX-FA11-2M.webp" alt="E3NX-FA11-2M Hải Phòng Tech"
+      width="501" height="501" /> E3NX-FA11-2M - Sự kết hợp giữa công nghệ hiện đại và sự bền bỉ, chỉ có tại Hải Phòng
+    Tech.[/caption]</figure>
+</section><!-- Sensor 08 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">08. Omron E3T-ST21 — Siêu nhỏ 8×8mm, phát hiện 2mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Tích hợp trong cơ cấu cấp linh kiện chip SMD của máy pick-and-place —
+    nhỏ bằng đầu ngón tay nhưng phân biệt được linh kiện 0402 (1×0.5mm) trên băng tải cấp liệu. Thường chạy cùng bộ
+    khuếch đại E3NX để tăng độ tin cậy tín hiệu.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_48967" align="aligncenter" width="515"]<img class=" wp-image-48967"
+      src="https://haiphongtech.vn/wp-content/uploads/2024/10/E3T-ST21F-2M_Omron.jpg" alt="E3T-ST21F-2M_Omron"
+      width="515" height="515" /> E3T-ST21F 2M Omron Chính hãng[/caption]</figure>
+</section><!-- Sensor 09 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">09. Omron E3MC-A11 — Cảm biến màu/nhãn + kiểm tra diện
+    tích</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phân biệt màu sắc, độ sáng và kiểm tra diện tích vật thể trong một
+    thiết bị — thay thế hệ thống camera giá cao cho bài toán kiểm tra nhãn dán lọ thuốc. Phân biệt được tới 16 nhóm màu
+    đã đăng ký, tốc độ phản hồi 0.5ms.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431236" align="aligncenter" width="520"]<img class=" wp-image-431236"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/E3MC-A11.avif" alt="E3MC-A11 | Hải Phòng Tech" width="520"
+      height="520" /> E3MC-A11 | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 10 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">10. Autonics BEN5M-MFR — Trụ M5 cực nhỏ, Sn = 20mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Thân M5 chen vừa khe hẹp 8mm bên trong máy cuộn dây biến áp công suất
+    nhỏ, phát hiện từng lớp dây đồng được quấn. Kết nối dây 2m, vỏ inox, cường độ sáng LED ổn định suốt tuổi thọ thiết
+    bị.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_103581" align="aligncenter" width="535"]<img class=" wp-image-103581"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/04/BEN5M-MFR.webp" alt="BEN5M-MFR Hải Phòng Tech" width="535"
+      height="535" /> BEN5M-MFR | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 11 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">11. Autonics BR10M-TDTR — Phản xạ gương M10, 0.1–1.5m
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Thay thế trực tiếp cảm biến cơ học bị mài mòn sau 3 tháng tại cổng
+    nhập kho — không cần bảo trì, không có bộ phận chuyển động. Gương phản chiều loại tròn Ø40mm đi kèm sẵn trong hộp,
+    lắp đặt trong 15 phút.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431276" align="aligncenter" width="542"]<img class=" wp-image-431276"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/BEN10M-TDT-AUTONICS.avif"
+      alt="BEN10M-TDT AUTONICS | Hải Phòng Tech" width="542" height="542" /> BEN10M-TDT AUTONICS | Hải Phòng
+    Tech[/caption]</figure>
+</section><!-- Sensor 12 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">12. Autonics BYD50-TDT — Thu-phát Ø50mm, khoảng cách 15m
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Chùm tia lớn Ø50mm, tầm 15m — dùng làm rào an toàn cổng máy dập 200
+    tấn, dừng ngay lập tức khi tay người vào vùng nguy hiểm. Đây không phải light curtain nhưng chi phí thấp hơn nhiều
+    cho ứng dụng 1 điểm kiểm soát đơn giản.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_395891" align="aligncenter" width="552"]<img class=" wp-image-395891"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/03/BYD50-DDT.webp" alt="BYD50-DDT | Hải Phòng Tech"
+      width="552" height="552" /> BYD50-DDT | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 13 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">13. Autonics BS5-T2M — Hình chữ nhật 5×5mm, khuếch tán
+    20mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Lắp trong hộp nạp đạn (cassette) máy SMT để xác nhận linh kiện đã nạp
+    đủ trước khi bắt đầu chu kỳ lắp ráp. Thân vuông 5×5mm chốt vào rãnh trượt cassette bằng vít M2 — cố định chắc chắn
+    dù máy rung liên tục.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_395749" align="aligncenter" width="554"]<img class=" wp-image-395749"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/03/BS5-T2M.webp" alt="BS5-T2M | Hải Phòng Tech" width="554"
+      height="554" /> BS5-T2M | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 14 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">14. Autonics BF3RX — Cảm biến sợi quang thu, bán kính
+    cong 3mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Cáp quang uốn gập bán kính chỉ 3mm mà không vỡ sợi — luồn qua kênh dẫn
+    dây chật hẹp bên trong cánh tay robot Delta mà không cần đi đường vòng. Đầu sợi mạ vàng chống oxi hóa, cắm được hàng
+    nghìn lần mà không giảm tín hiệu.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_223363" align="aligncenter" width="561"]<img class=" wp-image-223363"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/08/BF3RX.webp" alt="BF3RX | Hải Phòng Tech" width="561"
+      height="561" /> BF3RX | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 15 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">15. Autonics BTF30-DDTL - Cảm biến quang điện loại siêu
+    nhỏ, tích hợp bộ khuếch đại</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Cắm-rút theo tiêu chuẩn DIN rail — cháy khuếch đại thay ngay trong 30
+    giây mà không cần tháo cáp quang ra, không dừng máy lâu. Điều chỉnh độ nhạy bằng nút vặn trên mặt, LED chỉ thị hai
+    màu rõ ràng từ xa 5m.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431372" align="aligncenter" width="582"]<img class=" wp-image-431372"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/BTF30-DDTL.webp" alt="BTF30-DDTL | Hải Phòng Tech"
+      width="582" height="582" /> BTF30-DDTL | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 16 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">16. SICK WL9-2P430 — Miniature khuếch tán, Sn = 120mm,
+    IP67</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Thân nhỏ nhưng chịu được rung động cấp 55Hz/1mm và sốc 30g/11ms — hàng
+    nghìn chiếc đang chạy trong nhà máy sản xuất pin xe điện tại Hải Phòng. Kết nối M8 4 chân chuẩn — thay thế trong 2
+    phút mà không cần lập trình lại PLC.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    [gallery columns="2" link="none" size="medium" ids="431373,431374"]</figure>
+</section><!-- Sensor 17 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">17. SICK WT4-3P410 — Compact 10×30mm, Sn = 300mm,
+    IO-Link</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">IO-Link native cho phép truyền dữ liệu chẩn đoán (cường độ tín hiệu,
+    số chu kỳ, nhiệt độ vỏ) thẳng lên SCADA mà không qua thêm module trung gian. Đặt trên chuyền lắp ráp điện thoại để
+    phát hiện sớm khi bụi bám lên thấu kính trước khi cảm biến chết hẳn.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431375" align="aligncenter" width="504"]<img class=" wp-image-431375"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/WT4-3P410.jpg" alt="WT4-3P410 | Hải Phòng Tech"
+      width="504" height="504" /> WT4-3P410 | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 18 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">18. SICK GTB6-N1212 — Tối nhỏ 6mm, khuếch tán 40mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Thân Ø6mm nhét vào rãnh trượt mẫu xét nghiệm y tế mà không cản luồng
+    di chuyển của khay. Dù nhỏ, mạch chống nhiễu ánh sáng ngoài của SICK đủ mạnh để chạy dưới đèn phòng lab mà không cần
+    che chắn thêm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_296198" align="aligncenter" width="517"]<img class=" wp-image-296198"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/11/GTB6-N1212.webp" alt="GTB6-N1212 | Hải Phòng Tech"
+      width="517" height="517" /> GTB6-N1212 | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 19 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">19. Keyence PZ-G42P — Khuếch tán, ngõ ra analog 1–5V +
+    digital</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Xuất đồng thời tín hiệu digital (ON/OFF) và analog (tỷ lệ khoảng cách)
+    — một thiết bị vừa đếm sản phẩm vừa đo độ lệch vị trí băng tải. Dùng trong nhà máy in ấn để đồng thời đếm tờ và phát
+    hiện tờ bị xô lệch hơn 3mm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    [gallery columns="2" link="none" size="medium" ids="245437,26994"]</figure>
+</section><!-- Sensor 20 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">20. Keyence PR-G51P — Phản xạ gương, 0.1–4m, chống nhiễu
+    nắng</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Lắp cổng cân tải trọng ngoài bãi container — chạy tốt cả khi nắng xiên
+    trực tiếp vào mặt cảm biến vào lúc 14h. Gương phản chiều Ø60mm kèm theo, cường độ tín hiệu vượt ngưỡng kể cả khi
+    gương bị bụi nhẹ phủ sau 2 tuần.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431376" align="aligncenter" width="827"]<img class=" wp-image-431376"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/PR-G51P-Keyence.jpg"
+      alt="PR-G51P-Keyence | Hải Phòng Tech" width="827" height="284" /> PR-G51P-Keyence | Hải Phòng Tech.[/caption]
+  </figure>
+</section><!-- Sensor 21 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">21. Keyence CX-422 — Thu-phát compact, khoảng cách 500mm
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Kết nối M8 2 đầu phát-thu riêng biệt nhưng dùng cùng một connector —
+    đi dây gọn hơn 40% so với cặp cảm biến thu-phát truyền thống. Dùng trên line kiểm tra tờ thép tấm: xác nhận đủ tờ
+    trước khi vật liệu vào máy uốn.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;"><img class="aligncenter wp-image-25450"
+        src="https://haiphongtech.vn/wp-content/uploads/2024/07/Panasonic_CX-422.jpg" alt="Panasonic_CX-422" width="527"
+        height="527" /></p>
+  </figure>
+</section><!-- Sensor 22 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">22. Autonics PR12-2AO — Cảm biến tiệm cận Autonics
+    PR12-2AO 2mm NO 110-220V</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phổ biến ở nhà máy điện tử FDI miền Bắc nhờ giá Hàn Quốc hợp lý và
+    chuỗi cung ứng phụ tùng ổn định. Thân M18 chuẩn, lắp thay thế trực tiếp nhiều mã khác cùng form-factor mà không cần
+    gia công lại giá đỡ.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_96115" align="aligncenter" width="540"]<img class=" wp-image-96115"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/04/PR12-2AO.webp" alt="PR12-2AO Hải Phòng Tech" width="540"
+      height="540" /> PR12-2AO | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 23 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">23. IDEC SA1E-LP1C — Khuếch tán M18, IP67, -20°C</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Chịu nhiệt độ môi trường -20°C đến +55°C — chọn cho line thực phẩm
+    đông lạnh cần phun nước rửa bằng nước nóng 80°C. Kết hợp được IP67 và dải nhiệt rộng trong một sản phẩm, không cần
+    gia công thêm vỏ bảo vệ.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431377" align="aligncenter" width="550"]<img class=" wp-image-431377"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/SA1E-LP1C.jpg" alt="SA1E-LP1C | Hải Phòng Tech"
+      width="550" height="550" /> SA1E-LP1C | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 24 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">24. Balluff BOS 18K-PA-1EP-S4 — M18, IO-Link, IP69K</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">IP69K chịu được tia nước áp suất cao 80 bar và nhiệt độ 80°C — tiêu
+    chuẩn xưởng phun sơn tĩnh điện nơi bụi bột phủ khắp nơi và rửa bằng áp lực cao mỗi ngày. IO-Link báo cáo mức bụi
+    tích lũy trên thấu kính về PLC để lên lịch vệ sinh chủ động.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    [gallery columns="2" size="large" link="none" ids="431378,431379"]</figure>
+</section><!-- Sensor 25 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">25. Omron E3ZG-D61-IL5 — Laser khuếch tán, hiển thị
+    khoảng cách</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Màn hình LED mặt sau hiển thị khoảng cách tức thời tính bằng mm — tự
+    thiết lập ngưỡng theo khoảng cách đo được thực tế, không cần thước hay cữ định vị khi căn chỉnh. Lắp trên robot
+    SCARA kiểm tra chiều cao sản phẩm sau khi ép nhựa.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_92049" align="aligncenter" width="529"]<img class=" wp-image-92049"
+      src="https://haiphongtech.vn/wp-content/uploads/2024/07/E3ZG-D61-Omron.webp" alt="E3ZG-D61-Omron Hải Phòng Tech"
+      width="529" height="529" /> E3ZG-D61-Omron - Sự kết hợp giữa công nghệ hiện đại và sự bền bỉ, chỉ có tại Hải Phòng
+    Tech.[/caption]</figure>
+</section>
+<!-- ═══════════════════════════════════════════════════ SECTION 2 — TIỆM CẬN CẢM ỨNG ═══════════════════════════════════════════════════ -->
+<h2 id="cam-bien-tiem-can-cam-ung"
+  style="font-size: 1.5rem; font-weight: bold; color: #0f1e30; border-left: 4px solid #3581b7; padding-left: 14px; margin-top: 40px;">
+  Cảm biến tiệm cận cảm ứng – Mã 26 đến 45</h2>
+Tiệm cận cảm ứng phát hiện kim loại mà không cần tiếp xúc — ứng dụng từ đếm bánh răng, kiểm tra piston, đến xác định vị
+trí trục. Khi chọn, hai thông số quan trọng nhất là <strong>khoảng cách phát hiện Sn</strong> và <strong>tần số đáp ứng
+  f</strong>. Xem thêm tại <a style="color: #3581b7;" href="https://haiphongtech.vn/cam-bien-tiem-can/">danh mục cảm
+  biến tiệm cận</a>.
+<blockquote
+  style="border-left: 4px solid #f0a500; margin: 20px 0; padding: 14px 18px; background: #fffbf0; border-radius: 0 6px 6px 0;">
+  ⚠️ <strong>Cảnh báo:</strong> Cảm biến tiệm cận loại shielded (có vòng kim loại che quanh mặt cảm biến) có Sn thấp hơn
+  20–30% so với unshielded nhưng không bị nhiễu từ bề mặt kim loại xung quanh. Không phân biệt được hai loại này là
+  nguyên nhân hàng đầu của báo sai trong lắp đặt mới.</blockquote>
+<!-- Sensor 26 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">26. Omron E2E-X5ME1 — M12, Sn = 5mm, NPN thường hở</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Mã "cổ điển" chưa bao giờ lỗi thời — nhỏ, chắc, tần số 1.5kHz, lắp
+    trong đầu kẹp robot phát hiện đã nhặt được phôi kim loại hay chưa. IP67, chịu được dung dịch làm mát CNC liên tục 8
+    tiếng/ngày.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    [gallery columns="2" size="large" link="none" ids="20726,94479"]</figure>
+</section><!-- Sensor 27 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">27. Omron E2E-X10ME1 — M18, Sn = 10mm, NPN thường hở
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Tần số 400Hz, đếm được 24.000 vòng/phút bánh răng thép — đặt cạnh bánh
+    răng trục chính hộp số công nghiệp để tính RPM thực tế. Vỏ nickel-brass chịu môi trường ẩm ướt và rung động.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    [gallery columns="2" size="medium" link="none" ids="94499,49483"]</figure>
+</section><!-- Sensor 28 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">28. Omron E2E-X20ME1 — M30, Sn = 20mm, NPN</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Sn = 20mm đủ tầm phát hiện piston thép ẩn trong xylanh thủy lực bám
+    dầu dày 2–3mm. Thân M30 với đai ốc hãm đôi — không bị nới lỏng kể cả khi máy rung tần số cao.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431380" align="aligncenter" width="544"]<img class=" wp-image-431380"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/E2E-X20ME1.jpg" alt="E2E-X20ME1 | Hải Phòng Tech"
+      width="544" height="544" /> E2E-X20ME1 | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 29 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">29. Omron TL-Q5MC1 — Vuông 40×40mm, Sn = 5mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Thân vuông lắp bằng vít 4 góc — không bị xoay như loại trụ khi máy
+    rung. Đặt cạnh bàn trượt CNC 3 trục làm công tắc hành trình về nguyên điểm, chịu được tia dung dịch làm mát bắn
+    thẳng vào mặt.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_236271" align="aligncenter" width="552"]<img class=" wp-image-236271"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/08/TL-Q5MC1-2M.webp" alt="TL-Q5MC1-2M | Hải Phòng Tech"
+      width="552" height="552" /> TL-Q5MC1-2M | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 30 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">30. Omron TL-W5MC1 — Dẹt 8mm, Sn = 5mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Dày chỉ 8mm — lắp vào khe hẹp 12mm bên trong máy dệt kim xác nhận thoi
+    dệt đã quay về vị trí gốc trước mỗi nhát dệt. Chịu nhiệt đến 85°C, phù hợp môi trường máy dệt tốc độ cao phát nhiệt.
+  </p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    [gallery columns="2" size="medium" link="none" ids="236280,94651"]</figure>
+</section><!-- Sensor 31 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">31. Omron E2EW-X10B1T30 — M18, Sn = 10mm, phát hiện cả
+    nhôm và thép</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Dòng E2EW dùng cuộn dây tần số cao để phát hiện nhôm với Sn đạt 60–80%
+    so với thép — không cần mua hai mã khác nhau cho dây chuyền lắp ráp hỗn hợp vỏ nhôm và khung thép. Kết nối M12
+    nhanh, đổi chiều lắp dây dễ dàng.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431381" align="aligncenter" width="537"]<img class=" wp-image-431381"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/E2EW-X10B1T30.jpg" alt="E2EW-X10B1T30 | Hải Phòng Tech"
+      width="537" height="537" /> E2EW-X10B1T30 | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 32 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">32. Autonics PR18-8DP — M18, Sn = 8mm, PNP thường hở
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Mã bán chạy nhất của Autonics tại Việt Nam — lắp phổ biến trên line
+    lắp ráp xe máy, kiểm tra có lắp đủ bu-lông trục bánh xe hay chưa. Giá hợp lý, hàng có sẵn, thay thế trong ngày khi
+    hỏng hóc.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_96151" align="aligncenter" width="550"]<img class=" wp-image-96151"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/04/PR18-8DP.webp" alt="PR18-8DP Hải Phòng Tech" width="550"
+      height="550" /> PR18-8DP | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 33 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">33. Autonics PR30-15DP — M30, Sn = 15mm, PNP</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phát hiện bánh răng thép Ø150mm qua lớp dầu bôi trơn 2mm mà không lệch
+    tín hiệu — tần số 1kHz tương đương 60.000 vòng/phút. Lắp cố định vào thân máy bằng đai ốc M30×1.5 hãm chặt, không
+    cần keo chống rung thêm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_96171" align="aligncenter" width="565"]<img class=" wp-image-96171"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/04/PR30-15DP.webp" alt="PR30-15DP Hải Phòng Tech" width="565"
+      height="565" /> PR30-15DP | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 34 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">34. Autonics PRD18-7DP2 — M18 shielded, Sn = 7mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Loại shielded lắp sát kết cấu thép của máy mà không bị nhiễu từ khung
+    — giảm khoảng cách lắp đặt từ 30mm xuống còn 5mm tính từ mặt cảm biến đến bề mặt giá đỡ. Dùng khi không gian lắp đặt
+    bị ăn bởi bề mặt kim loại xung quanh.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_96375" align="aligncenter" width="557"]<img class=" wp-image-96375"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/04/PRD18-7DP2.webp" alt="PRD18-7DP2 Hải Phòng Tech"
+      width="557" height="557" /> PRD18-7DP2 | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 35 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">35. Autonics PRA30-15DP — M30 unshielded, Sn = 20mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Không che chắn nên tầm đo tăng lên 20mm so với 15mm loại shielded cùng
+    kích thước — lựa chọn khi cần tầm xa nhưng không thể lắp cảm biến lớn hơn M30. Nhớ đảm bảo khoảng cách tối thiểu
+    45mm từ mặt cảm biến đến kết cấu kim loại lân cận.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431382" align="aligncenter" width="553"]<img class=" wp-image-431382"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/PRA30-15DP.webp" alt="PRA30-15DP | Hải Phòng Tech"
+      width="553" height="553" /> PRA30-15DP | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 36 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">36. Autonics PSN17-5DN — M17, Sn = 5mm, thân nhựa PBT
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Thân nhựa không từ tính — dùng trong máy phân loại viên thuốc tránh
+    nhiễu từ vào viên thuốc chứa sắt. Đây là lựa chọn đặc thù mà ít người biết: khi sản phẩm cần phát hiện nhạy cảm với
+    từ trường, thân nhựa là bắt buộc.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_97065" align="aligncenter" width="566"]<img class=" wp-image-97065"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/04/PSN17-5DN.webp" alt="PSN17-5DN Hải Phòng Tech" width="566"
+      height="566" /> PSN17-5DN | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 37 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">37. Autonics PR12-4DN — M12, Sn = 4mm, NPN</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Thân M12 mảnh lắp trực tiếp trên đầu cơ cấu cặp tay robot — phát hiện
+    ngay khi ngón kẹp chưa kẹp được linh kiện sau 3 lần thử. Xác nhận "đã cầm" trước khi robot di chuyển, tránh thả linh
+    kiện giữa đường.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_96127" align="aligncenter" width="570"]<img class=" wp-image-96127"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/04/PR12-4DN.webp" alt="PR12-4DN Hải Phòng Tech" width="570"
+      height="570" /> PR12-4DN | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 38 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">38. Autonics PRD30-15DP2 — M30 shielded, chịu dung dịch
+    làm mát</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Vật liệu thân chịu được emulsion làm mát dầu khoáng nồng độ 8% — đặt
+    trên mâm quay gia công tiện CNC mà không bị ăn mòn sau 6 tháng. Tần số 1.5kHz, xác nhận phôi đang cắt còn trên mâm
+    hay đã rơi.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_96388" align="aligncenter" width="569"]<img class=" wp-image-96388"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/04/PRD30-15DP2.webp" alt="PRD30-15DP2 Hải Phòng Tech"
+      width="569" height="569" /> PRD30-15DP2 | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 39 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">39. SICK IME12-04BPSZW2K — M12, Sn = 4mm, IO-Link</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">IO-Link truyền giá trị khoảng cách thực số hoá về PLC — phát hiện ngay
+    khi khoảng cách thay đổi nhỏ hơn 0.1mm, tức là cảm biến đang bị lệch so với vị trí gốc. Dùng trong hệ thống kiểm tra
+    lắp ráp chính xác ±0.2mm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    [gallery columns="2" size="medium" link="none" ids="431383,431384"]</figure>
+</section><!-- Sensor 40 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">40. SICK IM18-08BPS-ZW1 — M18, Sn = 8mm, IO-Link + nhiệt
+    độ</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Tích hợp đo nhiệt độ vỏ cảm biến, gửi cảnh báo khi nhiệt độ tăng bất
+    thường — dự đoán hỏng hóc trước khi cảm biến chết thật. Tính năng predictive maintenance này tiết kiệm chi phí dừng
+    máy khẩn cấp ở dây chuyền chạy 3 ca.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431385" align="aligncenter" width="504"]<img class=" wp-image-431385"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/IM18-08BPS-ZW1.jpg" alt="IM18-08BPS-ZW1 | Hải Phòng Tech"
+      width="504" height="466" /> IM18-08BPS-ZW1 | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 41 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">41. Keyence LR-ZH500N — Tiệm cận không tiếp xúc, độ phân
+    giải 1μm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đo độ lệch trục quay trong máy ép phun nhựa chính xác với độ phân giải
+    1μm — phát hiện độ lệch tâm trục 0.005mm trước khi gây ra sản phẩm lỗi hàng loạt. Ứng dụng đo lường, không chỉ phát
+    hiện có/không.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_157805" align="aligncenter" width="514"]<img class=" wp-image-157805"
+      src="https://haiphongtech.vn/wp-content/uploads/2024/07/LR-ZH500N.webp" alt="LR-ZH500N Hải Phòng Tech" width="514"
+      height="514" /> LR-ZH500N | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 42 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">42. Keyence TL-W5E — Dẹt 5mm, Sn = 5mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Lắp trong máy sản xuất pin 18650 — thân dẹt 5mm trượt vào khe cấp pin
+    hẹp, phát hiện kẹt pin trước khi máy bị kẹt cứng. Tốc độ phản hồi 100μs đủ để dừng máy kịp thời ở tốc độ cấp 200
+    pin/phút.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_94643" align="aligncenter" width="517"]<img class=" wp-image-94643"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/03/TL-W5E1-2M.webp" alt="TL-W5E1-2M Hải Phòng Tech"
+      width="517" height="517" /> TL-W5E1-2M | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 43 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">43. LS XS-Q18PA40NA — M18, Sn = 8mm, NPN, phụ tùng dễ
+    tìm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phổ biến ở các nhà máy điện lực miền Bắc vì chuỗi cung ứng phụ tùng ổn
+    định — kho LS tại Hà Nội luôn có hàng sẵn, thay thế trong ngày kể cả khi hỏng bất ngờ. Tương thích trực tiếp với PLC
+    LS dòng XBC/XGT.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;"></p>
+  </figure>
+</section><!-- Sensor 44 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">44. IDEC SA3C-AQ1 — Vuông 40mm, Sn = 8mm, IP67</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Thân vuông lắp vít 4 điểm không xoay — đặt ở bàn trượt trục Z máy cắt
+    laser làm công tắc giới hạn hành trình. Kết nối M12 tháo lắp nhanh khi cần bảo trì máy mà không mất thời gian đấu
+    lại dây.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;"></p>
+  </figure>
+</section><!-- Sensor 45 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">45. Pepperl+Fuchs NBB5-18GM50-E2 — M18, NAMUR, vùng nguy
+    hiểm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Tiêu chuẩn NAMUR EN60947-5-6 dùng trong vùng nguy hiểm Ex Zone 1 nhà
+    máy lọc dầu — ngõ ra dòng điện thay vì điện áp, an toàn tia lửa điện theo IEC 60079. Khi cần cảm biến tiệm cận trong
+    môi trường cháy nổ, đây là lựa chọn đúng duy nhất.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431386" align="aligncenter" width="504"]<img class=" wp-image-431386"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/NBB5-18GM50-E2.webp" alt="NBB5-18GM50-E2 | Hải Phòng Tech"
+      width="504" height="504" /> NBB5-18GM50-E2 | Hải Phòng Tech.[/caption]</figure>
+</section>
+<!-- ═══════════════════════════════════════════════════ SECTION 3 — TIỆM CẬN ĐIỆN DUNG ═══════════════════════════════════════════════════ -->
+<h2 id="cam-bien-tiem-can-dien-dung"
+  style="font-size: 1.5rem; font-weight: bold; color: #0f1e30; border-left: 4px solid #3581b7; padding-left: 14px; margin-top: 40px;">
+  Cảm biến tiệm cận điện dung – Mã 46 đến 50</h2>
+Tiệm cận điện dung phát hiện cả vật phi kim — nước, nhựa, bột, hạt, kính. Đây là loại cảm biến phù hợp khi bạn cần phát
+hiện vật liệu qua thành bình chứa mà không khoan lỗ.
+<blockquote
+  style="border-left: 4px solid #3581b7; margin: 20px 0; padding: 14px 18px; background: #f0f6fc; border-radius: 0 6px 6px 0;">
+  💡 <strong>Thực tế:</strong> Cảm biến điện dung nhạy cảm với độ ẩm môi trường. Nếu lắp ngoài trời hoặc môi trường ẩm
+  ướt, cần điều chỉnh ngưỡng (trim) lại sau khi lắp đặt hoàn chỉnh — không nên trim ở bàn kỹ thuật rồi mới lắp vào máy.
+</blockquote>
+<!-- Sensor 46 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">46. Autonics CR18-8DP — Điện dung M18, Sn = 8mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phát hiện mực nước trong bể inox từ bên ngoài thành bể không cần khoan
+    lỗ — cài ngưỡng thông qua chiết áp mặt sau cho từng loại bể khác nhau. Dùng phổ biến trong hệ thống cấp nước tự động
+    nhà máy thực phẩm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_146126" align="aligncenter" width="525"]<img class=" wp-image-146126"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/06/CR18-8DP.webp" alt="CR18-8DP Hải Phòng Tech" width="525"
+      height="525" /> CR18-8DP | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 47 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">47. Autonics CR30-15DP — Điện dung M30, Sn = 15mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phát hiện bột mì trong silô qua thành thép 3mm — cài độ nhạy vừa đủ để
+    không báo khi bột bị rơi rời thành từng hạt mỏng. Nhà máy bánh mì sử dụng để tự động mở van cấp bột khi mức xuống
+    dưới ngưỡng.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_96094" align="aligncenter" width="535"]<img class=" wp-image-96094"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/04/CR30-15DP.webp" alt="CR30-15DP Hải Phòng Tech" width="535"
+      height="535" /> CR30-15DP | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 48 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">48. Autonics PCR-M30-25DP — M30 unshielded, Sn = 25mm
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phân biệt lon nhôm trống và lon đã chứa nước trên cùng băng tải — điện
+    dung của chất lỏng bên trong tạo tín hiệu mạnh hơn lon rỗng đủ để cảm biến phân loại. Ứng dụng thực tế: đẩy ra dây
+    chuyền các lon không được nạp đủ nước.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431387" align="aligncenter" width="549"]<img class=" wp-image-431387"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/PCR-M30-25DP.jpg" alt="PCR-M30-25DP | Hải Phòng Tech"
+      width="549" height="549" /> PCR-M30-25DP | Hải Phòng Tech.[/caption]</figure>
+</section><!-- Sensor 49 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">49. SICK CQ27-30PPK — Ø27mm, điện dung, phát hiện phi
+    kim</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Kiểm tra vật thể nhựa trong suốt và thủy tinh mà cảm biến từ thông
+    thường bỏ qua hoàn toàn — kích thước compact Ø27mm lắp trực tiếp vào rãnh T-slot tiêu chuẩn. Ứng dụng: xác nhận chai
+    thủy tinh đã đặt đúng vị trí trong máy đóng nắp.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;"></p>
+  </figure>
+</section><!-- Sensor 50 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">50. Omron E2K-C25ME1 — M30, Sn = 25mm, điều chỉnh độ
+    nhạy</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phát hiện keo epoxy đã được phủ lên PCB hay chưa — keo còn ướt và keo
+    khô có hằng số điện môi khác nhau, cảm biến phân biệt được. Núm chỉnh độ nhạy 10 cấp cho phép tinh chỉnh theo đặc
+    tính điện môi cụ thể của từng loại keo.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_235921" align="aligncenter" width="555"]<img class=" wp-image-235921"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/08/E2K-C25ME1-2M.webp" alt="E2K-C25ME1-2M | Hải Phòng Tech"
+      width="555" height="555" /> E2K-C25ME1-2M | Hải Phòng Tech.[/caption]</figure>
+</section>
+<!-- ═══════════════════════════════════════════════════ SECTION 4 — NHIỆT ĐỘ ═══════════════════════════════════════════════════ -->
+<h2 id="cam-bien-nhiet-do"
+  style="font-size: 1.5rem; font-weight: bold; color: #0f1e30; border-left: 4px solid #3581b7; padding-left: 14px; margin-top: 40px;">
+  Cảm biến nhiệt độ – Mã 51 đến 70</h2>
+Ba loại phổ biến nhất trong <a style="color: #3581b7;" href="https://haiphongtech.vn/cam-bien-nhiet-do/">cảm biến nhiệt
+  độ</a>: PT100 (chính xác, 0–600°C), nhiệt ngẫu K (dải rộng, 0–1200°C) và cảm biến hồng ngoại (phi tiếp xúc, đo vật
+chuyển động). Chọn sai loại sẽ cho sai số ±5–15°C — không chấp nhận được ở quy trình đòi hỏi ±1°C.
+<blockquote
+  style="border-left: 4px solid #3581b7; margin: 20px 0; padding: 14px 18px; background: #f0f6fc; border-radius: 0 6px 6px 0;">
+  💡 <strong>Kỹ thuật thực tế:</strong> PT100 3 dây bù trừ điện trở dây nối, sai số nhỏ hơn PT100 2 dây khoảng 0.3–0.5°C
+  cho mỗi 10 ohm điện trở dây. Ở dây nối dài 20m tiết diện 0.5mm², sai số này có thể lên đến 2°C nếu dùng loại 2 dây.
+</blockquote>
+<!-- Sensor 51 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">51. Omron E52-CA1DY D=4.8 L=100 — Nhiệt ngẫu K, ±1°C
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đầu dò Ø4.8mm dài 100mm cắm thẳng vào lò sấy cao su 200°C — phản hồi
+    nhiệt độ trong 5 giây, phù hợp điều khiển PID chu kỳ ngắn 10 giây. Vỏ inox 316, chịu được hơi dung môi trong lò sấy.
+  </p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_290523" align="aligncenter" width="540"]<img class=" wp-image-290523"
+      src="https://haiphongtech.vn/wp-content/uploads/2025/11/E52-CA1DY-M8-2M.webp"
+      alt="E52-CA1DY-M8-2M | Hải Phòng Tech" width="540" height="540" /> E52-CA1DY-M8-2M | Hải Phòng Tech.[/caption]
+  </figure>
+</section><!-- Sensor 52 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">52. Omron E52-P50AY D=1.6 — PT100, đầu dò Ø1.6mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đầu dò siêu mảnh Ø1.6mm cắm vào lỗ khoan nhỏ trên khuôn ép nhựa 150°C
+    mà không ảnh hưởng đến độ bền khuôn. Phản hồi nhiệt nhanh hơn loại Ø4.8mm gần 3 lần nhờ khối lượng đầu đo nhỏ hơn.
+  </p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+
+    [caption id="attachment_431388" align="aligncenter" width="555"]<img class=" wp-image-431388"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/E52-P50AY.webp" alt="E52-P50AY | Hải Phòng Tech"
+      width="555" height="555" /> E52-P50AY | Hải Phòng Tech.[/caption]
+
+    [caption id="attachment_431389" align="aligncenter" width="2439"]<img class="size-full wp-image-431389"
+      src="https://haiphongtech.vn/wp-content/uploads/2026/04/dimension-E52-P50AY.jpg"
+      alt="Kích thước E52-P50AY | Hải Phòng Tech" width="2439" height="1026" /> Kích thước E52-P50AY | Hải Phòng
+    Tech[/caption]</figure>
+</section><!-- Sensor 53 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">53. Autonics TH400-T1-BK — Nhiệt ngẫu K, 0–1200°C</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Tiêu chuẩn đo nhiệt lò nung gốm sứ Bình Dương — đầu nối nhôm đúc IP54,
+    đi dây bù nhiệt ngẫu đơn giản. Cắm thẳng vào bộ điều nhiệt Autonics TZN4 không cần bộ chuyển đổi trung gian, chuẩn
+    hóa toàn hệ thống cùng một hãng.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics TH400-T1-BK]
+    </p>
+  </figure>
+</section><!-- Sensor 54 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">54. Autonics TH400-D4-L — PT100 3 dây, bù offset</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Núm chỉnh offset ngay trên đầu nối — hiệu chuẩn tại chỗ theo nhiệt kế
+    chuẩn mà không cần gửi đi hiệu chuẩn phòng lab. Lắp trong buồng sấy dược phẩm kiểm chuẩn đúng 60°C ±0.3°C theo yêu
+    cầu GMP.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics TH400-D4-L]
+    </p>
+  </figure>
+</section><!-- Sensor 55 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">55. Autonics NTC10K — NTC 10kΩ@25°C, phản hồi nhanh</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phản hồi nhiệt độ nhanh hơn PT100 gần 3 lần nhờ hệ số nhiệt điện trở
+    cao — dùng trong máy điều hòa công nghiệp cần kiểm soát nhiệt độ biến đổi nhanh. Không phù hợp khi cần độ chính xác
+    tuyệt đối; phù hợp khi cần tốc độ phản hồi.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics NTC10K]</p>
+  </figure>
+</section><!-- Sensor 56 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">56. Wika TR10-A — PT100 3 dây, vỏ 316L, CIP-proof</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Chứng nhận FDA 21 CFR, chịu được CIP rửa bằng NaOH 2% ở 85°C — tiêu
+    chuẩn đo nhiệt nước lạnh nhà máy bia mà không lo ăn mòn đầu nối sau mỗi chu trình vệ sinh. Xuất xứ Đức, kèm chứng
+    chỉ hiệu chuẩn gốc từ nhà máy.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Wika TR10-A]</p>
+  </figure>
+</section><!-- Sensor 57 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">57. Wika TR21-A — Nhiệt ngẫu K, mặt bích, thay nóng</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Kiểu lắp mặt bích tháo lắp ngay trong khi lò hơi đang vận hành ở 600°C
+    — đầu nối chết nhưng đầu dò còn tốt, thay riêng đầu dò mà không tắt lò. Thiết kế "well-type" thay nóng này tiết kiệm
+    nhiều giờ dừng máy mỗi năm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Wika TR21-A]</p>
+  </figure>
+</section><!-- Sensor 58 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">58. SICK TF53 — PT100 cấp A, chống rung, IP68</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Cấp chính xác IEC 751 Class A (±0.15°C@0°C), chịu rung 55Hz/2mm — đo
+    nhiệt ổ trục động cơ 45kW trong nhà máy giấy ngập nước liên tục. IP68 chịu ngập nước 1m/30 phút, không cần vỏ bảo vệ
+    thêm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: SICK TF53]</p>
+  </figure>
+</section><!-- Sensor 59 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">59. Keyence FT-H30 — Hồng ngoại phi tiếp xúc,
+    -40…+1000°C</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Vệt đo Ø0.8mm ở khoảng cách 30mm — đo nhiệt bánh răng quay 3000
+    vòng/phút mà không dừng máy, không cần tiếp xúc bề mặt chuyển động. Phản hồi 30ms, xuất tín hiệu analog 4–20mA về
+    PLC điều chỉnh dầu bôi trơn theo nhiệt độ.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Keyence FT-H30]</p>
+  </figure>
+</section><!-- Sensor 60 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">60. Keyence FT-H40 — Hồng ngoại, tầm 50–500mm, 1ms</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phản hồi 1ms — chụp được nhiệt độ điểm hàn trên PCB đang di chuyển qua
+    lò reflow ở tốc độ 1.2m/phút. Điểm đo Ø0.5mm phân biệt nhiệt độ từng pad hàn riêng biệt cách nhau 0.8mm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Keyence FT-H40]</p>
+  </figure>
+</section><!-- Sensor 61 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">61. Autonics TWN100 — PT100 đôi, đo 2 điểm đồng thời
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Hai đầu dò PT100 trong một thân — đo đồng thời nhiệt đầu vào và đầu ra
+    bộ trao đổi nhiệt, tính hiệu suất ngay mà không cần hai cảm biến riêng. Chênh lệch nhiệt độ hai đầu phản ánh công
+    suất trao đổi thực tế.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics TWN100]</p>
+  </figure>
+</section><!-- Sensor 62 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">62. Autonics TWN50 — PT100 đơn, vỏ đầu nhựa PA</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Vỏ đầu nhựa PA nhẹ hơn nhôm 60% — lắp trong tủ điện đo nhiệt độ môi
+    trường, cảnh báo khi vượt 45°C để bật thêm quạt hút. Thân nhỏ gọn phù hợp lắp xen kẽ giữa các thiết bị trong tủ điện
+    dày đặc.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics TWN50]</p>
+  </figure>
+</section><!-- Sensor 63 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">63. LS TF3-T4C — PT100 3 dây, chuẩn IEC 60751, ±0.15°C
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Tích hợp sẵn trong tủ điều khiển PLC LS dòng XBC — không cần module AI
+    đặc biệt khi chọn dùng cùng hệ sinh thái LS. Đây là ưu điểm quan trọng khi nhà máy đã chuẩn hóa toàn bộ hệ thống
+    trên nền tảng LS.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: LS TF3-T4C]</p>
+  </figure>
+</section><!-- Sensor 64 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">64. Autonics CTF-100N — Cảm biến nhiệt kỹ thuật số NTC,
+    hiển thị LED</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Hiển thị nhiệt độ ngay trên thân cảm biến, không cần màn hình bộ điều
+    nhiệt riêng — dùng trong tủ ấp trứng công nghiệp 10.000 quả/lứa, nhân viên đọc nhiệt độ từng khay mà không cần thiết
+    bị đọc thêm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics CTF-100N]
+    </p>
+  </figure>
+</section><!-- Sensor 65 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">65. Omron K8AB-TH11S — Relay bảo vệ nhiệt, cài ngưỡng
+    cắt</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Cắt nguồn động cơ máy nghiền xi măng khi nhiệt độ cuộn dây vượt ngưỡng
+    cài — ngăn cháy trước khi thiệt hại xảy ra. Thời gian trễ cài được từ 0–60 giây giúp tránh cắt nhầm do xung nhiệt
+    ngắn hạn khi khởi động.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Omron K8AB-TH11S]</p>
+  </figure>
+</section><!-- Sensor 66 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">66. Autonics TS-B — Đầu nối cảm biến nhiệt ngẫu, nhôm
+    đúc IP54</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đấu dây bù nhiệt ngẫu ngay tại đầu cảm biến thay vì đấu ở tủ điện —
+    triệt tiêu sai số phát sinh do cặp dây đồng/sắt tạo thành EMF giả tại điểm nối. Bước đơn giản mà nhiều kỹ thuật viên
+    mới bỏ qua, dẫn đến sai số 2–4°C không rõ nguyên nhân.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics TS-B]</p>
+  </figure>
+</section><!-- Sensor 67 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">67. Wika TC10-A — Nhiệt ngẫu K, ren G½, đến 1300°C</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đo nhiệt buồng đốt lò gốm 1300°C trong điều kiện khắc nghiệt — vỏ bảo
+    vệ alumina Ø8mm chịu nhiệt và chịu shock nhiệt khi cửa lò mở đột ngột. Hãng Đức với lịch sử 10 năm ổn định, không
+    cần thay theo chu kỳ bảo trì 3 tháng như hàng không rõ nguồn.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Wika TC10-A]</p>
+  </figure>
+</section><!-- Sensor 68 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">68. Autonics TXN-D4-A0 — Transmitter 4–20mA, nhận
+    PT100/nhiệt ngẫu</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Chuyển đổi tín hiệu PT100 hoặc nhiệt ngẫu ra 4–20mA để truyền về PLC
+    qua đường analog thông thường — không cần module input nhiệt độ đắt tiền. Cài đặt qua nút nhấn mặt trước, không cần
+    phần mềm hay thiết bị lập trình.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics TXN-D4-A0]
+    </p>
+  </figure>
+</section><!-- Sensor 69 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">69. SICK FTMg — Đo lưu lượng + nhiệt độ khí nén, cùng 1
+    thiết bị</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Một thiết bị đo đồng thời lưu lượng, nhiệt độ và áp suất khí nén —
+    tính tiêu thụ năng lượng nén theo giờ để đánh giá hiệu quả máy nén theo ISO 50001. Thay thế 3 cảm biến riêng lẻ,
+    tiết kiệm chi phí lắp đặt và đi dây.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: SICK FTMg]</p>
+  </figure>
+</section><!-- Sensor 70 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">70. Balluff BTS 18-GX1-NS-KL10-H1141 — PT100/NTC trong
+    thân M18</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Cắm trực tiếp vào ổ cắm cảm biến chuẩn M12, tương thích ổ cắm của cảm
+    biến tiệm cận — thêm đo nhiệt độ vào vị trí cũ mà không cần khoan thêm lỗ lắp đặt. Giải pháp nâng cấp hệ thống cũ mà
+    không thi công lại tủ điện.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Balluff BTS 18]</p>
+  </figure>
+</section>
+<!-- ═══════════════════════════════════════════════════ SECTION 5 — ÁP SUẤT ═══════════════════════════════════════════════════ -->
+<h2 id="cam-bien-ap-suat"
+  style="font-size: 1.5rem; font-weight: bold; color: #0f1e30; border-left: 4px solid #3581b7; padding-left: 14px; margin-top: 40px;">
+  Cảm biến áp suất – Mã 71 đến 85</h2>
+Khi chọn <a style="color: #3581b7;" href="https://haiphongtech.vn/cam-bien-ap-suat/">cảm biến áp suất</a>, cần xác định
+rõ ba thứ: dải áp suất cần đo, loại môi chất (khí/lỏng/dầu/ăn mòn), và kiểu ngõ ra (ON/OFF hay analog 4–20mA). Nhầm ba
+thứ này thì mua đúng mã vẫn lắp sai.
+<blockquote
+  style="border-left: 4px solid #f0a500; margin: 20px 0; padding: 14px 18px; background: #fffbf0; border-radius: 0 6px 6px 0;">
+  ⚠️ <strong>Cảnh báo:</strong> Cảm biến áp suất ngõ ra 4–20mA bị đứt dây sẽ cho tín hiệu 0mA — PLC đọc là áp suất = 0,
+  tức là tình trạng bình thường. Dùng ngưỡng cảnh báo &lt;4mA để phân biệt "áp suất thật bằng 0" với "đứt dây". Đây là
+  lỗi thiết kế hệ thống phổ biến gây tai nạn.</blockquote>
+<!-- Sensor 71 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">71. Autonics PSA-C01 — 0–1MPa, ngõ ra 0–10V</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Hiển thị giá trị áp suất tức thời lên màn HMI qua ngõ ra 0–10V với tốc
+    độ cập nhật 5ms — kỹ thuật viên theo dõi được sóng áp suất khí nén biến đổi theo chu kỳ van. Vỏ nhựa ABS nhẹ, lắp
+    trực tiếp vào đường ống ren PT1/4.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics PSA-C01]</p>
+  </figure>
+</section><!-- Sensor 72 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">72. Autonics PSA-C02 — 0–1MPa, 4–20mA, truyền xa 200m
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Tín hiệu dòng 4–20mA không suy hao theo chiều dài dây — truyền về PLC
+    đặt cách 200m mà không cần bộ khuếch đại trung gian. Dùng trong nhà máy lớn khi tủ điện trung tâm đặt xa trạm khí
+    nén.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics PSA-C02]</p>
+  </figure>
+</section><!-- Sensor 73 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">73. Autonics DPS-500A — Hiển thị LED 2 màu, 2 ngõ ra
+    relay</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">LED xanh = bình thường / đỏ = cảnh báo — nhìn từ xa 5m biết ngay trạng
+    thái mà không cần đến gần đọc số. Dùng giám sát áp suất nước làm mát máy cắt CNC, tự động cảnh báo khi áp suất xuống
+    dưới 3 bar.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics DPS-500A]
+    </p>
+  </figure>
+</section><!-- Sensor 74 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">74. Autonics DPS-300A — Hiển thị LED, dải 0–30 bar</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đặt trên đầu xylanh thủy lực, đọc áp suất bằng mắt mà không cần đồng
+    hồ cơ riêng lẻ — giảm số lượng thiết bị trên đường ống. Màn LED chịu được rung động và nhiệt độ môi trường đến 60°C
+    ở gần nguồn dầu thủy lực nóng.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics DPS-300A]
+    </p>
+  </figure>
+</section><!-- Sensor 75 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">75. Autonics PSAN-1C — Compact 41mm, 0–1MPa, 2 ngõ ra
+    NPN</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Chiều dài chỉ 41mm tiết kiệm không gian trong tủ khí nén nhỏ của trạm
+    robot hàn — lắp được ở vị trí không có chỗ cho cảm biến Ø18mm thông thường. Hai ngõ ra NPN độc lập cài hai ngưỡng
+    khác nhau (cảnh báo sớm + cắt khẩn cấp).</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics PSAN-1C]</p>
+  </figure>
+</section><!-- Sensor 76 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">76. Autonics PSAN-C01C — 0–1MPa, 4–20mA + hiển thị số
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Vừa hiển thị giá trị áp suất tại chỗ, vừa xuất 4–20mA về PLC — thay
+    thế áp kế cơ đồng thời lưu lại lịch sử áp suất vào PLC Mitsubishi. Một thiết bị làm hai việc, không phải lắp thêm
+    transmitter riêng.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics PSAN-C01C]
+    </p>
+  </figure>
+</section><!-- Sensor 77 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">77. Keyence AP-11A — Bán dẫn, 0–1MPa, phản hồi 2.5ms
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phản hồi 2.5ms phát hiện ngay khi ống khí nén bị nứt nhỏ 0.5mm — chênh
+    lệch áp suất 0.05 bar cũng kích hoạt được cảnh báo. Thân nhỏ gọn M5 lắp trực tiếp vào manifold khí nén không cần
+    adapter.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Keyence AP-11A]</p>
+  </figure>
+</section><!-- Sensor 78 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">78. Keyence AP-31A — Gắn DIN, kết nối M5, 0–500kPa, chân
+    không</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đo áp suất chân không trong hệ thống pick-and-place hút tấm kính màn
+    hình — xác nhận giác hút đã đạt -85kPa trước khi robot di chuyển. Gắn DIN rail cho phép lắp đặt tập trung nhiều
+    thiết bị trong tủ điều khiển.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Keyence AP-31A]</p>
+  </figure>
+</section><!-- Sensor 79 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">79. SICK PBS-RB010SG1SSNAMA — 0–10 bar, IP67, kết nối
+    M12</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Màng đo inox 316L chịu được hóa chất rửa máy nồng độ cao — đặt trong
+    máy rửa linh kiện áp lực cao mà không bị ăn mòn. Kết nối M12 tháo lắp nhanh khi cần bảo trì định kỳ mà không cần
+    cờ-lê.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: SICK PBS]</p>
+  </figure>
+</section><!-- Sensor 80 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">80. Wika A-10 — 4–20mA, -1 đến 600 bar, vật liệu 316L
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">"Tiêu chuẩn vàng" công nghiệp — dùng trong đường ống dầu thủy lực máy
+    ép 500 tấn, chịu áp lực xung 600 bar mà không lệch điểm 0. Xuất xứ Đức, vòng đời thiết kế 10 năm, chứng chỉ hiệu
+    chuẩn kèm từ nhà máy.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Wika A-10]</p>
+  </figure>
+</section><!-- Sensor 81 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">81. Wika S-10 — 4–20mA, 316L, chịu nhiệt -40…+125°C</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phiên bản chịu nhiệt cao của A-10 — đặt trực tiếp trên đường hơi nước
+    lò hơi 10 bar, 180°C mà không cần ống dẫn hạ nhiệt. Tiết kiệm thêm một phụ kiện và điểm rò rỉ tiềm năng trên đường
+    ống áp lực.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Wika S-10]</p>
+  </figure>
+</section><!-- Sensor 82 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">82. Omron E8F2-B10C — 0–10 bar, NPN 2 ngõ ra, ren PT1/4
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phát hiện thứ tự áp suất trong chu kỳ ép nhựa — xác nhận khuôn đã đóng
+    kín trước khi bơm nhựa vào. Hai ngõ ra cài hai mức: 8 bar = khuôn kín đủ áp để bắt đầu; 5 bar = cần kiểm tra khuôn.
+  </p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Omron E8F2-B10C]</p>
+  </figure>
+</section><!-- Sensor 83 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">83. Balluff BSP B010-EV002-A00A0B — 0–10 bar, IO-Link
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Truyền giá trị áp suất dạng số 16-bit về PLC qua IO-Link — loại bỏ sai
+    số ADC của module analog thông thường, độ phân giải tương đương 0.0015 bar. Dùng khi cần theo dõi dao động áp suất
+    nhỏ &lt;0.01 bar trong chu kỳ van.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Balluff BSP B010]</p>
+  </figure>
+</section><!-- Sensor 84 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">84. SMC ZSE40A-C6-R — Chân không -101–0kPa, 2 màn LED
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Giám sát lực hút của giác hút robot khi nâng tấm silicon mỏng 0.3mm —
+    2 màn hiển thị độc lập theo dõi cùng lúc giá trị hiện tại và giá trị đỉnh. Chuyên dụng cho hệ thống hút chân không
+    nơi cần biết chính xác -kPa chứ không chỉ ON/OFF.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: SMC ZSE40A]</p>
+  </figure>
+</section><!-- Sensor 85 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">85. LS P30-200KP — 0–200kPa, 4–20mA, thay thế trực tiếp
+    Autonics PSA</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Form factor và tầm tín hiệu tương thích hoàn toàn với dòng Autonics
+    PSA cũ — thay thế được mà không cần chỉnh lại PLC hay thay đổi đường ống. Hàng Hàn Quốc giá hợp lý, phù hợp dự án
+    nâng cấp thiết bị cũ với ngân sách hạn chế.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: LS P30-200KP]</p>
+  </figure>
+</section>
+<!-- ═══════════════════════════════════════════════════ SECTION 6 — SIÊU ÂM / LASER / MÀU SẮC ═══════════════════════════════════════════════════ -->
+<h2 id="cam-bien-dac-biet"
+  style="font-size: 1.5rem; font-weight: bold; color: #0f1e30; border-left: 4px solid #3581b7; padding-left: 14px; margin-top: 40px;">
+  Siêu âm, laser, màu sắc – Mã 86 đến 99</h2>
+Đây là nhóm cảm biến giải quyết các bài toán mà hai nhóm trên không xử lý được: phát hiện vật trong suốt, đo khoảng cách
+không tiếp xúc, phân biệt màu sắc hoặc nhãn — những tình huống mà đặt cảm biến quang hay tiệm cận thông thường rồi nhìn
+PLC báo sai liên tục mà không hiểu tại sao.
+<blockquote
+  style="border-left: 4px solid #3581b7; margin: 20px 0; padding: 14px 18px; background: #f0f6fc; border-radius: 0 6px 6px 0;">
+  💡 <strong>Kỹ sư thực chiến:</strong> Khi cảm biến quang không phân biệt được sản phẩm (ví dụ: hộp trắng trên băng tải
+  trắng, chai trong suốt, túi nhựa), đừng thay bằng cảm biến quang hãng khác — hãy chuyển sang siêu âm. Siêu âm phát
+  hiện bằng sóng âm, không quan tâm màu sắc hay độ trong suốt của vật thể.</blockquote>
+<!-- Sensor 86 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">86. Omron E4PA-LS200-M1 — Siêu âm 200mm–2m, 4–20mA</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đo mực xi măng trong silô Ø3m từ trên xuống — cập nhật mức tồn kho về
+    hệ thống quản lý tự động mà không cần người leo lên kiểm tra thủ công. Góc chùm âm 8° hẹp, không bị nhiễu thành silô
+    kể cả khi xi măng bám thành.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Omron E4PA-LS200-M1]
+    </p>
+  </figure>
+</section><!-- Sensor 87 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">87. Omron ZX-LD50 — Laser dịch chuyển, 10–60mm, 2μm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đo độ dày lớp keo trên màn hình điện thoại không dừng chuyền — độ phân
+    giải 2μm phát hiện lớp keo lệch 0.01mm so với tiêu chuẩn. Ngõ ra analog 1–5V cập nhật mỗi 10ms, đủ nhanh cho băng
+    tải tốc độ 1.5m/phút.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Omron ZX-LD50]</p>
+  </figure>
+</section><!-- Sensor 88 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">88. Autonics UNDK30U9103 — Siêu âm M30, 20–350mm, 0–10V
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Kiểm tra mực kem đánh răng trong tuýp trước khi hàn đầu — âm thanh
+    phản xạ khác nhau khi tuýp đầy và khi tuýp rỗng, phân loại được mà không cần cân. Tần số siêu âm 430kHz, phân giải
+    0.1mm ở toàn dải đo.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics UNDK30U9103]
+    </p>
+  </figure>
+</section><!-- Sensor 89 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">89. Autonics UB100-18GM75-U-V1 — Siêu âm M18, 30–1000mm
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phát hiện vật thể trong suốt — túi nhựa, màng PE, chai PET — mà cảm
+    biến quang nhìn xuyên qua không nhận ra. Thân M18 nhỏ gọn lắp được trên băng tải hẹp 100mm, chịu độ ẩm 95% không
+    ngưng tụ.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics
+      UB100-18GM75]</p>
+  </figure>
+</section><!-- Sensor 90 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">90. SICK UM18-21112 — Siêu âm M18, 30–250mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phát hiện hộp carton màu trắng trên băng tải trắng — tình huống cảm
+    biến quang "bó tay" vì độ tương phản bề mặt gần bằng 0. Siêu âm không cần tương phản màu sắc, chỉ cần bề mặt phản xạ
+    sóng âm đủ mạnh.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: SICK UM18-21112]</p>
+  </figure>
+</section><!-- Sensor 91 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">91. SICK UMB30-211818 — Siêu âm M30, 60–600mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đo khoảng cách cuộn giấy trong máy in offset để điều chỉnh sức căng tự
+    động — khi đường kính cuộn giảm, sức căng thay đổi, cảm biến cập nhật liên tục để bộ điều khiển bù lại. Thay thế
+    được hệ thống đo cơ học dùng con lăn tiếp xúc bị mài mòn.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: SICK UMB30-211818]
+    </p>
+  </figure>
+</section><!-- Sensor 92 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">92. Keyence IL-065 — Laser tam giác, 10–80mm, phân giải
+    1μm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đo chiều cao sản phẩm trên chuyền lắp ráp điện tử, loại tức thì nếu
+    lệch hơn 0.05mm — thay thế hệ thống đo tiếp xúc làm xước bề mặt. Tốc độ lấy mẫu 5kHz phù hợp băng tải chạy 2m/phút
+    kiểm tra 100% sản phẩm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Keyence IL-065]</p>
+  </figure>
+</section><!-- Sensor 93 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">93. Keyence LR-ZH500C — Laser phản xạ gương, 500mm</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Phát hiện nhãn trong suốt trên bề mặt bóng — "khắc tinh" của cảm biến
+    quang thông thường khi nhãn và nền cùng trong suốt. Kết hợp phân cực chéo và độ nhạy điều chỉnh số hoá, đăng ký được
+    nhãn 5×5mm trên chai PET.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Keyence LR-ZH500C]
+    </p>
+  </figure>
+</section><!-- Sensor 94 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">94. Autonics CSB3-S0512A — Cảm biến màu, phân biệt RGB
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Kiểm tra màu nắp hộp thuốc: đỏ=thuốc A, xanh=thuốc B — phát hiện lắp
+    nhầm màu trước khi dán nhãn. Đăng ký được 3 màu mẫu, phản hồi 1ms, đủ nhanh cho line dược phẩm 120 hộp/phút.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics CSB3-S0512A]
+    </p>
+  </figure>
+</section><!-- Sensor 95 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">95. Autonics CS10-30N — Cảm biến màu compact, 3 LED RGB
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Ba LED chiếu sáng đỏ/xanh lá/xanh dương luân phiên ở tốc độ cao — phân
+    loại kẹo theo màu vỏ bọc trên line đóng gói hỗn hợp 5 màu. Nhỏ hơn CSB3, lắp vừa vào cơ cấu cấp liệu hẹp 15mm.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Autonics CS10-30N]
+    </p>
+  </figure>
+</section><!-- Sensor 96 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">96. SICK CQ27-30NPP — Tương phản/màu, vệt sáng 0.1mm
+  </h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Vệt sáng 0.1mm dò nhãn barcode đã dán đúng vị trí hay chưa — phát hiện
+    lệch nhãn 0.5mm trên hộp kem mỹ phẩm trước khi xuất xưởng. Gắn trực tiếp vào máy dán nhãn, kiểm tra 100% sản phẩm
+    không cần camera.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: SICK CQ27-30NPP]</p>
+  </figure>
+</section><!-- Sensor 97 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">97. Balluff BOD 26M-LA03-C-S04 — Đo khoảng cách quang,
+    20–300mm, 12-bit</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Độ phân giải 12-bit tương đương 0.07mm ở toàn dải đo — giám sát liên
+    tục đường kính cuộn film plastic trong máy đóng gói flow-pack, tự điều chỉnh tốc độ cấp liệu theo đường kính giảm
+    dần. IO-Link xuất dữ liệu số hoá về PLC.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Balluff BOD 26M]</p>
+  </figure>
+</section><!-- Sensor 98 -->
+
+<section
+  style="border-left: 3px solid #3581b7; padding: 12px 16px 8px; margin: 18px 0; background: #fafcfe; border-radius: 0 6px 6px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1rem; color: #0f1e30;">98. Keyence CZ-V21A — Bộ khuếch đại màu/nhãn, phân biệt
+    độ bóng</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Đọc nhãn màu đen in trên nền đen bằng cách phân biệt độ bóng bề mặt —
+    nhãn in offset có độ bóng khác nền carton mờ, đủ để cảm biến phân biệt. Bài toán này từng đòi hỏi camera vision;
+    CZ-V21A giải quyết với chi phí thấp hơn 70%.</p>
+
+  <figure
+    style="background: #eef3f8; border: 1px dashed #3581b7; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #3581b7; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Keyence CZ-V21A]</p>
+  </figure>
+</section><!-- Sensor 99 -->
+
+<section
+  style="border-left: 4px solid #0f1e30; padding: 14px 18px 10px; margin: 18px 0; background: #f0f6fc; border-radius: 0 8px 8px 0;">
+  <h4 style="margin: 0 0 6px; font-size: 1.05rem; color: #0f1e30; font-weight: bold;">99. Omron E3ZG-D81-IL5 — Laser
+    khuếch tán, tự học ngưỡng bằng AI</h4>
+  <p style="margin: 0 0 8px; font-size: 0.95rem;">Tự phân tích môi trường xung quanh và đề xuất ngưỡng tối ưu trong vòng
+    30 giây — kỹ thuật viên không cần biết nhiều về cảm biến vẫn cài đặt đúng ngay lần đầu. Đây là cảm biến kết thúc
+    xứng đáng danh sách 99: không chỉ đo, nó còn "nghĩ" thay bạn một phần.</p>
+
+  <figure
+    style="background: #fff; border: 1px dashed #0f1e30; border-radius: 6px; padding: 10px; text-align: center; margin: 0;">
+    <p style="color: #0f1e30; margin: 0; font-size: 0.8rem; font-style: italic;">📷 [Ảnh sản phẩm: Omron E3ZG-D81-IL5]
+    </p>
+  </figure>
+</section>
+<!-- ═══════════════════════════════════════════════════ BẢNG SO SÁNH ═══════════════════════════════════════════════════ -->
+<h2 id="bang-so-sanh"
+  style="font-size: 1.5rem; font-weight: bold; color: #0f1e30; border-left: 4px solid #3581b7; padding-left: 14px; margin-top: 48px;">
+  Bảng so sánh cảm biến theo bài toán nhà máy</h2>
+Bảng dưới giúp bạn chọn đúng loại cảm biến trước khi tra cứu mã cụ thể.
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 20px 0;">
+  <thead>
+    <tr style="background: #3581b7; color: #fff;">
+      <th style="padding: 10px 12px; text-align: left; border: 1px solid #2a6fa0;">Bài toán</th>
+      <th style="padding: 10px 12px; text-align: left; border: 1px solid #2a6fa0;">Loại cảm biến phù hợp</th>
+      <th style="padding: 10px 12px; text-align: left; border: 1px solid #2a6fa0;">Mã gợi ý</th>
+      <th style="padding: 10px 12px; text-align: left; border: 1px solid #2a6fa0;">Không dùng loại nào</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background: #fff;">
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Đếm sản phẩm băng tải tốc độ cao</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Quang thu-phát hoặc phản xạ gương</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">E3Z-T61, BR10M-TDTR</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Siêu âm (tần số thấp)</td>
+    </tr>
+    <tr style="background: #f5fafd;">
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Phát hiện vật trong suốt (chai PET, túi nhựa)</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Siêu âm</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">UB100-18GM75, UM18-21112</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Quang khuếch tán thông thường</td>
+    </tr>
+    <tr style="background: #fff;">
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Đo tốc độ bánh răng, đếm vòng quay</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Tiệm cận cảm ứng, tần số cao</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">E2E-X10ME1, PR30-15DP</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Tiệm cận điện dung</td>
+    </tr>
+    <tr style="background: #f5fafd;">
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Phát hiện chất lỏng, bột qua thành bình</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Tiệm cận điện dung</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">CR18-8DP, CR30-15DP, E2K-C25ME1</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Tiệm cận cảm ứng</td>
+    </tr>
+    <tr style="background: #fff;">
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Đo nhiệt độ vật chuyển động (trục quay, băng tải)</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Hồng ngoại phi tiếp xúc</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">FT-H30, FT-H40</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">PT100/nhiệt ngẫu tiếp xúc</td>
+    </tr>
+    <tr style="background: #f5fafd;">
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Kiểm tra màu sắc/nhãn dán</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Cảm biến màu hoặc tương phản</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">CSB3-S0512A, CQ27-30NPP, CZ-V21A</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Quang khuếch tán thông thường</td>
+    </tr>
+    <tr style="background: #fff;">
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Vùng cháy nổ Ex Zone 1</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Tiệm cận NAMUR + rào cản IS</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">NBB5-18GM50-E2</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Bất kỳ cảm biến không có chứng nhận ATEX/IECEx</td>
+    </tr>
+    <tr style="background: #f5fafd;">
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Đo mức chất lỏng/hạt trong silô lớn</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Siêu âm tầm xa</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">E4PA-LS200-M1, UMB30-211818</td>
+      <td style="padding: 9px 12px; border: 1px solid #d8e8f0;">Tiệm cận (tầm quá ngắn)</td>
+    </tr>
+  </tbody>
+</table>
+<blockquote
+  style="border-left: 4px solid #3581b7; margin: 20px 0; padding: 14px 18px; background: #f0f6fc; border-radius: 0 6px 6px 0;">
+  💡 <strong>Nguyên tắc chọn nhanh:</strong> Nếu vật thể là kim loại → tiệm cận cảm ứng. Nếu phi kim không trong suốt →
+  quang khuếch tán. Nếu trong suốt → siêu âm. Nếu cần đo khoảng cách chính xác → laser. Nếu cần phân biệt màu → cảm biến
+  màu. Đơn giản vậy thôi — 80% bài toán ngoài thực tế rơi vào đây.</blockquote>
+<!-- ═══════════════════════════════════════════════════ KẾT BÀI ═══════════════════════════════════════════════════ -->
+<h2 id="ket-bai"
+  style="font-size: 1.5rem; font-weight: bold; color: #0f1e30; border-left: 4px solid #3581b7; padding-left: 14px; margin-top: 48px;">
+  Kết bài</h2>
+Tháng trước, một nhà máy sản xuất linh kiện ô tô tại Đồng Nai gặp sự cố lạ: <a
+  href="https://autosensor.vn/cam-bien-tiem-can">cảm biến tiệm cận</a> trên mâm cấp phôi báo đúng mà robot vẫn kẹp trượt
+3% số phôi. Kiểm tra kỹ lại mới phát hiện: phôi nhôm anod hoá bề mặt có lớp oxit dày hơn phôi thép thông thường, làm
+giảm Sn thực tế xuống còn 60% so với thông số trên catalogue. Giải pháp không phải là thay hãng mới — mà là chuyển sang
+Omron E2EW-X10B1T30, loại được thiết kế riêng để phát hiện nhôm với hệ số bù tự động. Sự cố 3% trở thành 0.1% chỉ sau
+một buổi đổi cảm biến.
+
+Đó là bản chất của việc chọn đúng cảm biến: không phải cứ "hãng tốt là được", mà phải đúng mã, đúng nguyên lý đo, đúng
+bối cảnh vật liệu. Danh sách 99 mã ở đây không phải để bạn đọc hết một lần — mà để tra cứu đúng lúc cần, như một cuốn sổ
+tay kỹ thuật luôn có sẵn trên bàn.
+
+Nếu bạn đang gặp bài toán cụ thể mà chưa tìm được mã phù hợp trong danh sách — kỹ thuật viên của chúng tôi tại
+<strong>haiphongtech.vn</strong> sẵn sàng xem xét thông số thực tế và gợi ý mã phù hợp nhất. Không cần biết chính xác
+tên hãng hay loại cảm biến trước — chỉ cần mô tả vật thể cần phát hiện, môi trường lắp đặt và tốc độ hoạt động là đủ.
+
+<!-- CTA BUTTON -->
+<p style="text-align: center; margin: 32px 0;"><a
+    style="display: inline-block; background: #3581b7; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-weight: bold; font-size: 1rem; letter-spacing: 0.3px;"
+    href="https://haiphongtech.vn/cam-bien-autonics/">Xem toàn bộ danh mục cảm biến tại haiphongtech.vn →
+  </a></p>
+
+
+<hr style="border: none; border-top: 1px solid #e0eaf2; margin: 40px 0;" />
+<p style="font-size: 0.82rem; color: #8a9bac; text-align: center;">Tổng hợp bởi đội kỹ thuật haiphongtech.vn · Mọi thông
+  số kỹ thuật tham chiếu từ datasheet gốc của nhà sản xuất · Cập nhật theo catalogue mới nhất hiện hành</p>

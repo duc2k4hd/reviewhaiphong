@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\MiaScraperController;
 use App\Http\Controllers\Admin\TourProScraperController;
 use App\Http\Controllers\Admin\VinpearlScraperController;
 use App\Http\Controllers\Admin\VinpearlLinkExtractorController;
+use App\Http\Controllers\Admin\TravelokaScraperController;
+use App\Http\Controllers\Admin\TravelokaLinkExtractorController;
 use App\Http\Controllers\Admin\LinkExtractorController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\NewsDetailController;
@@ -143,6 +145,19 @@ Route::prefix('/admin')->name('admin.')->group(function() {
     Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/vinpearl-link-extractor')->name('vinpearl-link-extractor.')->group((function() {
         Route::get('/', [VinpearlLinkExtractorController::class, 'index'])->name('index');
         Route::post('/extract', [VinpearlLinkExtractorController::class, 'extract'])->name('extract');
+    }));
+
+    // Traveloka Scraper routes
+    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/traveloka-scraper')->name('traveloka-scraper.')->group((function() {
+        Route::get('/', [TravelokaScraperController::class, 'index'])->name('index');
+        Route::post('/scrape', [TravelokaScraperController::class, 'scrape'])->name('scrape');
+        Route::post('/clear-processed-urls', [TravelokaScraperController::class, 'clearProcessedUrls'])->name('clear-processed-urls');
+    }));
+
+    // Traveloka Link Extractor routes
+    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/traveloka-link-extractor')->name('traveloka-link-extractor.')->group((function() {
+        Route::get('/', [TravelokaLinkExtractorController::class, 'index'])->name('index');
+        Route::post('/extract', [TravelokaLinkExtractorController::class, 'extract'])->name('extract');
     }));
 
     // Link Extractor Tool
@@ -333,4 +348,4 @@ Route::get('/sitemap-posts-{number}.xml', function ($number) {
 })->where('number', '[0-9]+');
 
 // Fallback route - Trang 404 cho tất cả các URL không khớp
-Route::fallback(fn () => response()->view('clients.pages.errors.404', [], 404));
+Route::fallback(fn () => response()->view('client.templates.errors.404', [], 404));
