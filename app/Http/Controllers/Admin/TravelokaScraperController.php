@@ -326,9 +326,9 @@ class TravelokaScraperController extends Controller
         libxml_clear_errors();
         $xpath = new DOMXPath($dom);
 
-        // Find the exact div: class="css-1dbjc4n r-18u37iz r-1jgb5lz r-1fnihl3" (must match exactly)
+        // Find the exact div: class="css-1dbjc4n r-1loqt21 r-1otgn73 r-1i6wzkk r-lrvibr"
         $contentNode = null;
-        $nodes = $xpath->query('//*[contains(@class,"css-1dbjc4n") and contains(@class,"r-18u37iz") and contains(@class,"r-1jgb5lz") and contains(@class,"r-1fnihl3")]');
+        $nodes = $xpath->query('//*[contains(@class,"css-1dbjc4n") and contains(@class,"r-1loqt21") and contains(@class,"r-1otgn73") and contains(@class,"r-1i6wzkk") and contains(@class,"r-lrvibr")]');
         if ($nodes && $nodes->length > 0) {
             $contentNode = $nodes->item(0);
         }
