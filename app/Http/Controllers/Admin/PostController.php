@@ -371,11 +371,20 @@ class PostController extends Controller
         ]);
 
         $postIds = $request->input('post_ids');
-        $deletedCount = Post::whereIn('id', $postIds)->delete();
-        
+        $deletedCount = 0;
+
+        // Xóa từng bài một để trigger model events (và xóa ảnh)
+        foreach ($postIds as $id) {
+            $post = Post::find($id);
+            if ($post) {
+                $post->delete();
+                $deletedCount++;
+            }
+        }
+
         // Xóa cache sau khi xóa bài viết
         $this->clearCache();
-        
+
         return back()->with('success', "Đã xoá {$deletedCount} bài viết");
     }
 
