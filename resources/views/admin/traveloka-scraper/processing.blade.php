@@ -45,7 +45,6 @@ function processNextBatch() {
 
     const fd = new FormData();
     fd.append('batch_index', batchIndex);
-    fd.append('category', '{{ $category }}');
     fd.append('_token', '{{ csrf_token() }}');
 
     fetch('{{ route("admin.traveloka-scraper.scrape") }}', {

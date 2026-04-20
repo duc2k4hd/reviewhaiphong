@@ -46,23 +46,6 @@
                         @error('urls')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label"><strong>Chọn danh mục để thêm bài viết:</strong></label>
-                        @foreach([
-                            'du-lich' => 'Du lịch',
-                            'am-thuc' => 'Ẩm thực',
-                            'check-in' => 'Check-in',
-                            'dich-vu' => 'Dịch vụ',
-                            'review-tong-hop' => 'Review tổng hợp',
-                        ] as $slug => $name)
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="category" id="cat-{{ $slug }}" value="{{ $slug }}" {{ old('category', 'du-lich') === $slug ? 'checked' : '' }} required>
-                                <label class="form-check-label" for="cat-{{ $slug }}">{{ $name }}</label>
-                            </div>
-                        @endforeach
-                        @error('category')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                    </div>
-
                     @if(isset($processedUrlsCount) && $processedUrlsCount > 0)
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
                             <strong><i class="fas fa-info-circle"></i> Thông tin:</strong>

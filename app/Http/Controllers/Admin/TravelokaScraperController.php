@@ -21,12 +21,24 @@ class TravelokaScraperController extends Controller
     private const SOURCE = 'traveloka';
     private const BATCH_SIZE = 3;
 
+    private const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
+    private const GEMINI_API_KEY = 'AIzaSyDCkhiyzPrXWEHrrXWgmfz_svPSqlmcBvg';
+
     private const CATEGORY_MAP = [
         'du-lich'         => 'Du lịch',
         'am-thuc'         => 'Ẩm thực',
         'check-in'        => 'Check-in',
         'dich-vu'         => 'Dịch vụ',
         'review-tong-hop' => 'Review tổng hợp',
+    ];
+
+    // Map Traveloka URL categories to local category slugs
+    private const TRAVELOKA_CATEGORY_MAP = [
+        'destination'     => 'du-lich',
+        'activities'      => 'dich-vu',
+        'culinary'        => 'am-thuc',
+        'tips'            => 'du-lich',
+        'accommodations'  => 'check-in',
     ];
 
     public function index()
@@ -57,11 +69,8 @@ class TravelokaScraperController extends Controller
 
         $request->validate([
             'urls'     => 'required|string|min:10',
-            'category' => 'required|string|in:' . implode(',', array_keys(self::CATEGORY_MAP)),
         ], [
             'urls.required'     => 'Vui lòng nhập ít nhất một URL.',
-            'category.required' => 'Vui lòng chọn một danh mục.',
-            'category.in'       => 'Danh mục không hợp lệ.',
         ]);
 
         $urls = array_values(array_filter(array_map('trim', explode("\n", $request->input('urls')))));
@@ -89,11 +98,10 @@ class TravelokaScraperController extends Controller
         }
 
         $request->session()->forget([
-            'traveloka_scraper_lock', 'traveloka_scraper_urls', 'traveloka_scraper_category',
-            'traveloka_scraper_total', 'traveloka_scraper_success', 'traveloka_scraper_errors',
+            'traveloka_scraper_lock', 'traveloka_scraper_urls', 'traveloka_scraper_total',
+            'traveloka_scraper_success', 'traveloka_scraper_errors',
         ]);
         $request->session()->put('traveloka_scraper_urls', $newUrls);
-        $request->session()->put('traveloka_scraper_category', $request->input('category'));
         $request->session()->put('traveloka_scraper_total', count($newUrls));
         $request->session()->put('traveloka_scraper_success', 0);
         $request->session()->put('traveloka_scraper_errors', []);
@@ -104,7 +112,6 @@ class TravelokaScraperController extends Controller
 
         return view('admin.traveloka-scraper.processing', [
             'totalUrls' => count($newUrls),
-            'category'  => $request->input('category'),
         ]);
     }
 
@@ -120,7 +127,6 @@ class TravelokaScraperController extends Controller
         $request->session()->put($lockKey, ['batch_index' => $batchIndex, 'expires_at' => $now + 60]);
 
         $urls       = $request->session()->get('traveloka_scraper_urls', []);
-        $catSlug    = $request->session()->get('traveloka_scraper_category', 'du-lich');
         $total      = count($urls);
         $start      = $batchIndex * self::BATCH_SIZE;
         $end        = min($start + self::BATCH_SIZE, $total);
@@ -130,7 +136,7 @@ class TravelokaScraperController extends Controller
 
         if (empty($batchUrls)) {
             $request->session()->forget([
-                'traveloka_scraper_urls', 'traveloka_scraper_category', 'traveloka_scraper_total',
+                'traveloka_scraper_urls', 'traveloka_scraper_total',
                 'traveloka_scraper_success', 'traveloka_scraper_errors', $lockKey,
             ]);
             try { Cache::flush(); } catch (\Throwable $e) {}
@@ -144,7 +150,7 @@ class TravelokaScraperController extends Controller
             ]);
         }
 
-        @set_time_limit(300);
+        @set_time_limit(900);
         ini_set('memory_limit', '1024M');
 
         $account = $this->loadAccount();
@@ -152,6 +158,13 @@ class TravelokaScraperController extends Controller
         foreach ($batchUrls as $i => $url) {
             try {
                 if (ScrapedUrl::isUrlScraped($url, self::SOURCE)) continue;
+
+                // Extract category from URL
+                $catSlug = $this->getCategoryFromUrl($url);
+                if (!$catSlug) {
+                    $errors[] = $url . ': Không thể xác định danh mục từ URL';
+                    continue;
+                }
 
                 $result = $this->scrapeSingleUrl($url, $account, $catSlug);
                 if ($result instanceof Post) {
@@ -226,6 +239,29 @@ class TravelokaScraperController extends Controller
             $content = '<p>' . e($desc) . '</p>';
         }
 
+        // AI rewrite: seo_title (60-70 chars), seo_desc (250-300 chars), content.
+        // Falls back to original title/desc/content if the call fails.
+        $seoTitle = Str::limit($title, 100, '');
+        $seoDesc  = Str::limit($desc, 160, '');
+        $rewritten = $this->rewriteWithAI($title, $content);
+        if ($rewritten) {
+            if (!empty($rewritten['seo_title']))  $seoTitle = $rewritten['seo_title'];
+            if (!empty($rewritten['seo_desc']))   $seoDesc  = $rewritten['seo_desc'];
+            if (!empty($rewritten['content']))    $content  = $rewritten['content'];
+            Log::info('Traveloka Scraper: AI rewrite applied', [
+                'url'         => $url,
+                'title_len'   => mb_strlen($seoTitle),
+                'desc_len'    => mb_strlen($seoDesc),
+                'content_len' => mb_strlen($content),
+            ]);
+        } else {
+            Log::warning('Traveloka Scraper: AI rewrite skipped, using original content', ['url' => $url]);
+        }
+
+        // Safety net: remove any <h1> the model may still have emitted (the post's
+        // main title is rendered from Post::$name, so an in-content h1 duplicates it).
+        $content = preg_replace('#<h1\b[^>]*>.*?</h1>#is', '', $content);
+
         $publishedAt = now();
         if (!empty($meta['publishedDate']) && is_numeric($meta['publishedDate'])) {
             try {
@@ -237,8 +273,8 @@ class TravelokaScraperController extends Controller
             'name'            => $title,
             'slug'            => $slug,
             'content'         => $content,
-            'seo_title'       => Str::limit($title, 100, ''),
-            'seo_desc'        => Str::limit($desc, 160, ''),
+            'seo_title'       => $seoTitle,
+            'seo_desc'        => $seoDesc,
             'seo_image'       => $seoImage,
             'seo_keywords'    => $this->extractKeywords($title, $desc),
             'category_id'     => $category->id,
@@ -326,53 +362,70 @@ class TravelokaScraperController extends Controller
         libxml_clear_errors();
         $xpath = new DOMXPath($dom);
 
-        // Find the exact div: tabindex="0" class="css-1dbjc4n r-1loqt21 r-1otgn73 r-1i6wzkk r-lrvibr" style="transition-duration: 0s;"
-        $contentNode = null;
-        $nodes = $xpath->query('//*[@tabindex="0" and contains(@class,"css-1dbjc4n") and contains(@class,"r-1loqt21") and contains(@class,"r-1otgn73") and contains(@class,"r-1i6wzkk") and contains(@class,"r-lrvibr") and contains(@style,"transition-duration")]');
-        if ($nodes && $nodes->length > 0) {
-            $contentNode = $nodes->item(0);
-        }
-
-        if (!$contentNode) {
-            return '';
-        }
-
-        $innerHtml = '';
-        foreach ($contentNode->childNodes as $child) {
-            $html = $dom->saveHTML($child);
-
-            // Skip divs with specific class + style combinations
-            if (preg_match('#<div[^>]*class="[^"]*css-1dbjc4n[^"]*r-1jgb5lz[^"]*"[^>]*style="#', $html) ||
-                preg_match('#<div[^>]*class="[^"]*css-1dbjc4n[^"]*r-1udh08x[^"]*"[^>]*style="#', $html)) {
-                continue;
+        // Traveloka article chunks are divs with both r-1jgb5lz and r-1fnihl3. There
+        // are typically two chunks: the header (breadcrumb + title + author + share
+        // buttons) and the body. We want only the body, so we skip any chunk that
+        // contains the share-container descendant — that's the reliable header flag.
+        // The chunk's direct-child div with r-11yh6sk r-l0gqae is the content column
+        // (grabbing it excludes the trailing "recommended articles" and product
+        // widgets that sit alongside the body column).
+        $sections = $xpath->query(
+            '//div[contains(concat(" ", normalize-space(@class), " "), " r-1jgb5lz ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-1fnihl3 ")'
+            . ' and not(.//*[@data-testid="desktop-detail-share-container"])'
+            . ' and not(.//*[@data-testid="mobile-detail-share-container"])]'
+            . '/div[contains(concat(" ", normalize-space(@class), " "), " r-11yh6sk ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-l0gqae ")]'
+        );
+        $collected = '';
+        if ($sections && $sections->length > 0) {
+            foreach ($sections as $section) {
+                $collected .= $dom->saveHTML($section);
             }
-
-            // Skip share/metadata containers
-            if (preg_match('#<div[^>]*class="[^"]*css-1dbjc4n[^"]*r-1awozwy[^"]*r-18u37iz[^"]*"#', $html) ||
-                preg_match('#<div[^>]*class="[^"]*r-184en5c[^"]*"#', $html) ||
-                preg_match('#<div[^>]*class="[^"]*css-1dbjc4n[^"]*r-x46dho[^"]*r-1d4dt7g[^"]*"#', $html)) {
-                continue;
-            }
-
-            $innerHtml .= $html;
         }
 
-        return (strlen(strip_tags($innerHtml)) > 100) ? $innerHtml : '';
+        if (strlen(strip_tags($collected)) > 100) {
+            return $collected;
+        }
+
+        // Fallback: the article container is the next sibling div after #navbar-offset.
+        $fallback = $xpath->query('//*[@id="navbar-offset"]/following-sibling::div[1]');
+        if ($fallback && $fallback->length > 0) {
+            $innerHtml = '';
+            foreach ($fallback->item(0)->childNodes as $child) {
+                $innerHtml .= $dom->saveHTML($child);
+            }
+            if (strlen(strip_tags($innerHtml)) > 100) {
+                return $innerHtml;
+            }
+        }
+
+        return '';
     }
 
     private function processContent(string $content, string $slug, string $title = ''): string
     {
         if ($content === '') return '';
 
-        // Remove scripts, styles, comments
+        // Remove scripts, styles, comments, SVG icons
         $content = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $content);
         $content = preg_replace('#<style\b[^>]*>.*?</style>#is', '', $content);
+        $content = preg_replace('#<svg\b[^>]*>.*?</svg>#is', '', $content);
         $content = preg_replace('#<!--.*?-->#s', '', $content);
 
-        // Replace all <div> with <p>
-        $content = preg_replace_callback('#<div\b([^>]*)>(.*?)</div>#is', function($m) {
-            return '<p>' . $m[2] . '</p>';
-        }, $content);
+        // Strip Traveloka brand/watermark images (godwit logo etc.) — identified by
+        // the RN Web class combo r-sdzlij + r-mabqd8, which Traveloka uses for inline
+        // brand graphics, not article photos.
+        $content = preg_replace(
+            '#<img\b(?=[^>]*\bclass="[^"]*\br-sdzlij\b[^"]*")(?=[^>]*\bclass="[^"]*\br-mabqd8\b[^"]*")[^>]*>#i',
+            '',
+            $content
+        );
+
+        // Convert Traveloka's React Native Web <div dir="auto"> text blocks into <p>,
+        // and unwrap all other <div> layout wrappers. Done via DOM so nested pairs
+        // are matched correctly (regex cannot balance nested divs).
+        $content = $this->normalizeDivs($content);
 
         // Remove all class attributes from non-img tags
         $content = preg_replace_callback('#<(?!img\b)(\w+)\b([^>]*)>#i', function($m) {
@@ -403,7 +456,7 @@ class TravelokaScraperController extends Controller
                 return $m[0];
             }
 
-            $assetUrl = asset($localPath);
+            $assetUrl = '/client/assets/images/posts/' . $localPath;
             $titleAttr = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
             $altAttr   = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
 
@@ -422,6 +475,341 @@ class TravelokaScraperController extends Controller
         $content = preg_replace('#<a\b[^>]*>(.*?)</a>#is', '$1', $content);
 
         return $content;
+    }
+
+    private function normalizeDivs(string $html): string
+    {
+        if (trim($html) === '') return '';
+
+        libxml_use_internal_errors(true);
+        $dom = new DOMDocument();
+        @$dom->loadHTML('<?xml encoding="UTF-8"?><!DOCTYPE html><html><body>' . $html . '</body></html>');
+        libxml_clear_errors();
+
+        $body = $dom->getElementsByTagName('body')->item(0);
+        if (!$body) return $html;
+
+        $xpath = new DOMXPath($dom);
+
+        // Drop share/social widgets (Traveloka's desktop-detail-share-container and
+        // mobile variant). Must happen before the unwrap pass, otherwise the inner
+        // share buttons leak into the output as loose text/icons.
+        $toRemove = iterator_to_array($xpath->query(
+            '//*[@data-testid="desktop-detail-share-container" or @data-testid="mobile-detail-share-container"]',
+            $body
+        ));
+        foreach ($toRemove as $node) {
+            $node->parentNode->removeChild($node);
+        }
+
+        // Drop RN Web pressable wrappers — div[tabindex=0] with the full atomic class
+        // combo Traveloka uses for interactive buttons (like/save/slider-nav/etc.).
+        // These are SVG-icon buttons inside article content; stripping the subtree
+        // keeps stray button labels/icons out of the output.
+        $pressables = iterator_to_array($xpath->query(
+            '//div[@tabindex="0"'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-1loqt21 ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-1otgn73 ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-1i6wzkk ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-lrvibr ")]',
+            $body
+        ));
+        foreach ($pressables as $node) {
+            if ($node->parentNode) {
+                $node->parentNode->removeChild($node);
+            }
+        }
+
+        // Drop inline hotel/product booking cards — div with class combo r-kdyh1x +
+        // r-1udh08x is Traveloka's white-bg card container (name, rating, address,
+        // "Xem giá"/"Đặt ngay" CTAs). These are ads/affiliate widgets injected into
+        // the article body, not content.
+        $cards = iterator_to_array($xpath->query(
+            '//div[contains(concat(" ", normalize-space(@class), " "), " r-kdyh1x ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-1udh08x ")]',
+            $body
+        ));
+        foreach ($cards as $node) {
+            if ($node->parentNode) {
+                $node->parentNode->removeChild($node);
+            }
+        }
+
+        // Drop Traveloka's horizontal product-row wrapper (article-chunk combo
+        // r-1jgb5lz + r-1fnihl3 with r-18u37iz flex-row + r-136ojw6 padding). Used
+        // for inline booking/affiliate cards rendered as a row inside article body.
+        // Skip rows that contain a heading — RN Web reuses r-136ojw6 for section-
+        // title rows in the body too (e.g. "1. Phố đi bộ Tam Bạc" <h3>).
+        $rows = iterator_to_array($xpath->query(
+            '//div[contains(concat(" ", normalize-space(@class), " "), " r-18u37iz ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-1jgb5lz ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-1fnihl3 ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-136ojw6 ")'
+            . ' and not(.//h1) and not(.//h2) and not(.//h3)'
+            . ' and not(.//h4) and not(.//h5) and not(.//h6)]',
+            $body
+        ));
+        foreach ($rows as $node) {
+            if ($node->parentNode) {
+                $node->parentNode->removeChild($node);
+            }
+        }
+
+        // Drop Traveloka affiliate bullet-list rows. The bullet-dot marker is a
+        // 24×24 square div with combo r-obd0qt + r-1777fci + r-1kb76zh — unique to
+        // this widget. Each dot's parent is the bullet row (dot + link text like
+        // "Khách sạn 5 sao Hải Phòng" pointing to funnel_source=content_article).
+        $dots = iterator_to_array($xpath->query(
+            '//div[contains(concat(" ", normalize-space(@class), " "), " r-obd0qt ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-1777fci ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-1kb76zh ")]',
+            $body
+        ));
+        foreach ($dots as $dot) {
+            $row = $dot->parentNode;
+            if ($row && $row->parentNode) {
+                $row->parentNode->removeChild($row);
+            }
+        }
+
+        // Drop another Traveloka affiliate/widget wrapper — unique class combo
+        // r-150rngu + r-buy8e9 + r-2eszeu + r-1sncvnh (padded card block injected
+        // into article body, not content).
+        $widgetBlocks = iterator_to_array($xpath->query(
+            '//div[contains(concat(" ", normalize-space(@class), " "), " r-150rngu ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-buy8e9 ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-2eszeu ")'
+            . ' and contains(concat(" ", normalize-space(@class), " "), " r-1sncvnh ")]',
+            $body
+        ));
+        foreach ($widgetBlocks as $node) {
+            if ($node->parentNode) {
+                $node->parentNode->removeChild($node);
+            }
+        }
+
+        // Drop Traveloka's "Discover flight with Traveloka" widget — the h2 heading
+        // plus its following sibling container (div.r-5oul0u holding flight cards
+        // with route/price/"Đặt Ngay"). Affiliate booking block, not article body.
+        $flightHeadings = iterator_to_array($xpath->query(
+            '//*[self::h1 or self::h2 or self::h3]'
+            . '[contains(normalize-space(.), "Discover flight with Traveloka")]',
+            $body
+        ));
+        foreach ($flightHeadings as $heading) {
+            $next = $heading->nextSibling;
+            while ($next && $next->nodeType !== XML_ELEMENT_NODE) {
+                $next = $next->nextSibling;
+            }
+            if ($next) {
+                $next->parentNode->removeChild($next);
+            }
+            if ($heading->parentNode) {
+                $heading->parentNode->removeChild($heading);
+            }
+        }
+
+        // Safety net: any remaining widget container carrying the r-5oul0u class.
+        $flightContainers = iterator_to_array($xpath->query(
+            '//div[contains(concat(" ", normalize-space(@class), " "), " r-5oul0u ")]',
+            $body
+        ));
+        foreach ($flightContainers as $node) {
+            if ($node->parentNode) {
+                $node->parentNode->removeChild($node);
+            }
+        }
+
+        // Rename <div dir="auto"> to <p>, but only when it's a "leaf" block with no
+        // descendant that's already a <p> or another dir="auto" wrapper. Traveloka
+        // sometimes nests a real <p> inside a dir="auto" div; converting the wrapper
+        // in that case would produce invalid <p><p>...</p></p>.
+        $textDivs = iterator_to_array($xpath->query(
+            '//div[@dir="auto" and not(.//div[@dir="auto"]) and not(.//p)]',
+            $body
+        ));
+        foreach ($textDivs as $div) {
+            $p = $dom->createElement('p');
+            while ($div->firstChild) {
+                $p->appendChild($div->firstChild);
+            }
+            $div->parentNode->replaceChild($p, $div);
+        }
+
+        // Unwrap every remaining <div>: splice its children into its parent, remove div.
+        // Loop until no divs remain — nested divs are peeled one layer at a time.
+        while (true) {
+            $divs = $body->getElementsByTagName('div');
+            if ($divs->length === 0) break;
+            $div = $divs->item(0);
+            $parent = $div->parentNode;
+            while ($div->firstChild) {
+                $parent->insertBefore($div->firstChild, $div);
+            }
+            $parent->removeChild($div);
+        }
+
+        $out = '';
+        foreach ($body->childNodes as $child) {
+            $out .= $dom->saveHTML($child);
+        }
+        return $out;
+    }
+
+    private function rewriteWithAI(string $title, string $content): ?array
+    {
+        if (trim($content) === '') {
+            Log::warning('Gemini rewrite: empty content, skipping');
+            return null;
+        }
+
+        Log::info('Gemini rewrite: start', [
+            'title'       => $title,
+            'content_len' => mb_strlen($content),
+        ]);
+
+        $prompt = <<<PROMPT
+Bạn là chuyên gia SEO và content writer cho website du lịch "Review Hải Phòng".
+
+Tôi cung cấp một bài viết gốc (tiêu đề + HTML). Nhiệm vụ: viết lại thành một bài chuẩn SEO, tự nhiên, hay hơn bản gốc, hoàn toàn thuộc về website Review Hải Phòng.
+
+YÊU CẦU CỨNG (bắt buộc tuân thủ):
+
+1. seo_title — độ dài TỪ 60 ĐẾN 70 KÝ TỰ (đếm cả dấu cách):
+   - KHÔNG chứa năm, tháng (cấm "2024", "2025", "tháng 3"... và mọi biến thể).
+   - KHÔNG chứa tên thương hiệu khác (cấm "Traveloka", "Booking", "Agoda", "Klook", "Expedia", "Tripadvisor"...).
+   - KHÔNG dùng emoji, ký tự đặc biệt, dấu ngoặc kép, dấu gạch "|".
+   - Phản ánh đúng chủ đề bài viết, hấp dẫn, tự nhiên, tiếng Việt có dấu.
+
+2. seo_desc — độ dài TỪ 250 ĐẾN 300 KÝ TỰ (đếm cả dấu cách):
+   - Các ràng buộc như seo_title (cấm năm/tháng, cấm thương hiệu khác, không emoji).
+   - Tóm tắt đầy đủ, kích thích click, viết như một đoạn văn trôi chảy.
+
+3. content — HTML sạch, chi tiết, dài hơn và CHẤT LƯỢNG HƠN bản gốc:
+   - CHỈ dùng các thẻ: <h2>, <h3>, <p>, <ul>, <ol>, <li>, <strong>, <em>, <blockquote>, <img>.
+   - KHÔNG dùng <div>, <span>, <section>, <article>, không class, không style, không data-*.
+   - TUYỆT ĐỐI KHÔNG chứa <h1> ở bất kỳ vị trí nào (tiêu đề bài viết đã hiển thị ngoài content — đặt <h1> ở đây sẽ gây trùng lặp SEO).
+   - GIỮ NGUYÊN tất cả thẻ <img> có trong bài gốc (src, alt, title không đổi) — không bỏ, không thêm ảnh mới.
+   - Đặt mỗi <img> ĐÚNG ngữ cảnh: ảnh về món ăn thì đặt gần đoạn văn nói về món ăn đó, ảnh về địa điểm thì đặt gần đoạn mô tả địa điểm đó. Phân bố đều trong bài.
+   - Thay MỌI đề cập đến "Traveloka" (ở bất kỳ dạng nào: Traveloka, traveloka.com, "theo Traveloka"...) bằng "Review Hải Phòng".
+   - Xóa mọi lời kêu gọi đặt vé/phòng qua Traveloka hoặc dẫn link đối tác.
+   - Văn phong thân thiện, chuyên nghiệp, cung cấp giá trị cho người đọc (thêm mẹo, lưu ý, gợi ý trải nghiệm nếu phù hợp).
+   - Mở đầu bằng 1 đoạn <p> giới thiệu, sau đó chia <h2>/<h3> mạch lạc, kết bằng 1 đoạn tổng kết.
+
+ĐẦU RA: CHỈ TRẢ VỀ JSON hợp lệ theo schema dưới đây, KHÔNG kèm markdown, KHÔNG ```json, KHÔNG chú thích:
+
+{
+  "seo_title": "...",
+  "seo_desc": "...",
+  "content": "<h2>...</h2><p>...</p><img src=\"...\" alt=\"...\" title=\"...\"><p>...</p>..."
+}
+
+BÀI GỐC:
+
+TIÊU ĐỀ: {$title}
+
+NỘI DUNG HTML:
+{$content}
+PROMPT;
+
+        $payload = json_encode([
+            'contents' => [[
+                'parts' => [['text' => $prompt]],
+            ]],
+            'generationConfig' => [
+                'responseMimeType' => 'application/json',
+                'temperature'      => 0.7,
+                'maxOutputTokens'  => 32768,
+            ],
+        ], JSON_UNESCAPED_UNICODE);
+
+        try {
+            $maxAttempts = 4;
+            $backoff     = [0, 5, 15, 30]; // seconds
+            $response    = false;
+            $code        = 0;
+            $err         = '';
+
+            for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+                if ($backoff[$attempt - 1] > 0) sleep($backoff[$attempt - 1]);
+
+                $ch = curl_init();
+                curl_setopt_array($ch, [
+                    CURLOPT_URL            => self::GEMINI_API_URL,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_POST           => true,
+                    CURLOPT_POSTFIELDS     => $payload,
+                    CURLOPT_HTTPHEADER     => [
+                        'Content-Type: application/json',
+                        'X-goog-api-key: ' . self::GEMINI_API_KEY,
+                    ],
+                    CURLOPT_TIMEOUT        => 180,
+                    CURLOPT_CONNECTTIMEOUT => 15,
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_SSL_VERIFYHOST => false,
+                ]);
+                $response = curl_exec($ch);
+                $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                $err  = curl_error($ch);
+                curl_close($ch);
+
+                Log::info('Gemini rewrite: response received', [
+                    'attempt'       => $attempt,
+                    'http_code'     => $code,
+                    'response_size' => is_string($response) ? strlen($response) : 0,
+                    'curl_error'    => $err,
+                ]);
+
+                if ($response !== false && $code === 200) break;
+
+                // Retry only on transient errors (429 rate limit, 500/502/503/504 server).
+                if (!in_array($code, [429, 500, 502, 503, 504], true)) break;
+                if ($attempt === $maxAttempts) break;
+                Log::info('Gemini rewrite: transient error, will retry', ['attempt' => $attempt, 'code' => $code]);
+            }
+
+            if ($response === false || $code !== 200) {
+                Log::warning('Gemini rewrite failed', ['code' => $code, 'err' => $err, 'body' => substr((string) $response, 0, 2000)]);
+                return null;
+            }
+
+            $body = json_decode($response, true);
+            $text = $body['candidates'][0]['content']['parts'][0]['text'] ?? null;
+            if (!is_string($text) || trim($text) === '') {
+                $finishReason = $body['candidates'][0]['finishReason'] ?? 'UNKNOWN';
+                $promptFeedback = $body['promptFeedback'] ?? null;
+                Log::warning('Gemini rewrite: empty text', [
+                    'finishReason'   => $finishReason,
+                    'promptFeedback' => $promptFeedback,
+                    'resp'           => substr($response, 0, 2000),
+                ]);
+                return null;
+            }
+
+            Log::info('Gemini rewrite: text received', ['text_len' => strlen($text)]);
+
+            // In case the model wrapped output in ```json ... ``` despite responseMimeType.
+            $text = trim($text);
+            if (strpos($text, '```') === 0) {
+                $text = preg_replace('#^```(?:json)?\s*#i', '', $text);
+                $text = preg_replace('#\s*```$#', '', $text);
+            }
+
+            $parsed = json_decode($text, true);
+            if (!is_array($parsed)) {
+                Log::warning('Gemini rewrite: invalid JSON', ['text' => substr($text, 0, 500)]);
+                return null;
+            }
+
+            return [
+                'seo_title' => isset($parsed['seo_title']) ? trim((string) $parsed['seo_title']) : '',
+                'seo_desc'  => isset($parsed['seo_desc'])  ? trim((string) $parsed['seo_desc'])  : '',
+                'content'   => isset($parsed['content'])   ? (string) $parsed['content']         : '',
+            ];
+        } catch (\Throwable $e) {
+            Log::warning('Gemini rewrite exception', ['error' => $e->getMessage()]);
+            return null;
+        }
     }
 
     private function downloadImage(string $url, string $slug): ?string
@@ -530,5 +918,14 @@ class TravelokaScraperController extends Controller
         $account = \App\Models\Account::find($id);
         if (!$account) throw new \Exception('Không tìm thấy tài khoản');
         return $account;
+    }
+
+    private function getCategoryFromUrl(string $url): ?string
+    {
+        if (preg_match('#/vi-vn/explore/(destination|activities|culinary|tips|accommodations)/#i', $url, $matches)) {
+            $travelokaCategory = strtolower($matches[1]);
+            return self::TRAVELOKA_CATEGORY_MAP[$travelokaCategory] ?? null;
+        }
+        return null;
     }
 }

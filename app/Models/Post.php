@@ -23,10 +23,34 @@ class Post extends Model
         parent::boot();
 
         static::deleting(function (Post $post) {
+            $postsDir = public_path('client/assets/images/posts');
+
             if (!empty($post->seo_image)) {
-                $imagePath = public_path('client/assets/images/posts/' . $post->seo_image);
+                $imagePath = $postsDir . DIRECTORY_SEPARATOR . basename($post->seo_image);
                 if (File::exists($imagePath)) {
                     File::delete($imagePath);
+                }
+            }
+
+            // Also delete images embedded in content HTML. Scraper stores them as
+            // /client/assets/images/posts/<filename>, so pull every matching src
+            // and unlink the physical file.
+            if (!empty($post->content)) {
+                $rawContent = $post->getAttributes()['content'] ?? $post->content;
+                if (preg_match_all('~<img\b[^>]*\bsrc=["\']([^"\']+)["\']~i', $rawContent, $matches)) {
+                    foreach (array_unique($matches[1]) as $src) {
+                        if (!preg_match('~/client/assets/images/posts/([^/?#"\'\s]+)~i', $src, $m)) {
+                            continue;
+                        }
+                        $filename = urldecode($m[1]);
+                        if ($filename === '' || $filename === basename($post->seo_image ?? '')) {
+                            continue;
+                        }
+                        $path = $postsDir . DIRECTORY_SEPARATOR . $filename;
+                        if (File::exists($path)) {
+                            File::delete($path);
+                        }
+                    }
                 }
             }
         });
