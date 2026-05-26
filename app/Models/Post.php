@@ -13,6 +13,8 @@ class Post extends Model
         'id', 'category_id', 'account_id', 'name', 'content', 'seo_title', 'seo_desc', 'seo_image', 'seo_keywords', 'tags', 'published_at', 'views', 'slug', 'status', 'last_updated_by', 'type'
     ];
 
+    protected $appends = ['word_count', 'reading_time'];
+
     protected $casts = [
         'published_at' => 'datetime',
         'created_at' => 'datetime',

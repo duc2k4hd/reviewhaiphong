@@ -1674,75 +1674,369 @@
                 font-size: 12px;
             }
 
-            .reviewhaiphong_blog_article-content {
-                padding: 0 15px 25px !important;
-                font-size: 15px !important;
-                line-height: 1.7 !important;
-            }
+        /* Article Content - Styles chuyên nghiệp cho tất cả thẻ HTML */
+        .reviewhaiphong_blog_article-content {
+            padding: 0 30px 40px !important;
+            font-size: 16px !important;
+            line-height: 1.75 !important;
+            color: #333 !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+        }
 
-            .reviewhaiphong_blog_article-content h1 {
-                font-size: 24px !important;
-                margin: 20px 0 14px 0 !important;
-            }
+        /* Paragraphs */
+        .reviewhaiphong_blog_article-content p {
+            margin: 0 0 16px 0 !important;
+            padding: 0 !important;
+            line-height: 1.75 !important;
+            color: #333 !important;
+        }
 
-            .reviewhaiphong_blog_article-content h2 {
-                font-size: 20px !important;
-                margin: 18px 0 12px 0 !important;
-            }
+        .reviewhaiphong_blog_article-content p:last-child {
+            margin-bottom: 0 !important;
+        }
 
-            .reviewhaiphong_blog_article-content h3 {
-                font-size: 18px !important;
-                margin: 16px 0 10px 0 !important;
-            }
+        /* Headings */
+        .reviewhaiphong_blog_article-content h1 {
+            font-size: 28px !important;
+            font-weight: 700 !important;
+            color: #1a1a1a !important;
+            margin: 24px 0 16px 0 !important;
+            padding: 0 !important;
+            line-height: 1.3 !important;
+        }
 
-            .reviewhaiphong_blog_article-content h4 {
-                font-size: 16px !important;
-                margin: 14px 0 8px 0 !important;
-            }
+        .reviewhaiphong_blog_article-content h2 {
+            font-size: 22px !important;
+            font-weight: 700 !important;
+            color: #1a1a1a !important;
+            margin: 20px 0 14px 0 !important;
+            padding: 0 !important;
+            line-height: 1.35 !important;
+        }
 
-            .reviewhaiphong_blog_article-content p {
-                margin: 0 0 14px 0 !important;
-            }
+        .reviewhaiphong_blog_article-content h3 {
+            font-size: 19px !important;
+            font-weight: 600 !important;
+            color: #222 !important;
+            margin: 18px 0 12px 0 !important;
+            padding: 0 !important;
+            line-height: 1.4 !important;
+        }
 
-            .reviewhaiphong_blog_article-content ul,
-            .reviewhaiphong_blog_article-content ol {
-                margin: 10px 0 10px 20px !important;
-            }
+        .reviewhaiphong_blog_article-content h4 {
+            font-size: 17px !important;
+            font-weight: 600 !important;
+            color: #222 !important;
+            margin: 16px 0 10px 0 !important;
+            padding: 0 !important;
+            line-height: 1.4 !important;
+        }
 
-            .reviewhaiphong_blog_article-content li {
-                margin: 5px 0 !important;
-            }
+        .reviewhaiphong_blog_article-content h5 {
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            color: #333 !important;
+            margin: 14px 0 8px 0 !important;
+            padding: 0 !important;
+            line-height: 1.45 !important;
+        }
 
-            .reviewhaiphong_blog_article-content img {
-                margin: 14px auto !important;
-                border-radius: 4px !important;
-            }
+        .reviewhaiphong_blog_article-content h6 {
+            font-size: 15px !important;
+            font-weight: 600 !important;
+            color: #333 !important;
+            margin: 12px 0 8px 0 !important;
+            padding: 0 !important;
+            line-height: 1.45 !important;
+        }
 
-            .reviewhaiphong_blog_article-content blockquote {
-                margin: 14px 0 !important;
-                padding: 10px 14px !important;
-            }
+        /* Text formatting */
+        .reviewhaiphong_blog_article-content strong,
+        .reviewhaiphong_blog_article-content b {
+            font-weight: 600 !important;
+            color: #1a1a1a !important;
+        }
 
-            .reviewhaiphong_blog_article-content table {
-                font-size: 13px !important;
-                margin: 14px 0 !important;
-            }
+        .reviewhaiphong_blog_article-content em,
+        .reviewhaiphong_blog_article-content i {
+            font-style: italic !important;
+            color: #333 !important;
+        }
 
-            .reviewhaiphong_blog_article-content th,
-            .reviewhaiphong_blog_article-content td {
-                padding: 8px 10px !important;
-            }
+        .reviewhaiphong_blog_article-content u {
+            text-decoration: underline !important;
+            text-decoration-thickness: 1px !important;
+        }
 
-            .reviewhaiphong_blog_article-content pre {
-                padding: 10px 12px !important;
-                margin: 14px 0 !important;
-                font-size: 13px !important;
-            }
+        .reviewhaiphong_blog_article-content mark {
+            background-color: #fff3cd !important;
+            color: #333 !important;
+            padding: 2px 4px !important;
+        }
 
-            .reviewhaiphong_blog_article-content code {
-                font-size: 13px !important;
-                padding: 2px 5px !important;
-            }
+        .reviewhaiphong_blog_article-content del {
+            text-decoration: line-through !important;
+            color: #666 !important;
+        }
+
+        /* Links */
+        .reviewhaiphong_blog_article-content a {
+            color: #1d9cd7 !important;
+            text-decoration: none !important;
+            border-bottom: 1px solid transparent !important;
+            transition: border-color 0.2s ease !important;
+        }
+
+        .reviewhaiphong_blog_article-content a:hover {
+            color: #1584b8 !important;
+            border-bottom-color: #1584b8 !important;
+        }
+
+        /* Lists */
+        .reviewhaiphong_blog_article-content ul,
+        .reviewhaiphong_blog_article-content ol {
+            margin: 12px 0 12px 24px !important;
+            padding: 0 !important;
+            list-style-position: outside !important;
+        }
+
+        .reviewhaiphong_blog_article-content ul {
+            list-style-type: disc !important;
+        }
+
+        .reviewhaiphong_blog_article-content ol {
+            list-style-type: decimal !important;
+        }
+
+        .reviewhaiphong_blog_article-content li {
+            margin: 6px 0 !important;
+            padding: 0 !important;
+            line-height: 1.75 !important;
+            color: #333 !important;
+        }
+
+        .reviewhaiphong_blog_article-content ul ul,
+        .reviewhaiphong_blog_article-content ol ol,
+        .reviewhaiphong_blog_article-content ul ol,
+        .reviewhaiphong_blog_article-content ol ul {
+            margin: 6px 0 6px 20px !important;
+        }
+
+        .reviewhaiphong_blog_article-content ul ul {
+            list-style-type: circle !important;
+        }
+
+        .reviewhaiphong_blog_article-content ul ul ul {
+            list-style-type: square !important;
+        }
+
+        /* Images */
+        .reviewhaiphong_blog_article-content img {
+            max-width: 100% !important;
+            height: auto !important;
+            border-radius: 4px !important;
+            margin: 16px auto !important;
+            padding: 0 !important;
+            display: block !important;
+        }
+
+        .reviewhaiphong_blog_article-content figure {
+            margin: 16px 0 !important;
+            padding: 0 !important;
+        }
+
+        .reviewhaiphong_blog_article-content figure img {
+            margin: 0 !important;
+        }
+
+        .reviewhaiphong_blog_article-content figcaption {
+            font-size: 14px !important;
+            color: #666 !important;
+            text-align: center !important;
+            margin-top: 8px !important;
+            padding: 0 !important;
+            font-style: italic !important;
+        }
+
+        /* Blockquote */
+        .reviewhaiphong_blog_article-content blockquote {
+            margin: 16px 0 !important;
+            padding: 12px 16px !important;
+            border-left: 3px solid #1d9cd7 !important;
+            background-color: #f8f9fa !important;
+            color: #555 !important;
+            font-style: normal !important;
+            line-height: 1.7 !important;
+        }
+
+        .reviewhaiphong_blog_article-content blockquote p {
+            margin: 0 0 8px 0 !important;
+        }
+
+        .reviewhaiphong_blog_article-content blockquote p:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        .reviewhaiphong_blog_article-content blockquote cite {
+            display: block !important;
+            font-size: 14px !important;
+            color: #666 !important;
+            margin-top: 8px !important;
+            font-style: italic !important;
+        }
+
+        /* Code */
+        .reviewhaiphong_blog_article-content code {
+            background-color: #f4f4f4 !important;
+            color: #d63384 !important;
+            padding: 2px 6px !important;
+            border-radius: 3px !important;
+            font-size: 14px !important;
+            font-family: 'Courier New', Courier, monospace !important;
+        }
+
+        .reviewhaiphong_blog_article-content pre {
+            background-color: #f8f9fa !important;
+            border: 1px solid #e5e5e5 !important;
+            border-radius: 4px !important;
+            padding: 12px 16px !important;
+            margin: 16px 0 !important;
+            overflow-x: auto !important;
+            line-height: 1.6 !important;
+        }
+
+        .reviewhaiphong_blog_article-content pre code {
+            background-color: transparent !important;
+            color: #333 !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        /* Tables */
+        .reviewhaiphong_blog_article-content table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 16px 0 !important;
+            padding: 0 !important;
+            background: #fff !important;
+            border: 1px solid #e0e0e0 !important;
+            font-size: 15px !important;
+        }
+
+        .reviewhaiphong_blog_article-content thead {
+            background-color: #f8f9fa !important;
+        }
+
+        .reviewhaiphong_blog_article-content tbody {
+            background-color: #fff !important;
+        }
+
+        .reviewhaiphong_blog_article-content th,
+        .reviewhaiphong_blog_article-content td {
+            padding: 10px 12px !important;
+            text-align: left !important;
+            border-bottom: 1px solid #e5e5e5 !important;
+            vertical-align: top !important;
+        }
+
+        .reviewhaiphong_blog_article-content th {
+            font-weight: 600 !important;
+            color: #1a1a1a !important;
+            background-color: #f8f9fa !important;
+        }
+
+        .reviewhaiphong_blog_article-content td {
+            color: #333 !important;
+        }
+
+        .reviewhaiphong_blog_article-content tr:last-child td {
+            border-bottom: none !important;
+        }
+
+        .reviewhaiphong_blog_article-content tbody tr:hover {
+            background-color: #f8f9fa !important;
+        }
+
+        /* Horizontal Rule */
+        .reviewhaiphong_blog_article-content hr {
+            border: none !important;
+            border-top: 1px solid #e5e5e5 !important;
+            margin: 20px 0 !important;
+            padding: 0 !important;
+            height: 0 !important;
+        }
+
+        /* Div và Span */
+        .reviewhaiphong_blog_article-content div {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .reviewhaiphong_blog_article-content span {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Address */
+        .reviewhaiphong_blog_article-content address {
+            font-style: normal !important;
+            margin: 12px 0 !important;
+            padding: 0 !important;
+            line-height: 1.75 !important;
+        }
+
+        /* Small text */
+        .reviewhaiphong_blog_article-content small {
+            font-size: 14px !important;
+            color: #666 !important;
+        }
+
+        /* Sub và Sup */
+        .reviewhaiphong_blog_article-content sub,
+        .reviewhaiphong_blog_article-content sup {
+            font-size: 12px !important;
+            line-height: 0 !important;
+            position: relative !important;
+            vertical-align: baseline !important;
+        }
+
+        .reviewhaiphong_blog_article-content sup {
+            top: -0.5em !important;
+        }
+
+        .reviewhaiphong_blog_article-content sub {
+            bottom: -0.25em !important;
+        }
+
+        /* Definition lists */
+        .reviewhaiphong_blog_article-content dl {
+            margin: 12px 0 !important;
+            padding: 0 !important;
+        }
+
+        .reviewhaiphong_blog_article-content dt {
+            font-weight: 600 !important;
+            color: #1a1a1a !important;
+            margin: 8px 0 4px 0 !important;
+            padding: 0 !important;
+        }
+
+        .reviewhaiphong_blog_article-content dd {
+            margin: 0 0 8px 20px !important;
+            padding: 0 !important;
+            color: #333 !important;
+        }
+
+        /* Abbreviation */
+        .reviewhaiphong_blog_article-content abbr {
+            text-decoration: underline dotted !important;
+            cursor: help !important;
+        }
+
+        /* Time */
+        .reviewhaiphong_blog_article-content time {
+            color: #666 !important;
+        }
 
             .reviewhaiphong_blog_comments-section {
                 padding: 20px 15px;

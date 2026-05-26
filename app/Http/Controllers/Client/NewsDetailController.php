@@ -101,6 +101,9 @@ class NewsDetailController extends Controller
                 // 2. Categories
                 $categories = Category::select(['id', 'name', 'slug'])
                     ->where('status', 'active')
+                    ->where(function ($query) {
+                        $query->whereNull('parent_id')->orWhere('parent_id', 0);
+                    })
                     ->withCount(['posts' => function ($query) { $query->where('status', 'published'); }])
                     ->orderBy('name')->get()->toArray();
 
