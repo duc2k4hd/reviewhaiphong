@@ -66,7 +66,7 @@ $(document).ready(function () {
 
     
 
-        window.location.href = '/tim-kiem/' + encodeURIComponent(keyword);
+        window.location.href = '/search?keyword=' + encodeURIComponent(keyword);
 
     });
 

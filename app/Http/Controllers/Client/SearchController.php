@@ -15,7 +15,7 @@ class SearchController extends Controller
 {
     public function search(Request $request)
     {
-        $keyword = $request->keyword;
+        $keyword = $request->query('keyword', '');
         
         try {
             // Tạo category giả cho trang search (để tương thích với view posts-category)

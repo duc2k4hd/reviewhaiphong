@@ -130,7 +130,7 @@ Route::middleware([MaintenanceMode::class])->group(function() {
     Route::get('/gioi-thieu', [HomeController::class, 'introduce'])->name('home.introduce');
     Route::get('/lien-he', [ContactController::class, 'index'])->name('contact.index');
     Route::get('/user/{username}', [ProfileController::class, 'index'])->name('profile.index');
-    Route::get('/tim-kiem/{keyword}', [SearchController::class, 'search'])->name('search.index');
+    Route::get('/search', [SearchController::class, 'search'])->name('search.index');
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 
     // Danh sách bài viết (URL chuẩn)
@@ -149,7 +149,7 @@ Route::middleware([MaintenanceMode::class])->group(function() {
     // Route chung: /{slug} - Tự động kiểm tra post hoặc category
     Route::get('/{slug}', [SlugRouterController::class, 'handle'])
         ->name('post.detail')
-        ->where(['slug' => '^(?!admin$|admin\/|storage\/|client\/|assets\/|vendor\/|public\/|bai-viet$|danh-muc$|trang-chu$|gioi-thieu$|lien-he$|tim-kiem$|user$|storage$|client$|assets$|vendor$|public$)[a-zA-Z0-9-_]+']);
+        ->where(['slug' => '^(?!admin$|admin\/|storage\/|client\/|assets\/|vendor\/|public\/|bai-viet$|danh-muc$|trang-chu$|gioi-thieu$|lien-he$|search$|user$|storage$|client$|assets$|vendor$|public$)[a-zA-Z0-9-_]+']);
 
     // Bài viết dạng cũ /{category}/{slug} -> redirect 301 về /{slug}
     Route::get('/{category}/{slug}', function (string $category, string $slug) {

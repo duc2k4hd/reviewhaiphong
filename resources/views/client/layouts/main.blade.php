@@ -177,7 +177,7 @@
                     "@type": "SearchAction",
                     "target": {
                         "@type": "EntryPoint",
-                        "urlTemplate": "{{ ($settings['site_url'] ?? url('/')) . '/tim-kiem/{search_term_string}' }}"
+                        "urlTemplate": "{{ ($settings['site_url'] ?? url('/')) . '/search?keyword={search_term_string}' }}"
                     },
                     "query-input": "required name=search_term_string"
                 },

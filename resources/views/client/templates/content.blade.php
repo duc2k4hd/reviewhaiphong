@@ -101,7 +101,7 @@
                             </div>
                             <div class="tags-list">
                                 @foreach($normalizedTags as $tag)
-                                    <a href="/tim-kiem/{{ $tag['slug'] }}" class="tag-item">
+                                    <a href="/search?keyword={{ urlencode($tag['name']) }}" class="tag-item">
                                         #{{ $tag['name'] }}
                                     </a>
                                 @endforeach
@@ -320,7 +320,7 @@
                     @if(isset($popularTags) && count($popularTags) > 0)
                         <div class="popular-tags" style="display: flex; flex-wrap: wrap; gap: 8px;">
                             @foreach($popularTags as $tag)
-                                <a href="/tim-kiem/{{ $tag->slug }}" class="tag-item">
+                                <a href="/search?keyword={{ urlencode($tag->name) }}" class="tag-item">
                                     #{{ $tag->name }}
                                 </a>
                             @endforeach

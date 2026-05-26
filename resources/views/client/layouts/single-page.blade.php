@@ -2562,7 +2562,7 @@
                 </h4>
                 <div class="reviewhaiphong_blog_popular-tags">
                     @foreach($popularTags as $tag)
-                        <a href="/tim-kiem/{{ $tag->slug }}" class="reviewhaiphong_blog_tag-item">
+                        <a href="/search?keyword={{ urlencode($tag->name) }}" class="reviewhaiphong_blog_tag-item">
                             #{{ $tag->name }}
                         </a>
                     @endforeach
@@ -2803,7 +2803,7 @@
         function redirectToSearch() {
             const keyword = document.getElementById('keyword').value.trim();
             if (keyword) {
-                window.location.href = '/tim-kiem/' + encodeURIComponent(keyword);
+                window.location.href = '/search?keyword=' + encodeURIComponent(keyword);
             }
             return false;
         }
