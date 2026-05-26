@@ -3,3 +3,4 @@
 <script src="{{ asset('/client/assets/js/script.js') }}?v={{ time() }}"></script>
 <script src="{{ asset('/client/assets/js/single.js') }}?v={{ time() }}"></script>
 <script src="{{ asset('/client/assets/js/modern-script.js') }}?v={{ time() }}"></script>
+<script src="{{ asset('/client/assets/js/home_new.js') }}?v={{ time() }}"></script>

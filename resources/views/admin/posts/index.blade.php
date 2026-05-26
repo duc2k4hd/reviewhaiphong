@@ -24,8 +24,8 @@
                         </div>
                         <div class="col-md-2">
                             <select name="per_page" class="form-select">
-                                @foreach([10,20,50,100,200] as $pp)
-                                    <option value="{{ $pp }}" {{ ($perPage ?? 20)===$pp ? 'selected' : '' }}>{{ $pp }} / trang</option>
+                                @foreach([50, 200, 500, 2000, 5000] as $pp)
+                                    <option value="{{ $pp }}" {{ ($perPage ?? 50)===$pp ? 'selected' : '' }}>{{ $pp }} / trang</option>
                                 @endforeach
                             </select>
                         </div>
@@ -251,50 +251,193 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        @if (session('import_errors') && count(session('import_errors')) > 0)
-                            <div class="alert alert-warning">
-                                <strong>Một số lỗi đã xảy ra:</strong>
-                                <ul class="mb-0 mt-2">
-                                    @foreach (session('import_errors') as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
                         <div class="mb-3">
                             <label for="importFile" class="form-label">
                                 <strong>Chọn file Excel (.xlsx hoặc .xls)</strong>
                             </label>
-                            <input type="file" class="form-control @error('file') is-invalid @enderror" id="importFile" name="file" accept=".xlsx,.xls" required>
+                            <input type="file" class="form-control" id="importFile" name="file" accept=".xlsx,.xls" required>
                             <div class="form-text">
-                                <i class="fas fa-info-circle"></i> File phải có định dạng Excel (.xlsx hoặc .xls) và không vượt quá 10MB.
+                                <i class="fas fa-info-circle"></i> Sức mạnh bóc tách từ Trình duyệt. Không giới hạn dung lượng!
                             </div>
-                            @error('file')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
-                        <div class="alert alert-info">
-                            <h6 class="alert-heading"><i class="fas fa-info-circle"></i> Hướng dẫn:</h6>
-                            <ul class="mb-0">
-                                <li>File Excel phải có các cột: ID, Tiêu đề, Slug, Nội dung, SEO Title, SEO Description, SEO Keywords, SEO Image, Tags, Danh mục (Slug), Trạng thái, Ngày xuất bản, Lượt xem, Type</li>
-                                <li><strong>Cập nhật bài viết:</strong> Nếu có ID và bài viết tồn tại, hệ thống sẽ <strong>CẬP NHẬT</strong> bài viết đó</li>
-                                <li><strong>Cập nhật theo Slug:</strong> Nếu không có ID nhưng slug đã tồn tại, hệ thống sẽ <strong>CẬP NHẬT</strong> bài viết có slug đó</li>
-                                <li><strong>Tạo mới:</strong> Chỉ tạo bài viết mới khi không có ID và slug cũng chưa tồn tại</li>
-                                <li>Danh mục phải nhập slug của danh mục (ví dụ: du-lich, am-thuc)</li>
-                                <li>Trạng thái hợp lệ: draft, published, archived, pending</li>
-                                <li>Bạn có thể xuất file mẫu bằng nút "Xuất Excel" để xem cấu trúc</li>
-                            </ul>
+                        <!-- Vùng hiển thị Progress -->
+                        <div id="importProgressArea" class="d-none mt-3">
+                            <p class="mb-1 fw-bold text-primary" id="importStatusText">Đang bóc tách dữ liệu...</p>
+                            <div class="progress" style="height: 20px;">
+                                <div id="importProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                            </div>
+                            <small class="text-muted" id="importDetails">Vui lòng không đóng trình duyệt</small>
                         </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-upload"></i> Nhập dữ liệu
+                        <button type="button" class="btn btn-primary" id="btnImportSubmit">
+                            <i class="fas fa-upload" id="importIcon"></i> <span id="importText">Bắt đầu Nhập</span>
                         </button>
                     </div>
                 </form>
+                
+                <!-- Thư viện SheetJS -->
+                <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+                
+                <script>
+                    document.getElementById('btnImportSubmit').addEventListener('click', async function() {
+                        const fileInput = document.getElementById('importFile');
+                        if (!fileInput.files.length) {
+                            alert('Vui lòng chọn file Excel!');
+                            return;
+                        }
+
+                        const file = fileInput.files[0];
+                        const btn = document.getElementById('btnImportSubmit');
+                        const icon = document.getElementById('importIcon');
+                        const text = document.getElementById('importText');
+                        const progressArea = document.getElementById('importProgressArea');
+                        const progressBar = document.getElementById('importProgressBar');
+                        const statusText = document.getElementById('importStatusText');
+                        const detailsText = document.getElementById('importDetails');
+
+                        // Disable controls
+                        btn.disabled = true;
+                        fileInput.disabled = true;
+                        progressArea.classList.remove('d-none');
+                        text.innerText = 'Đang đọc file...';
+                        icon.className = 'fas fa-spinner fa-spin';
+
+                        try {
+                            // 1. Đọc file bằng FileReader
+                            const data = await file.arrayBuffer();
+                            
+                            // 2. Parse Excel bằng SheetJS
+                            statusText.innerText = 'Đang phân tích cấu trúc Excel...';
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const firstSheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[firstSheetName];
+                            
+                            // Lấy dữ liệu dạng raw (header là dòng 1)
+                            const rawJson = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                            if (rawJson.length < 2) {
+                                throw new Error('File Excel không có dữ liệu');
+                            }
+
+                            // 3. Slugify headers giống Laravel Excel
+                            const headers = rawJson[0].map(h => slugifyHeader(h));
+                            
+                            // 4. Map dữ liệu thành object
+                            const rows = [];
+                            for (let i = 1; i < rawJson.length; i++) {
+                                const rowArr = rawJson[i];
+                                // Bỏ qua dòng trống hoàn toàn
+                                if (!rowArr || rowArr.length === 0 || rowArr.every(cell => cell === undefined || cell === null || cell === '')) continue;
+                                
+                                const rowObj = { _row_index: i + 1 };
+                                headers.forEach((header, index) => {
+                                    rowObj[header] = rowArr[index];
+                                });
+                                rows.push(rowObj);
+                            }
+
+                            const totalRows = rows.length;
+                            statusText.innerText = `Đã phân tích xong ${totalRows} dòng. Bắt đầu đẩy lên Server...`;
+
+                            // 5. Chia lô (Chunk)
+                            const CHUNK_SIZE = 500;
+                            const totalChunks = Math.ceil(totalRows / CHUNK_SIZE);
+                            let processedCount = 0;
+                            let allErrors = [];
+                            let totalSuccess = 0;
+                            let totalSkipped = 0;
+
+                            for (let i = 0; i < totalChunks; i++) {
+                                const chunk = rows.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
+                                
+                                // Gọi AJAX lên server
+                                const response = await fetch('{{ route("admin.posts.import-batch") }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Accept': 'application/json'
+                                    },
+                                    body: JSON.stringify({ rows: chunk })
+                                });
+
+                                const resData = await response.json();
+                                if (!response.ok || !resData.success) {
+                                    throw new Error(resData.message || 'Lỗi server khi lưu dữ liệu');
+                                }
+
+                                if (resData.errors && resData.errors.length > 0) {
+                                    allErrors.push(...resData.errors);
+                                }
+                                totalSuccess += (resData.successCount || 0);
+                                totalSkipped += (resData.skipCount || 0);
+
+                                processedCount += chunk.length;
+                                const percent = Math.round((processedCount / totalRows) * 100);
+                                
+                                progressBar.style.width = percent + '%';
+                                progressBar.innerText = percent + '%';
+                                detailsText.innerText = `Đã xử lý ${processedCount} / ${totalRows} dòng`;
+                            }
+
+                            // Hoàn thành
+                            statusText.innerText = `Hoàn thành! Thành công: ${totalSuccess}, Bỏ qua: ${totalSkipped}`;
+                            statusText.className = 'mb-1 fw-bold text-success';
+                            progressBar.className = 'progress-bar bg-success';
+                            text.innerText = 'Đã xong';
+                            icon.className = 'fas fa-check';
+
+                            if (allErrors.length > 0) {
+                                let errorHtml = '<div class="alert alert-warning mt-3"><strong>Một số dòng bị bỏ qua:</strong><ul class="mb-0 mt-2" style="max-height: 200px; overflow-y: auto;">';
+                                allErrors.forEach(err => {
+                                    errorHtml += `<li>${err}</li>`;
+                                });
+                                errorHtml += '</ul></div>';
+                                progressArea.insertAdjacentHTML('beforeend', errorHtml);
+                                
+                                // Đổi nút thành tải lại trang để user có thể đóng modal hoặc reload
+                                btn.disabled = false;
+                                text.innerText = 'Tải lại trang';
+                                icon.className = 'fas fa-sync';
+                                btn.onclick = function() { window.location.reload(); };
+                            } else {
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1500);
+                            }
+
+                        } catch (error) {
+                            console.error(error);
+                            alert('Có lỗi xảy ra: ' + error.message);
+                            btn.disabled = false;
+                            fileInput.disabled = false;
+                            text.innerText = 'Nhập lại';
+                            icon.className = 'fas fa-redo';
+                            statusText.innerText = 'Xảy ra lỗi!';
+                            statusText.className = 'mb-1 fw-bold text-danger';
+                            progressBar.className = 'progress-bar bg-danger';
+                        }
+                    });
+
+                    // Hàm chuyển đổi Tiêu đề cột thành slug_key giống Laravel Excel
+                    function slugifyHeader(text) {
+                        if (!text) return '';
+                        return text.toString().toLowerCase()
+                            .replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a")
+                            .replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e")
+                            .replace(/ì|í|ị|ỉ|ĩ/g, "i")
+                            .replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o")
+                            .replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u")
+                            .replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y")
+                            .replace(/đ/g, "d")
+                            .replace(/[^a-z0-9\s-]/g, "") // Xóa ký tự đặc biệt (giữ lại khoảng trắng và gạch ngang)
+                            .replace(/[\s-]+/g, "_") // Đổi khoảng trắng và gạch ngang thành gạch dưới
+                            .replace(/^_|_$/g, "");
+                    }
+                </script>
             </div>
         </div>
     </div>

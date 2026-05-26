@@ -21,7 +21,7 @@ class HomeController extends Controller
             // Featured post (bài viết mới nhất) - Cache riêng
             $featuredPost = Cache::remember('homepage_featured_post', now()->addHours(6), function () {
                 return Post::select([
-                    'id', 'category_id', 'account_id', 'slug', 'seo_title',
+                    'id', 'name', 'category_id', 'account_id', 'slug', 'seo_title',
                     'seo_desc', 'seo_image', 'published_at', 'views'
                 ])
                     ->with([
@@ -37,7 +37,7 @@ class HomeController extends Controller
             // Side posts (2 bài viết tiếp theo) - Cache riêng
             $sidePosts = Cache::remember('homepage_side_posts_' . ($featuredPost->id ?? 0), now()->addHours(6), function () use ($featuredPost) {
                 return Post::select([
-                    'id', 'category_id', 'account_id', 'slug', 'seo_title',
+                    'id', 'name', 'category_id', 'account_id', 'slug', 'seo_title',
                     'seo_desc', 'seo_image', 'published_at', 'views'
                 ])
                     ->with([
@@ -56,7 +56,9 @@ class HomeController extends Controller
             $mainCategories = Cache::remember('homepage_main_categories', now()->addDay(), function () {
                 return Category::select(['id', 'name', 'slug'])
                     ->where('status', 'active')
-                    ->whereNull('parent_id')
+                    ->where(function ($query) {
+                        $query->whereNull('parent_id')->orWhere('parent_id', 0);
+                    })
                     ->orderBy('sort_order', 'asc')
                     ->orderBy('name', 'asc')
                     ->take(7)
@@ -68,7 +70,7 @@ class HomeController extends Controller
             foreach ($mainCategories as $category) {
                 $postsByCategory[$category->slug] = Cache::remember('homepage_posts_category_' . $category->id, now()->addHours(6), function () use ($category) {
                     return Post::select([
-                        'id', 'category_id', 'account_id', 'slug', 'seo_title',
+                        'id', 'name', 'category_id', 'account_id', 'slug', 'seo_title',
                         'seo_desc', 'seo_image', 'published_at', 'views'
                     ])
                         ->with([
@@ -79,7 +81,7 @@ class HomeController extends Controller
                         ->where('status', 'published')
                         ->where('category_id', $category->id)
                         ->orderBy('published_at', 'desc')
-                        ->take(3)
+                        ->take(9)
                         ->get();
                 });
             }
@@ -87,7 +89,7 @@ class HomeController extends Controller
             // Editor's Picks - Cache 6 giờ
             $editorPicks = Cache::remember('homepage_editor_picks', now()->addHours(6), function () {
                 return Post::select([
-                    'id', 'category_id', 'account_id', 'slug', 'seo_title',
+                    'id', 'name', 'category_id', 'account_id', 'slug', 'seo_title',
                     'seo_desc', 'seo_image', 'published_at', 'views'
                 ])
                     ->with([
@@ -104,7 +106,7 @@ class HomeController extends Controller
             // Hot Topics - Cache 1 giờ (thay đổi nhanh)
             $hotTopics = Cache::remember('homepage_hot_topics', now()->addHour(), function () {
                 return Post::select([
-                    'id', 'category_id', 'account_id', 'slug', 'seo_title',
+                    'id', 'name', 'category_id', 'account_id', 'slug', 'seo_title',
                     'seo_desc', 'seo_image', 'published_at', 'views'
                 ])
                     ->with([
@@ -113,9 +115,9 @@ class HomeController extends Controller
                         'account.profile:id,account_id,name',
                     ])
                     ->where('status', 'published')
-                    ->where('published_at', '>=', now()->subDays(7))
+                    ->where('published_at', '>=', now()->subDays(30))
                     ->orderBy('views', 'desc')
-                    ->take(4)
+                    ->take(10)
                     ->get();
             });
 
@@ -135,7 +137,7 @@ class HomeController extends Controller
             // Stories - Cache 6 giờ
             $stories = Cache::remember('homepage_stories', now()->addHours(6), function () {
                 return Post::select([
-                    'id', 'category_id', 'account_id', 'slug', 'seo_title',
+                    'id', 'name', 'category_id', 'account_id', 'slug', 'seo_title',
                     'seo_desc', 'seo_image', 'published_at', 'views'
                 ])
                     ->with([

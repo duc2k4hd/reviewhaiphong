@@ -72,49 +72,7 @@
                         <div data-i18n="Without navbar">Thêm bài viết mới</div>
                       </a>
                     </li>
-                    <li class="menu-item">
-                      <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons bx bx-download"></i>
-                        <div data-i18n="Scraper">Cào bài viết</div>
-                      </a>
-                      <ul class="menu-sub">
-                        <li class="menu-item">
-                          <a href="{{ route('admin.mia-scraper.index') }}" class="menu-link">
-                            <div data-i18n="MIA Scraper"><i class="fas fa-download"></i> Cào từ MIA.vn</div>
-                          </a>
-                        </li>
-                        <li class="menu-item">
-                          <a href="{{ route('admin.tour-pro-scraper.index') }}" class="menu-link">
-                            <div data-i18n="Tour Pro Scraper"><i class="fas fa-download"></i> Cào từ Tour.Pro.vn</div>
-                          </a>
-                        </li>
-                        <li class="menu-item">
-                          <a href="{{ route('admin.vinpearl-scraper.index') }}" class="menu-link">
-                            <div data-i18n="Vinpearl Scraper"><i class="fas fa-download"></i> Cào từ Vinpearl.com</div>
-                          </a>
-                        </li>
-                        <li class="menu-item">
-                          <a href="{{ route('admin.vinpearl-link-extractor.index') }}" class="menu-link">
-                            <div data-i18n="Vinpearl Link Extractor"><i class="fas fa-link"></i> Trích xuất link Vinpearl</div>
-                          </a>
-                        </li>
-                        <li class="menu-item">
-                          <a href="{{ route('admin.traveloka-scraper.index') }}" class="menu-link">
-                            <div data-i18n="Traveloka Scraper"><i class="fas fa-download"></i> Cào từ Traveloka.com</div>
-                          </a>
-                        </li>
-                        <li class="menu-item">
-                          <a href="{{ route('admin.traveloka-link-extractor.index') }}" class="menu-link">
-                            <div data-i18n="Traveloka Link Extractor"><i class="fas fa-link"></i> Trích xuất link Traveloka</div>
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="menu-item">
-                      <a href="{{ route('admin.link-extractor.index') }}" class="menu-link">
-                        <div data-i18n="Link Extractor"><i class="fas fa-link"></i> Trích xuất Link</div>
-                      </a>
-                    </li>
+
                     <li class="menu-item">
                       <a href="{{ route('admin.posts.published') }}" class="menu-link">
                         <div data-i18n="Without navbar">Bài viết công khai</div>

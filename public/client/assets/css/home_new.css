@@ -1,0 +1,1492 @@
+
+        /* ===== RESET & VARIABLES ===== */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --rhp-red: #e74c3c;
+            --rhp-red-dark: #df5e50;
+            --rhp-orange: #e8540a;
+            --rhp-yellow: #f5a623;
+            --rhp-blue: #1a73e8;
+            --rhp-dark: #1a1a1a;
+            --rhp-gray: #555;
+            --rhp-gray-light: #888;
+            --rhp-gray-bg: #f4f4f4;
+            --rhp-border: #e0e0e0;
+            --rhp-white: #fff;
+            --rhp-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+            --rhp-radius: 4px;
+            --rhp-font: 'Segoe UI', Arial, sans-serif;
+            --rhp-container: 1180px;
+        }
+
+        html {
+            font-size: 15px;
+        }
+
+        body {
+            font-family: var(--rhp-font);
+            color: var(--rhp-dark);
+            background: var(--rhp-gray-bg);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        /* ===== UTILITY ===== */
+        .reviewhaiphong_home_container {
+            width: 100%;
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        .reviewhaiphong_home_flex {
+            display: flex;
+        }
+
+        .reviewhaiphong_home_flex_between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ===== TOP BAR ===== */
+        .reviewhaiphong_home_topbar {
+            background: var(--rhp-red);
+            color: #fff;
+            font-size: 0.78rem;
+            padding: 4px 0;
+        }
+
+        .reviewhaiphong_home_topbar_inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        .reviewhaiphong_home_topbar_links a {
+            color: #fff;
+            margin-right: 12px;
+            font-size: 0.75rem;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .reviewhaiphong_home_topbar_links a:hover {
+            opacity: 1;
+        }
+
+        .reviewhaiphong_home_topbar_social a {
+            color: #fff;
+            margin-left: 8px;
+            font-size: 0.75rem;
+            opacity: 0.85;
+        }
+
+        /* ===== HEADER ===== */
+        .reviewhaiphong_home_header {
+            background: var(--rhp-white);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.10);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .reviewhaiphong_home_header_inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 8px 12px;
+            gap: 12px;
+        }
+
+        .reviewhaiphong_home_logo {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reviewhaiphong_home_logo_text {
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: var(--rhp-red);
+            letter-spacing: -0.5px;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .reviewhaiphong_home_logo_text span {
+            color: var(--rhp-dark);
+        }
+
+        .reviewhaiphong_home_logo_sub {
+            font-size: 0.62rem;
+            color: var(--rhp-gray-light);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .reviewhaiphong_home_search_wrap {
+            flex: 1;
+            max-width: 480px;
+            position: relative;
+        }
+
+        .reviewhaiphong_home_search_input {
+            width: 100%;
+            border: 1.5px solid var(--rhp-border);
+            border-radius: 20px;
+            padding: 7px 42px 7px 16px;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #fafafa;
+        }
+
+        .reviewhaiphong_home_search_input:focus {
+            border-color: var(--rhp-red);
+            background: #fff;
+        }
+
+        .reviewhaiphong_home_search_btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--rhp-red);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reviewhaiphong_home_search_btn:hover {
+            background: var(--rhp-red-dark);
+        }
+
+        .reviewhaiphong_home_header_actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .reviewhaiphong_home_header_action_btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.68rem;
+            color: var(--rhp-gray);
+            gap: 2px;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 4px 6px;
+            border-radius: var(--rhp-radius);
+        }
+
+        .reviewhaiphong_home_header_action_btn:hover {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_header_action_btn .reviewhaiphong_home_icon {
+            font-size: 1.1rem;
+        }
+
+        .reviewhaiphong_home_menu_toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding: 6px;
+            cursor: pointer;
+        }
+
+        .reviewhaiphong_home_menu_toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--rhp-dark);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        /* ===== NAV BAR ===== */
+        .reviewhaiphong_home_navbar {
+            background: var(--rhp-red);
+            position: relative;
+            z-index: 90;
+        }
+
+        .reviewhaiphong_home_navbar_inner {
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        .reviewhaiphong_home_nav_list {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .reviewhaiphong_home_nav_list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .reviewhaiphong_home_nav_item>a {
+            display: block;
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 10px 13px;
+            white-space: nowrap;
+            transition: background 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .reviewhaiphong_home_nav_item>a:hover,
+        .reviewhaiphong_home_nav_item.reviewhaiphong_home_nav_current>a {
+            background: rgba(255, 255, 255, 0.15);
+            border-bottom-color: #fff;
+        }
+
+        .reviewhaiphong_home_nav_item.reviewhaiphong_home_nav_home>a {
+            background: var(--rhp-red-dark);
+        }
+
+        /* ===== MOBILE NAV ===== */
+        .reviewhaiphong_home_mobile_nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+        }
+
+        .reviewhaiphong_home_mobile_nav.reviewhaiphong_home_open {
+            display: block;
+        }
+
+        .reviewhaiphong_home_mobile_nav_panel {
+            background: #fff;
+            width: 270px;
+            height: 100%;
+            overflow-y: auto;
+            padding: 0 0 24px;
+            transform: translateX(-100%);
+            transition: transform 0.3s;
+        }
+
+        .reviewhaiphong_home_mobile_nav.reviewhaiphong_home_open .reviewhaiphong_home_mobile_nav_panel {
+            transform: translateX(0);
+        }
+
+        .reviewhaiphong_home_mobile_nav_head {
+            background: var(--rhp-red);
+            color: #fff;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .reviewhaiphong_home_mobile_nav_close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+
+        .reviewhaiphong_home_mobile_nav_list a {
+            display: block;
+            padding: 11px 18px;
+            border-bottom: 1px solid var(--rhp-border);
+            color: var(--rhp-dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .reviewhaiphong_home_mobile_nav_list a:hover {
+            color: var(--rhp-red);
+            background: #fafafa;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .reviewhaiphong_home_breadcrumb {
+            background: #fff;
+            border-bottom: 1px solid var(--rhp-border);
+            padding: 5px 0;
+            font-size: 0.75rem;
+            color: var(--rhp-gray-light);
+        }
+
+        .reviewhaiphong_home_breadcrumb a {
+            color: var(--rhp-blue);
+        }
+
+        .reviewhaiphong_home_breadcrumb span {
+            margin: 0 5px;
+        }
+
+        /* ===== MAIN LAYOUT ===== */
+        .reviewhaiphong_home_main_layout {
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 14px 12px;
+            display: grid;
+            grid-template-columns: 1fr 290px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .reviewhaiphong_home_content_col {
+            min-width: 0;
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .reviewhaiphong_home_section_title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid var(--rhp-border);
+            padding-bottom: 8px;
+        }
+
+        .reviewhaiphong_home_section_title_bar {
+            width: 4px;
+            height: 20px;
+            background: var(--rhp-red);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .reviewhaiphong_home_section_title_text {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--rhp-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .reviewhaiphong_home_section_title_link {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--rhp-red);
+            font-weight: 600;
+        }
+
+        .reviewhaiphong_home_section_title_link:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== FEATURED / HERO BLOCK ===== */
+        .reviewhaiphong_home_hero_block {
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: var(--rhp-shadow);
+        }
+
+        .reviewhaiphong_home_hero_grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 0;
+        }
+
+        .reviewhaiphong_home_hero_main {
+            grid-row: 1 / 3;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_hero_main_img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s;
+        }
+
+        .reviewhaiphong_home_hero_main:hover .reviewhaiphong_home_hero_main_img {
+            transform: scale(1.03);
+        }
+
+        .reviewhaiphong_home_hero_main_caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+            color: #fff;
+            padding: 20px 12px 12px;
+        }
+
+        .reviewhaiphong_home_hero_main_tag {
+            background: var(--rhp-red);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .reviewhaiphong_home_hero_main_title {
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_hero_sub {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 0;
+        }
+
+        .reviewhaiphong_home_hero_sub_item {
+            position: relative;
+            overflow: hidden;
+            border-left: 1px solid var(--rhp-border);
+            border-bottom: 1px solid var(--rhp-border);
+        }
+
+        .reviewhaiphong_home_hero_sub_item:last-child {
+            border-bottom: none;
+        }
+
+        .reviewhaiphong_home_hero_sub_img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+
+        .reviewhaiphong_home_hero_sub_item:hover .reviewhaiphong_home_hero_sub_img {
+            transform: scale(1.04);
+        }
+
+        .reviewhaiphong_home_hero_sub_caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.72));
+            color: #fff;
+            padding: 18px 9px 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        /* ===== CARD GRID ===== */
+        .reviewhaiphong_home_card_grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .reviewhaiphong_home_card_grid_4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .reviewhaiphong_home_card {
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            overflow: hidden;
+            box-shadow: var(--rhp-shadow);
+            transition: box-shadow 0.25s, transform 0.25s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reviewhaiphong_home_card:hover {
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .reviewhaiphong_home_card_img_wrap {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_card_img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.35s;
+        }
+
+        .reviewhaiphong_home_card:hover .reviewhaiphong_home_card_img {
+            transform: scale(1.05);
+        }
+
+        .reviewhaiphong_home_card_tag {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--rhp-red);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+
+        .reviewhaiphong_home_card_body {
+            padding: 9px 10px 10px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .reviewhaiphong_home_card_title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--rhp-dark);
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s;
+        }
+
+        .reviewhaiphong_home_card:hover .reviewhaiphong_home_card_title {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_card_meta {
+            font-size: 0.7rem;
+            color: var(--rhp-gray-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reviewhaiphong_home_card_excerpt {
+            font-size: 0.76rem;
+            color: var(--rhp-gray);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+
+        /* ===== LIST CARD (horizontal) ===== */
+        .reviewhaiphong_home_list_card {
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            overflow: hidden;
+            box-shadow: var(--rhp-shadow);
+            display: flex;
+            gap: 0;
+            margin-bottom: 10px;
+            transition: box-shadow 0.25s;
+        }
+
+        .reviewhaiphong_home_list_card:hover {
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.13);
+        }
+
+        .reviewhaiphong_home_list_card_img {
+            width: 130px;
+            min-width: 130px;
+            height: 90px;
+            object-fit: cover;
+            flex-shrink: 0;
+            transition: transform 0.35s;
+        }
+
+        .reviewhaiphong_home_list_card:hover .reviewhaiphong_home_list_card_img {
+            transform: scale(1.04);
+        }
+
+        .reviewhaiphong_home_list_card_body {
+            padding: 9px 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            justify-content: center;
+        }
+
+        .reviewhaiphong_home_list_card_title {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--rhp-dark);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s;
+        }
+
+        .reviewhaiphong_home_list_card:hover .reviewhaiphong_home_list_card_title {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_list_card_meta {
+            font-size: 0.7rem;
+            color: var(--rhp-gray-light);
+        }
+
+        .reviewhaiphong_home_list_card_excerpt {
+            font-size: 0.75rem;
+            color: var(--rhp-gray);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ===== SECTION BLOCK ===== */
+        .reviewhaiphong_home_section_block {
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            padding: 14px 14px 10px;
+            margin-bottom: 14px;
+            box-shadow: var(--rhp-shadow);
+        }
+
+        /* ===== TABS ===== */
+        .reviewhaiphong_home_tab_nav {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--rhp-border);
+            margin-bottom: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .reviewhaiphong_home_tab_nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .reviewhaiphong_home_tab_btn {
+            padding: 7px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--rhp-gray);
+            cursor: pointer;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.2s, border-color 0.2s;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        .reviewhaiphong_home_tab_btn.reviewhaiphong_home_tab_active,
+        .reviewhaiphong_home_tab_btn:hover {
+            color: var(--rhp-red);
+            border-bottom-color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_tab_content {
+            display: none;
+        }
+
+        .reviewhaiphong_home_tab_content.reviewhaiphong_home_tab_show {
+            display: block;
+        }
+
+        /* ===== LOAD MORE BUTTON ===== */
+        .reviewhaiphong_home_loadmore_wrap {
+            text-align: center;
+            margin: 10px 0 6px;
+        }
+
+        .reviewhaiphong_home_loadmore_btn {
+            background: none;
+            border: 1.5px solid var(--rhp-border);
+            border-radius: 20px;
+            padding: 7px 28px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--rhp-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reviewhaiphong_home_loadmore_btn:hover {
+            border-color: var(--rhp-red);
+            color: var(--rhp-red);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .reviewhaiphong_home_sidebar {
+            position: sticky;
+            top: 70px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .reviewhaiphong_home_sidebar_box {
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            padding: 12px 13px;
+            box-shadow: var(--rhp-shadow);
+        }
+
+        .reviewhaiphong_home_sidebar_title {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--rhp-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid var(--rhp-red);
+            padding-bottom: 7px;
+            margin-bottom: 10px;
+        }
+
+        /* Sidebar trending */
+        .reviewhaiphong_home_sidebar_trending_item {
+            display: flex;
+            gap: 9px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--rhp-border);
+            align-items: flex-start;
+        }
+
+        .reviewhaiphong_home_sidebar_trending_item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .reviewhaiphong_home_sidebar_trending_num {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--rhp-border);
+            min-width: 24px;
+            line-height: 1;
+        }
+
+        .reviewhaiphong_home_sidebar_trending_item:nth-child(1) .reviewhaiphong_home_sidebar_trending_num {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_sidebar_trending_item:nth-child(2) .reviewhaiphong_home_sidebar_trending_num {
+            color: var(--rhp-orange);
+        }
+
+        .reviewhaiphong_home_sidebar_trending_item:nth-child(3) .reviewhaiphong_home_sidebar_trending_num {
+            color: var(--rhp-yellow);
+        }
+
+        .reviewhaiphong_home_sidebar_trending_title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            line-height: 1.35;
+            color: var(--rhp-dark);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_sidebar_trending_title:hover {
+            color: var(--rhp-red);
+        }
+
+        /* Sidebar thumb card */
+        .reviewhaiphong_home_sidebar_thumb_item {
+            display: flex;
+            gap: 9px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--rhp-border);
+        }
+
+        .reviewhaiphong_home_sidebar_thumb_item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .reviewhaiphong_home_sidebar_thumb_img {
+            width: 75px;
+            min-width: 75px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: var(--rhp-radius);
+            flex-shrink: 0;
+        }
+
+        .reviewhaiphong_home_sidebar_thumb_title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--rhp-dark);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_sidebar_thumb_title:hover {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_sidebar_thumb_meta {
+            font-size: 0.67rem;
+            color: var(--rhp-gray-light);
+            margin-top: 3px;
+        }
+
+        /* Sidebar Banner Ad */
+        .reviewhaiphong_home_sidebar_banner {
+            background: linear-gradient(135deg, var(--rhp-red) 0%, var(--rhp-red-dark) 100%);
+            border-radius: var(--rhp-radius);
+            padding: 16px 14px;
+            text-align: center;
+            color: #fff;
+            box-shadow: var(--rhp-shadow);
+        }
+
+        .reviewhaiphong_home_sidebar_banner_title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+
+        .reviewhaiphong_home_sidebar_banner_sub {
+            font-size: 0.76rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .reviewhaiphong_home_sidebar_banner_badge {
+            background: #fff;
+            color: var(--rhp-red);
+            font-weight: 800;
+            font-size: 1.2rem;
+            padding: 4px 14px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .reviewhaiphong_home_sidebar_banner_btn {
+            display: block;
+            background: #fff;
+            color: var(--rhp-red);
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 7px 18px;
+            border-radius: 20px;
+            margin: 8px auto 0;
+            width: fit-content;
+            transition: opacity 0.2s;
+        }
+
+        .reviewhaiphong_home_sidebar_banner_btn:hover {
+            opacity: 0.88;
+        }
+
+        /* Tags Cloud */
+        .reviewhaiphong_home_tags_cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .reviewhaiphong_home_tag_item {
+            background: var(--rhp-gray-bg);
+            border: 1px solid var(--rhp-border);
+            color: var(--rhp-gray);
+            font-size: 0.72rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .reviewhaiphong_home_tag_item:hover {
+            background: var(--rhp-red);
+            color: #fff;
+            border-color: var(--rhp-red);
+        }
+
+        /* ===== TOUR SECTION ===== */
+        .reviewhaiphong_home_tour_section {
+            background: var(--rhp-dark);
+            padding: 18px 0 14px;
+            margin-top: 10px;
+        }
+
+        .reviewhaiphong_home_tour_title {
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reviewhaiphong_home_tour_title::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: var(--rhp-red);
+            border-radius: 2px;
+        }
+
+        .reviewhaiphong_home_tour_grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+
+        .reviewhaiphong_home_tour_item {
+            position: relative;
+            border-radius: var(--rhp-radius);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .reviewhaiphong_home_tour_item_img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            display: block;
+            filter: brightness(0.8);
+            transition: transform 0.35s, filter 0.35s;
+        }
+
+        .reviewhaiphong_home_tour_item:hover .reviewhaiphong_home_tour_item_img {
+            transform: scale(1.06);
+            filter: brightness(0.65);
+        }
+
+        .reviewhaiphong_home_tour_item_label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: #fff;
+            text-align: center;
+            padding: 14px 5px 7px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* ===== FOOTER ===== */
+        .reviewhaiphong_home_footer {
+            background: var(--rhp-dark);
+            color: #ccc;
+            padding: 24px 0 0;
+            margin-top: 10px;
+        }
+
+        .reviewhaiphong_home_footer_grid {
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 0 12px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 24px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #333;
+        }
+
+        .reviewhaiphong_home_footer_logo {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--rhp-white);
+            margin-bottom: 8px;
+        }
+
+        .reviewhaiphong_home_footer_logo span {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_footer_desc {
+            font-size: 0.78rem;
+            line-height: 1.6;
+            color: #999;
+        }
+
+        .reviewhaiphong_home_footer_col_title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .reviewhaiphong_home_footer_links a {
+            display: block;
+            color: #999;
+            font-size: 0.78rem;
+            margin-bottom: 6px;
+            transition: color 0.2s;
+        }
+
+        .reviewhaiphong_home_footer_links a:hover {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_footer_bottom {
+            background: #111;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.72rem;
+            color: #666;
+        }
+
+        .reviewhaiphong_home_footer_bottom a {
+            color: var(--rhp-red);
+        }
+
+        /* ===== BIG IMAGE CARD ===== */
+        .reviewhaiphong_home_big_card {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 12px;
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            overflow: hidden;
+            margin-bottom: 10px;
+            box-shadow: var(--rhp-shadow);
+            transition: box-shadow 0.25s;
+        }
+
+        .reviewhaiphong_home_big_card:hover {
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
+        }
+
+        .reviewhaiphong_home_big_card_img {
+            width: 200px;
+            height: 130px;
+            object-fit: cover;
+            flex-shrink: 0;
+            transition: transform 0.35s;
+        }
+
+        .reviewhaiphong_home_big_card:hover .reviewhaiphong_home_big_card_img {
+            transform: scale(1.04);
+        }
+
+        .reviewhaiphong_home_big_card_body {
+            padding: 12px 14px 12px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .reviewhaiphong_home_big_card_cat {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--rhp-red);
+            text-transform: uppercase;
+        }
+
+        .reviewhaiphong_home_big_card_title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--rhp-dark);
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s;
+        }
+
+        .reviewhaiphong_home_big_card:hover .reviewhaiphong_home_big_card_title {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_big_card_excerpt {
+            font-size: 0.78rem;
+            color: var(--rhp-gray);
+            line-height: 1.45;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_big_card_meta {
+            font-size: 0.68rem;
+            color: var(--rhp-gray-light);
+        }
+
+        /* ===== PLACEHOLDER IMAGES ===== */
+        .reviewhaiphong_home_placeholder {
+            background: linear-gradient(135deg, #ddd 0%, #eee 50%, #ddd 100%);
+            background-size: 200% 200%;
+            animation: reviewhaiphong_home_shimmer 1.5s infinite;
+        }
+
+        @keyframes reviewhaiphong_home_shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .reviewhaiphong_home_img_wrap {
+            overflow: hidden;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1100px) {
+            .reviewhaiphong_home_main_layout {
+                grid-template-columns: 1fr 260px;
+            }
+
+            .reviewhaiphong_home_tour_grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .reviewhaiphong_home_footer_grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .reviewhaiphong_home_main_layout {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_sidebar {
+                position: static;
+            }
+
+            .reviewhaiphong_home_card_grid_4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reviewhaiphong_home_hero_main_img {
+                height: 260px;
+            }
+
+            .reviewhaiphong_home_tour_grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .reviewhaiphong_home_header_action_btn .reviewhaiphong_home_action_label {
+                display: none;
+            }
+
+            .reviewhaiphong_home_search_wrap {
+                max-width: 280px;
+            }
+
+            .reviewhaiphong_home_card_grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reviewhaiphong_home_card_grid_4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reviewhaiphong_home_hero_grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_hero_main {
+                grid-row: 1;
+            }
+
+            .reviewhaiphong_home_hero_main_img {
+                height: 220px;
+            }
+
+            .reviewhaiphong_home_hero_sub {
+                grid-template-rows: auto;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .reviewhaiphong_home_hero_sub_img {
+                height: 130px;
+            }
+
+            .reviewhaiphong_home_big_card {
+                grid-template-columns: 130px 1fr;
+            }
+
+            .reviewhaiphong_home_big_card_img {
+                width: 130px;
+                height: 100px;
+            }
+
+            .reviewhaiphong_home_tour_grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .reviewhaiphong_home_footer_grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .reviewhaiphong_home_menu_toggle {
+                display: flex;
+            }
+
+            .reviewhaiphong_home_list_card_img {
+                width: 100px;
+                min-width: 100px;
+                height: 75px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .reviewhaiphong_home_card_grid,
+            .reviewhaiphong_home_card_grid_4 {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_hero_sub {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_big_card {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_big_card_img {
+                width: 100%;
+                height: 180px;
+            }
+
+            .reviewhaiphong_home_big_card_body {
+                padding: 10px 12px 12px;
+            }
+
+            .reviewhaiphong_home_tour_grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reviewhaiphong_home_footer_grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_search_wrap {
+                max-width: 200px;
+            }
+
+            html {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .reviewhaiphong_home_search_wrap {
+                max-width: 160px;
+            }
+
+            .reviewhaiphong_home_header_actions {
+                gap: 4px;
+            }
+
+            .reviewhaiphong_home_header_action_btn {
+                padding: 3px 4px;
+            }
+        }
+    
+/* Custom Scroll Animations */
+.anim-fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+.anim-fade-up.in-view { opacity: 1; transform: translateY(0); }
+.anim-slide-left { opacity: 0; transform: translateX(-30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+.anim-slide-left.in-view { opacity: 1; transform: translateX(0); }
+.anim-slide-right { opacity: 0; transform: translateX(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+.anim-slide-right.in-view { opacity: 1; transform: translateX(0); }
+.anim-zoom { opacity: 0; transform: scale(0.95); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+.anim-zoom.in-view { opacity: 1; transform: scale(1); }
+.anim-d-1 { transition-delay: 0.1s; }
+.anim-d-2 { transition-delay: 0.2s; }
+.anim-d-3 { transition-delay: 0.3s; }
+.anim-d-4 { transition-delay: 0.4s; }
+.reviewhaiphong_home_search_form { margin: 0; width: 100%; position: relative; }
+.reviewhaiphong_home_hero_block { padding:0; overflow:hidden; margin-bottom:14px; }
+.reviewhaiphong_home_hero_title { padding:12px 14px 8px;margin-bottom:0;border-bottom:1px solid var(--rhp-border); }
+.reviewhaiphong_home_tour_banner { background:linear-gradient(135deg,#e8540a 0%,#c04000 100%); margin-top: 25px; }
+.text-rhp-orange { color:var(--rhp-orange); }
+.mb-20 { margin-bottom: 20px; }
+.mt-10 { margin-top: 10px; }
+.reviewhaiphong_home_footer_socials { margin-top:12px; display:flex; gap:8px; }
+.rhp-btn-fb { background:#1877f2;color:#fff;padding:5px 12px;border-radius:3px;font-size:0.75rem;font-weight:600; }
+.rhp-btn-ig { background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;padding:5px 12px;border-radius:3px;font-size:0.75rem;font-weight:600; }
+.mt-15 { margin-top: 15px; }
+/* Dropdown Menu Styles */
+.reviewhaiphong_has_dropdown {
+    position: relative;
+}
+.reviewhaiphong_home_nav_dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 220px;
+    background-color: #fff;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 10px 0;
+    margin: 0;
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+.reviewhaiphong_has_dropdown:hover .reviewhaiphong_home_nav_dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.reviewhaiphong_home_nav_dropdown li {
+    padding: 0;
+    margin: 0;
+}
+.reviewhaiphong_home_nav_dropdown li a {
+    display: block;
+    padding: 8px 20px;
+    color: var(--rhp-dark);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.reviewhaiphong_home_nav_dropdown li a:hover {
+    color: var(--rhp-red);
+    background-color: rgba(230, 57, 70, 0.05);
+    padding-left: 25px;
+}
+/* Mega Menu Styles */
+.reviewhaiphong_home_nav_item.reviewhaiphong_mega_menu_parent {
+    position: static;
+}
+.reviewhaiphong_mega_menu_parent .reviewhaiphong_home_nav_dropdown.reviewhaiphong_mega_menu {
+    width: 100%;
+    max-width: 100%;
+    left: 0;
+    right: 0;
+    padding: 25px 0;
+    border-radius: 0 0 8px 8px;
+    margin-top: 0;
+}
+.reviewhaiphong_mega_menu_inner {
+    display: flex;
+    max-width: var(--rhp-container);
+    margin: 0 auto;
+    padding: 0 12px;
+    gap: 20px;
+    justify-content: space-between;
+}
+.reviewhaiphong_mega_menu_column {
+    flex: 1;
+}
+.reviewhaiphong_mega_menu_title {
+    display: block;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: var(--rhp-red) !important;
+    border-bottom: 2px solid rgba(230, 57, 70, 0.2);
+    padding: 0 0 8px 0 !important;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+.reviewhaiphong_mega_menu_title:hover {
+    color: var(--rhp-red-dark) !important;
+    background: transparent !important;
+    padding-left: 0 !important;
+}
+.reviewhaiphong_mega_menu_list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.reviewhaiphong_mega_menu_list li a {
+    padding: 6px 0 !important;
+    font-size: 0.9rem !important;
+    color: var(--rhp-text) !important;
+    white-space: normal !important;
+    line-height: 1.4;
+}
+.reviewhaiphong_mega_menu_list li a:hover {
+    color: var(--rhp-red) !important;
+    background: transparent !important;
+    padding-left: 8px !important;
+}

@@ -1,0 +1,117 @@
+﻿@extends('client.layouts.main')
+
+@section('title', ($settings['site_name'] ?? 'Review Hải Phòng') . ' - ' . ($settings['site_description'] ?? 'Trang chủ'))
+
+@section('meta_description', $settings['site_description'] ?? 'Khám phá các bài viết, đánh giá và chia sẻ kinh nghiệm về Hải Phòng. Tổng hợp thông tin hữu ích và cập nhật nhất.')
+
+@section('meta_keywords', $settings['site_keywords'] ?? $settings['seo_keywords'] ?? 'review hải phòng, đánh giá, chia sẻ, kinh nghiệm')
+
+@section('meta_author', $settings['seo_author'] ?? $settings['site_name'] ?? 'Review Hải Phòng')
+
+@section('og_type', 'website')
+
+@section('og_url', url('/'))
+
+@section('og_title', $settings['site_name'] ?? 'Review Hải Phòng')
+
+@section('og_description', $settings['site_description'] ?? 'Khám phá các bài viết, đánh giá và chia sẻ kinh nghiệm về Hải Phòng.')
+
+@section('og_image', asset('/client/assets/images/logo/' . ($settings['site_image'] ?? 'logo.png')))
+
+@section('og_image_alt', $settings['site_name'] ?? 'Review Hải Phòng')
+
+@section('twitter_title', $settings['site_name'] ?? 'Review Hải Phòng')
+
+@section('twitter_description', $settings['site_description'] ?? 'Khám phá các bài viết, đánh giá và chia sẻ kinh nghiệm về Hải Phòng.')
+
+@section('twitter_image', asset('/client/assets/images/logo/' . ($settings['site_image'] ?? 'logo.png')))
+
+@section('twitter_image_alt', $settings['site_name'] ?? 'Review Hải Phòng')
+
+@section('canonical_url', url('/'))
+
+@section('hreflang_vi', url('/'))
+
+@section('hreflang_default', url('/'))
+
+@section('structured_data')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebPage",
+            "@id": "{{ url('/') . '/#webpage' }}",
+            "url": "{{ url('/') }}",
+            "name": "{{ $settings['site_name'] ?? 'Review Hải Phòng' }}",
+            "description": "{{ $settings['site_description'] ?? '' }}",
+            "isPartOf": {
+                "@id": "{{ ($settings['site_url'] ?? url('/')) . '/#website' }}"
+            },
+            "about": {
+                "@id": "{{ ($settings['site_url'] ?? url('/')) . '/#organization' }}"
+            },
+            "primaryImageOfPage": {
+                "@type": "ImageObject",
+                "url": "{{ asset('/client/assets/images/logo/' . ($settings['site_image'] ?? 'logo.png')) }}"
+            },
+            "datePublished": "{{ \Carbon\Carbon::now()->toIso8601String() }}",
+            "dateModified": "{{ \Carbon\Carbon::now()->toIso8601String() }}",
+            "inLanguage": "vi",
+            "breadcrumb": {
+                "@id": "{{ url('/') . '/#breadcrumb' }}"
+            }
+        },
+        {
+            "@type": "BreadcrumbList",
+            "@id": "{{ url('/') . '/#breadcrumb' }}",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "{{ $settings['site_name'] ?? 'Review Hải Phòng' }}",
+                    "item": "{{ url('/') }}"
+                }
+            ]
+        }
+        @if(isset($featuredPost) && $featuredPost)
+        ,{
+            "@type": "ItemList",
+            "itemListElement": [
+                @foreach([$featuredPost] as $index => $post)
+                {
+                    "@type": "ListItem",
+                    "position": {{ $index + 1 }},
+                    "item": {
+                        "@type": "Article",
+                        "@id": "{{ url('/' . $post->slug) }}",
+                        "name": {!! json_encode($post->seo_title ?? $post->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
+                        "headline": {!! json_encode($post->seo_title ?? $post->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
+                        "description": {!! json_encode(\Illuminate\Support\Str::limit(strip_tags($post->seo_desc ?? ''), 200), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!},
+                        "image": "{{ $post->seo_image ? asset('/client/assets/images/posts/' . $post->seo_image) : '' }}",
+                        "url": "{{ url('/' . $post->slug) }}",
+                        "datePublished": "{{ $post->published_at ? \Carbon\Carbon::parse($post->published_at)->toIso8601String() : '' }}",
+                        "dateModified": "{{ $post->updated_at ? \Carbon\Carbon::parse($post->updated_at)->toIso8601String() : '' }}",
+                        "author": {
+                            "@type": "Person",
+                            "name": "{{ $post->account->profile->name ?? $post->account->username ?? 'Admin' }}"
+                        },
+                        "publisher": {
+                            "@id": "{{ ($settings['site_url'] ?? url('/')) . '/#organization' }}"
+                        }
+                    }
+                }
+                @endforeach
+            ]
+        }
+        @endif
+    ]
+}
+</script>
+@endsection
+
+@section('header')
+    @include('client.templates.header')
+@endsection
+
+

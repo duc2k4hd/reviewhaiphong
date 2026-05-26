@@ -8,13 +8,7 @@ use App\Http\Controllers\Admin\CacheController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\MiaScraperController;
-use App\Http\Controllers\Admin\TourProScraperController;
-use App\Http\Controllers\Admin\VinpearlScraperController;
-use App\Http\Controllers\Admin\VinpearlLinkExtractorController;
-use App\Http\Controllers\Admin\TravelokaScraperController;
-use App\Http\Controllers\Admin\TravelokaLinkExtractorController;
-use App\Http\Controllers\Admin\LinkExtractorController;
+
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\NewsDetailController;
 use App\Http\Controllers\Client\PostsCategory;
@@ -73,6 +67,7 @@ Route::prefix('/admin')->name('admin.')->group(function() {
         Route::post('/new/handle', [PostController::class, 'handle_posts_new'])->name('new.handle');
         Route::get('/export', [PostController::class, 'export'])->name('export');
         Route::post('/import', [PostController::class, 'import'])->name('import');
+        Route::post('/import-batch', [PostController::class, 'importBatch'])->name('import-batch');
         Route::get('/{post}/edit', [PostController::class, 'edit'])->name('edit');
         Route::put('/{post}', [PostController::class, 'update'])->name('update');
         Route::post('/ai/generate', [PostController::class, 'generateWithAI'])->name('ai.generate');
@@ -90,6 +85,9 @@ Route::prefix('/admin')->name('admin.')->group(function() {
     // Categories routes
     Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/categories')->name('categories.')->group((function() {
         Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::get('/export', [CategoryController::class, 'export'])->name('export');
+        Route::post('/import', [CategoryController::class, 'import'])->name('import');
+        Route::delete('/bulk-delete', [CategoryController::class, 'bulkDestroy'])->name('bulkDestroy');
         Route::get('/create', [CategoryController::class, 'create'])->name('create');
         Route::post('/', [CategoryController::class, 'store'])->name('store');
         Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit');
@@ -122,49 +120,6 @@ Route::prefix('/admin')->name('admin.')->group(function() {
         Route::post('/reset', [SettingController::class, 'reset'])->name('reset');
     }));
 
-    // MIA Scraper routes
-    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/mia-scraper')->name('mia-scraper.')->group((function() {
-        Route::get('/', [MiaScraperController::class, 'index'])->name('index');
-        Route::post('/scrape', [MiaScraperController::class, 'scrape'])->name('scrape');
-    }));
-
-    // Tour Pro Scraper routes
-    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/tour-pro-scraper')->name('tour-pro-scraper.')->group((function() {
-        Route::get('/', [TourProScraperController::class, 'index'])->name('index');
-        Route::post('/scrape', [TourProScraperController::class, 'scrape'])->name('scrape');
-    }));
-
-    // Vinpearl Scraper routes
-    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/vinpearl-scraper')->name('vinpearl-scraper.')->group((function() {
-        Route::get('/', [VinpearlScraperController::class, 'index'])->name('index');
-        Route::post('/scrape', [VinpearlScraperController::class, 'scrape'])->name('scrape');
-        Route::post('/clear-processed-urls', [VinpearlScraperController::class, 'clearProcessedUrls'])->name('clear-processed-urls');
-    }));
-
-    // Vinpearl Link Extractor routes
-    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/vinpearl-link-extractor')->name('vinpearl-link-extractor.')->group((function() {
-        Route::get('/', [VinpearlLinkExtractorController::class, 'index'])->name('index');
-        Route::post('/extract', [VinpearlLinkExtractorController::class, 'extract'])->name('extract');
-    }));
-
-    // Traveloka Scraper routes
-    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/traveloka-scraper')->name('traveloka-scraper.')->group((function() {
-        Route::get('/', [TravelokaScraperController::class, 'index'])->name('index');
-        Route::post('/scrape', [TravelokaScraperController::class, 'scrape'])->name('scrape');
-        Route::post('/clear-processed-urls', [TravelokaScraperController::class, 'clearProcessedUrls'])->name('clear-processed-urls');
-    }));
-
-    // Traveloka Link Extractor routes
-    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/traveloka-link-extractor')->name('traveloka-link-extractor.')->group((function() {
-        Route::get('/', [TravelokaLinkExtractorController::class, 'index'])->name('index');
-        Route::post('/extract', [TravelokaLinkExtractorController::class, 'extract'])->name('extract');
-    }));
-
-    // Link Extractor Tool
-    Route::middleware([CheckLogin::class, CheckAdmin::class])->prefix('/link-extractor')->name('link-extractor.')->group((function() {
-        Route::get('/', [LinkExtractorController::class, 'index'])->name('index');
-        Route::post('/extract', [LinkExtractorController::class, 'extract'])->name('extract');
-    }));
 });
 
 // Client routes with maintenance mode check

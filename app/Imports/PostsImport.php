@@ -4,222 +4,129 @@ namespace App\Imports;
 
 use App\Models\Post;
 use App\Models\Category;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
-class PostsImport
+class PostsImport implements ToCollection, WithHeadingRow, WithChunkReading
 {
-    protected $errors = [];
-    protected $successCount = 0;
-    protected $skipCount = 0;
+    public $errors = [];
+    public $skipCount = 0;
+    public $successCount = 0;
 
-    public function getSuccessCount()
+    public function collection(Collection $rows)
     {
-        return $this->successCount;
-    }
+        $existingSlugs = Post::pluck('id', 'slug')->toArray();
+        $categories = Category::pluck('id', 'slug')->toArray();
+        $inserts = [];
+        $upserts = [];
+        $now = now();
+        $accountId = Auth::id() ?: 1;
 
-    public function getSkipCount()
-    {
-        return $this->skipCount;
-    }
-
-    public function resetCounters()
-    {
-        $this->successCount = 0;
-        $this->skipCount = 0;
-        $this->errors = [];
-    }
-
-    public function import($filePath)
-    {
-        try {
-            // Kiểm tra file tồn tại
-            if (!file_exists($filePath)) {
-                throw new \Exception('File Excel không tồn tại: ' . $filePath);
-            }
-
-            // Kiểm tra file có thể đọc được
-            if (!is_readable($filePath)) {
-                throw new \Exception('Không thể đọc file Excel. Vui lòng kiểm tra quyền truy cập.');
-            }
-
-            $spreadsheet = IOFactory::load($filePath);
-            $sheet = $spreadsheet->getActiveSheet();
-            $rows = $sheet->toArray();
-
-            if (empty($rows) || count($rows) < 2) {
-                throw new \Exception('File Excel không có dữ liệu hoặc thiếu header.');
-            }
-
-            // Skip header row (row 1)
-            $dataRows = array_slice($rows, 1);
-
-            foreach ($dataRows as $rowIndex => $row) {
-                $rowNumber = $rowIndex + 2; // +2 vì bỏ qua header và index bắt đầu từ 0
-                
-                try {
-                    // Validate và import row
-                    $this->importRow($row, $rowNumber);
-                } catch (\Exception $e) {
-                    $this->errors[] = "Dòng {$rowNumber}: " . $e->getMessage();
-                    Log::error("PostsImport - Dòng {$rowNumber}: " . $e->getMessage());
-                }
-            }
-
-            return [
-                'success' => true,
-                'successCount' => $this->successCount,
-                'skipCount' => $this->skipCount,
-                'errors' => $this->errors,
-            ];
-
-        } catch (\Exception $e) {
-            return [
-                'success' => false,
-                'message' => 'Lỗi khi đọc file Excel: ' . $e->getMessage(),
-                'errors' => $this->errors,
-            ];
-        }
-    }
-
-    public function importRow($row, $rowNumber)
-    {
-        // Map columns: ID, Tiêu đề, Slug, Nội dung, SEO Title, SEO Description, SEO Keywords, SEO Image, Tags, Danh mục, Trạng thái, Ngày xuất bản, Lượt xem, Type
-        $id = isset($row[0]) ? trim((string)$row[0]) : null;
-        $name = isset($row[1]) ? trim((string)$row[1]) : '';
-        $slug = isset($row[2]) ? trim((string)$row[2]) : '';
-        $content = isset($row[3]) ? trim((string)$row[3]) : '';
-        $seoTitle = isset($row[4]) ? trim((string)$row[4]) : '';
-        $seoDesc = isset($row[5]) ? trim((string)$row[5]) : '';
-        $seoKeywords = isset($row[6]) ? trim((string)$row[6]) : '';
-        $seoImage = isset($row[7]) ? trim((string)$row[7]) : '';
-        $tags = isset($row[8]) ? trim((string)$row[8]) : '';
-        $categorySlug = isset($row[9]) ? trim((string)$row[9]) : '';
-        $status = isset($row[10]) ? trim((string)$row[10]) : 'draft';
-        $publishedAt = isset($row[11]) ? trim((string)$row[11]) : '';
-        $views = isset($row[12]) ? (int)$row[12] : 0;
-        $type = isset($row[13]) ? trim((string)$row[13]) : '';
-
-        // Validation
-        if (empty($name)) {
-            throw new \Exception('Tiêu đề không được để trống');
-        }
-
-        if (empty($slug)) {
-            // Tự động tạo slug từ tên
-            $slug = Str::slug($name);
-        } else {
-            // Validate slug format
-            if (!preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug)) {
-                throw new \Exception('Slug không hợp lệ. Slug chỉ được chứa chữ thường, số và dấu gạch ngang.');
-            }
-        }
-
-        // Tìm bài viết đã tồn tại để UPDATE thay vì tạo mới
-        $existingPost = null;
-        
-        // Ưu tiên 1: Tìm theo ID nếu có
-        if (!empty($id) && is_numeric($id)) {
-            $existingPost = Post::find($id);
-        }
-        
-        // Ưu tiên 2: Nếu không tìm thấy theo ID, tìm theo slug
-        if (!$existingPost) {
-            $existingPost = Post::where('slug', $slug)->first();
-        }
-        
-        // Nếu tìm thấy bài viết theo ID hoặc slug, kiểm tra slug có trùng với bài viết khác không
-        if ($existingPost) {
-            // Nếu slug thay đổi và slug mới đã tồn tại ở bài viết khác -> Lỗi
-            if ($existingPost->slug !== $slug) {
-                $slugExists = Post::where('slug', $slug)->where('id', '!=', $existingPost->id)->exists();
-                if ($slugExists) {
-                    throw new \Exception("Slug '{$slug}' đã tồn tại ở bài viết khác (ID: {$existingPost->id}).");
-                }
-            }
-        } else {
-            // Nếu không tìm thấy bài viết nào, kiểm tra slug có trùng không (để tránh tạo mới trùng)
-            $slugExists = Post::where('slug', $slug)->exists();
-            if ($slugExists) {
-                // Nếu slug trùng nhưng không tìm thấy bài viết -> có thể do lỗi, bỏ qua
+        foreach ($rows as $row) {
+            $rowIndex = $row['_row_index'] ?? '?';
+            $name = $row['tieu_de'] ?? null;
+            
+            if (empty($name)) {
                 $this->skipCount++;
-                throw new \Exception("Slug '{$slug}' đã tồn tại nhưng không tìm thấy bài viết. Bỏ qua dòng này.");
+                continue;
             }
-        }
 
-        // Validate status
-        $validStatuses = ['draft', 'published', 'archived', 'pending'];
-        if (!in_array($status, $validStatuses)) {
-            $status = 'draft';
-        }
+            $id = !empty($row['id']) ? (int) $row['id'] : null;
+            $slug = !empty($row['slug']) ? Str::slug($row['slug']) : Str::slug($name);
 
-        // Validate category
-        $categoryId = null;
-        if (!empty($categorySlug)) {
-            $category = Category::where('slug', $categorySlug)->first();
-            if ($category) {
-                $categoryId = $category->id;
+            // Logic tìm ID và chống trùng lặp Slug
+            if (!$id && isset($existingSlugs[$slug]) && $existingSlugs[$slug] > 0) {
+                // 1. Cập nhật theo Slug: Không có ID nhưng Slug đã có trong DB -> Lấy ID cũ để Update
+                $id = $existingSlugs[$slug];
+            } else if (!$id) {
+                // 2. Tạo mới: Không có ID và Slug chưa tồn tại -> Chống trùng lặp Slug nếu tên giống nhau
+                $originalSlug = $slug;
+                $counter = 1;
+                while (isset($existingSlugs[$slug])) {
+                    $slug = $originalSlug . '-' . $counter;
+                    $counter++;
+                }
+                $existingSlugs[$slug] = -rand(1, 999999); // Giữ chỗ tạm thời trong lô
+            }
+
+            $categorySlug = $row['danh_muc'] ?? $row['danh_muc_slug'] ?? null;
+            $categoryId = !empty($categorySlug) && isset($categories[$categorySlug]) ? $categories[$categorySlug] : null;
+
+            if (!$categoryId) {
+                $this->errors[] = "Dòng {$rowIndex}: Danh mục '{$categorySlug}' không tồn tại. Bài viết: {$name}";
+                $this->skipCount++;
+                continue;
+            }
+
+            $status = strtolower($row['trang_thai'] ?? '');
+            $validStatuses = ['draft', 'published', 'archived', 'pending'];
+            if (!in_array($status, $validStatuses)) {
+                $status = 'draft';
+            }
+
+            $publishedAt = null;
+            if (!empty($row['ngay_xuat_ban'])) {
+                try {
+                    $publishedAt = \Carbon\Carbon::parse($row['ngay_xuat_ban']);
+                } catch (\Exception $e) {
+                    $publishedAt = null;
+                }
+            }
+
+            $item = [
+                'name' => $name,
+                'slug' => $slug,
+                'content' => $row['noi_dung'] ?? '',
+                'seo_title' => $row['seo_title'] ?: $name,
+                'seo_desc' => $row['seo_description'] ?? '',
+                'seo_keywords' => $row['seo_keywords'] ?? '',
+                'seo_image' => $row['seo_image'] ?? '',
+                'tags' => $row['tags'] ?? '',
+                'category_id' => $categoryId,
+                'status' => $status,
+                'published_at' => $publishedAt,
+                'views' => isset($row['luot_xem']) ? max(0, (int)$row['luot_xem']) : 0,
+                'type' => $row['type'] ?? '',
+                'account_id' => $accountId, // Mặc định người upload là tác giả nếu tạo mới
+                'last_updated_by' => $accountId,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+
+            if ($id) {
+                $item['id'] = $id;
+                // Khi upsert, nếu muốn giữ nguyên account_id cũ thì cần query trước, nhưng vì chúng ta đang tối ưu tốc độ,
+                // ta tạm thời dùng account_id hiện tại luôn, hoặc bỏ qua cập nhật account_id nếu upsert bằng cách không đưa vào array update
+                $upserts[] = $item;
             } else {
-                throw new \Exception("Danh mục với slug '{$categorySlug}' không tồn tại.");
+                $inserts[] = $item;
             }
-        }
-
-        // Parse published_at
-        $publishedAtDate = null;
-        if (!empty($publishedAt)) {
-            try {
-                $publishedAtDate = \Carbon\Carbon::parse($publishedAt);
-            } catch (\Exception $e) {
-                // Nếu không parse được, dùng null
-                $publishedAtDate = null;
-            }
-        }
-
-        // Get current user account - sử dụng Auth facade
-        $account = \Illuminate\Support\Facades\Auth::user();
-        if (!$account) {
-            throw new \Exception('Không tìm thấy thông tin người dùng.');
-        }
-
-        // Prepare data
-        $data = [
-            'name' => $name,
-            'slug' => $slug,
-            'content' => $content,
-            'seo_title' => $seoTitle ?: $name,
-            'seo_desc' => $seoDesc,
-            'seo_keywords' => $seoKeywords,
-            'seo_image' => $seoImage,
-            'tags' => $tags,
-            'category_id' => $categoryId,
-            'status' => $status,
-            'published_at' => $publishedAtDate,
-            'views' => max(0, $views),
-            'type' => $type,
-            'account_id' => $account->id,
-            'last_updated_by' => $account->id,
-        ];
-
-        // UPDATE nếu đã tồn tại, CREATE nếu chưa có
-        if ($existingPost) {
-            // UPDATE: Giữ nguyên account_id gốc nếu không thay đổi, chỉ cập nhật last_updated_by
-            $data['account_id'] = $existingPost->account_id; // Giữ nguyên tác giả gốc
-            $existingPost->update($data);
+            
             $this->successCount++;
-            Log::info("PostsImport - Cập nhật bài viết ID: {$existingPost->id}, Slug: {$slug}");
-        } else {
-            // CREATE: Tạo mới bài viết
-            Post::create($data);
-            $this->successCount++;
-            Log::info("PostsImport - Tạo mới bài viết, Slug: {$slug}");
+        }
+
+        // Thực thi SQL Bulk Insert (nhanh gấp hàng nghìn lần)
+        if (count($inserts) > 0) {
+            Post::insert($inserts);
+        }
+        
+        if (count($upserts) > 0) {
+            // Khi upsert, không cập nhật cột account_id để giữ nguyên tác giả ban đầu
+            Post::upsert(
+                $upserts, 
+                ['id'], 
+                ['name', 'slug', 'content', 'seo_title', 'seo_desc', 'seo_keywords', 'seo_image', 'tags', 'category_id', 'status', 'published_at', 'views', 'type', 'last_updated_by', 'updated_at']
+            );
         }
     }
 
-    public function getErrors()
+    public function chunkSize(): int
     {
-        return $this->errors;
+        return 1000;
     }
 }
-

@@ -8,9 +8,17 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">📂 Quản lý danh mục</h5>
-                <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Thêm danh mục mới
-                </a>
+                <div>
+                    <a href="{{ route('admin.categories.export') }}" class="btn btn-success me-2">
+                        <i class="fas fa-file-excel"></i> Xuất Excel
+                    </a>
+                    <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#importExcelModal">
+                        <i class="fas fa-file-import"></i> Nhập Excel
+                    </button>
+                    <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Thêm danh mục mới
+                    </a>
+                </div>
             </div>
             
             <div class="card-body">
@@ -61,11 +69,21 @@
                     </div>
                 </form>
 
+                <!-- Bulk Actions -->
+                <div class="mb-3">
+                    <button id="btnBulkDelete" class="btn btn-danger d-none">
+                        <i class="fas fa-trash"></i> Xóa (<span id="selectedCount">0</span>) mục đã chọn
+                    </button>
+                </div>
+
                 <!-- Bảng danh sách -->
                 <div class="table-responsive">
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
+                                <th width="40">
+                                    <input type="checkbox" id="selectAll" class="form-check-input">
+                                </th>
                                 <th width="50">STT</th>
                                 <th>Tên danh mục</th>
                                 <th>Slug</th>
@@ -80,6 +98,9 @@
                         <tbody>
                             @forelse($categories as $index => $category)
                                 <tr>
+                                    <td>
+                                        <input type="checkbox" class="form-check-input category-checkbox" value="{{ $category->id }}">
+                                    </td>
                                     <td>{{ $index + 1 + ($categories->currentPage() - 1) * $categories->perPage() }}</td>
                                     <td>
                                         <strong>{{ $category->name }}</strong>
@@ -189,6 +210,36 @@
     </div>
 </div>
 
+<!-- Modal Nhập Excel -->
+<div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="{{ route('admin.categories.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importExcelModalLabel">Nhập danh mục từ Excel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="excel_file" class="form-label">Chọn file Excel (.xlsx)</label>
+                        <input type="file" class="form-control" id="excel_file" name="file" accept=".xlsx, .xls" required>
+                        <small class="text-muted mt-2 d-block">
+                            Lưu ý: Bạn nên <strong>Xuất Excel</strong> trước để lấy mẫu cấu trúc chuẩn. Nếu cột ID để trống, hệ thống sẽ thêm mới. Nếu cột ID đã có, hệ thống sẽ cập nhật thông tin.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-file-import"></i> Tiến hành nhập
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <style>
 .table-responsive {
     overflow-x: auto;
@@ -211,5 +262,74 @@
     margin-right: 0;
 }
 </style>
-@endsection
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.category-checkbox');
+    const btnBulkDelete = document.getElementById('btnBulkDelete');
+    const selectedCountSpan = document.getElementById('selectedCount');
+
+    function updateBulkDeleteButton() {
+        const checkedCount = document.querySelectorAll('.category-checkbox:checked').length;
+        selectedCountSpan.textContent = checkedCount;
+        if (checkedCount > 0) {
+            btnBulkDelete.classList.remove('d-none');
+        } else {
+            btnBulkDelete.classList.add('d-none');
+            selectAll.checked = false;
+        }
+    }
+
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            updateBulkDeleteButton();
+        });
+    }
+
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', updateBulkDeleteButton);
+    });
+
+    if (btnBulkDelete) {
+        btnBulkDelete.addEventListener('click', function() {
+            const checkedIds = Array.from(document.querySelectorAll('.category-checkbox:checked')).map(cb => cb.value);
+            
+            if (checkedIds.length === 0) return;
+
+            if (confirm(`Bạn có chắc chắn muốn xóa ${checkedIds.length} danh mục đã chọn? Các danh mục chứa bài viết hoặc có thư mục con sẽ bị bỏ qua tự động.`)) {
+                
+                // Disable button
+                btnBulkDelete.disabled = true;
+                btnBulkDelete.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
+
+                fetch('{{ route("admin.categories.bulkDestroy") }}', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ ids: checkedIds })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.reload();
+                    } else {
+                        alert(data.message || 'Có lỗi xảy ra');
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Đã xảy ra lỗi hệ thống');
+                    window.location.reload();
+                });
+            }
+        });
+    }
+});
+</script>
+@endsection

@@ -256,4 +256,73 @@ class CategoryController extends Controller
 
         return response()->json($categories);
     }
+
+    /**
+     * Xuất file Excel danh mục
+     */
+    public function export()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\CategoryExport, 'danh-muc-reviewhaiphong.xlsx');
+    }
+
+    /**
+     * Nhập file Excel danh mục
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ], [
+            'file.required' => 'Vui lòng chọn file.',
+            'file.mimes' => 'File phải có định dạng .xlsx hoặc .xls'
+        ]);
+
+        try {
+            \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\CategoryImport, $request->file('file'));
+            return redirect()->route('admin.categories.index')->with('success', 'Nhập danh mục từ Excel thành công!');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.categories.index')->with('error', 'Lỗi khi nhập Excel: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Xóa nhiều danh mục cùng lúc (cực nhanh, không tốn RAM)
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer'
+        ]);
+
+        $ids = $request->ids;
+
+        // Tìm các danh mục đang có bài viết
+        $invalidIdsDueToPosts = \App\Models\Post::whereIn('category_id', $ids)
+            ->pluck('category_id')
+            ->toArray();
+
+        // Tìm các danh mục đang có danh mục con
+        $invalidIdsDueToChildren = Category::whereIn('parent_id', $ids)
+            ->pluck('parent_id')
+            ->toArray();
+
+        $invalidIds = array_unique(array_merge($invalidIdsDueToPosts, $invalidIdsDueToChildren));
+        $validIds = array_diff($ids, $invalidIds);
+
+        $deletedCount = 0;
+        if (!empty($validIds)) {
+            // Xóa nhanh bằng 1 câu query duy nhất, không gọi Eloquent events để tối ưu tốc độ và RAM
+            $deletedCount = Category::whereIn('id', $validIds)->delete();
+        }
+
+        $message = "Đã xóa thành công {$deletedCount} danh mục.";
+        
+        if (count($invalidIds) > 0) {
+            $message .= " Đã bỏ qua " . count($invalidIds) . " danh mục vì đang chứa bài viết hoặc có danh mục con.";
+            return response()->json(['success' => true, 'message' => $message, 'type' => 'warning']);
+        }
+
+        return response()->json(['success' => true, 'message' => $message, 'type' => 'success']);
+    }
 }

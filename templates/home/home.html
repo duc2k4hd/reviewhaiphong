@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Hải Phòng - Khám phá thành phố hoa phượng đỏ</title>
+    <style>
+        /* ===== RESET & VARIABLES ===== */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --rhp-red: #d0021b;
+            --rhp-red-dark: #a80016;
+            --rhp-orange: #e8540a;
+            --rhp-yellow: #f5a623;
+            --rhp-blue: #1a73e8;
+            --rhp-dark: #1a1a1a;
+            --rhp-gray: #555;
+            --rhp-gray-light: #888;
+            --rhp-gray-bg: #f4f4f4;
+            --rhp-border: #e0e0e0;
+            --rhp-white: #fff;
+            --rhp-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+            --rhp-radius: 4px;
+            --rhp-font: 'Segoe UI', Arial, sans-serif;
+            --rhp-container: 1180px;
+        }
+
+        html {
+            font-size: 15px;
+        }
+
+        body {
+            font-family: var(--rhp-font);
+            color: var(--rhp-dark);
+            background: var(--rhp-gray-bg);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        /* ===== UTILITY ===== */
+        .reviewhaiphong_home_container {
+            width: 100%;
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        .reviewhaiphong_home_flex {
+            display: flex;
+        }
+
+        .reviewhaiphong_home_flex_between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ===== TOP BAR ===== */
+        .reviewhaiphong_home_topbar {
+            background: var(--rhp-red);
+            color: #fff;
+            font-size: 0.78rem;
+            padding: 4px 0;
+        }
+
+        .reviewhaiphong_home_topbar_inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        .reviewhaiphong_home_topbar_links a {
+            color: #fff;
+            margin-right: 12px;
+            font-size: 0.75rem;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .reviewhaiphong_home_topbar_links a:hover {
+            opacity: 1;
+        }
+
+        .reviewhaiphong_home_topbar_social a {
+            color: #fff;
+            margin-left: 8px;
+            font-size: 0.75rem;
+            opacity: 0.85;
+        }
+
+        /* ===== HEADER ===== */
+        .reviewhaiphong_home_header {
+            background: var(--rhp-white);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.10);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .reviewhaiphong_home_header_inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 8px 12px;
+            gap: 12px;
+        }
+
+        .reviewhaiphong_home_logo {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reviewhaiphong_home_logo_text {
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: var(--rhp-red);
+            letter-spacing: -0.5px;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .reviewhaiphong_home_logo_text span {
+            color: var(--rhp-dark);
+        }
+
+        .reviewhaiphong_home_logo_sub {
+            font-size: 0.62rem;
+            color: var(--rhp-gray-light);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .reviewhaiphong_home_search_wrap {
+            flex: 1;
+            max-width: 480px;
+            position: relative;
+        }
+
+        .reviewhaiphong_home_search_input {
+            width: 100%;
+            border: 1.5px solid var(--rhp-border);
+            border-radius: 20px;
+            padding: 7px 42px 7px 16px;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #fafafa;
+        }
+
+        .reviewhaiphong_home_search_input:focus {
+            border-color: var(--rhp-red);
+            background: #fff;
+        }
+
+        .reviewhaiphong_home_search_btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--rhp-red);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reviewhaiphong_home_search_btn:hover {
+            background: var(--rhp-red-dark);
+        }
+
+        .reviewhaiphong_home_header_actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .reviewhaiphong_home_header_action_btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.68rem;
+            color: var(--rhp-gray);
+            gap: 2px;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 4px 6px;
+            border-radius: var(--rhp-radius);
+        }
+
+        .reviewhaiphong_home_header_action_btn:hover {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_header_action_btn .reviewhaiphong_home_icon {
+            font-size: 1.1rem;
+        }
+
+        .reviewhaiphong_home_menu_toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding: 6px;
+            cursor: pointer;
+        }
+
+        .reviewhaiphong_home_menu_toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--rhp-dark);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        /* ===== NAV BAR ===== */
+        .reviewhaiphong_home_navbar {
+            background: var(--rhp-red);
+            position: relative;
+            z-index: 90;
+        }
+
+        .reviewhaiphong_home_navbar_inner {
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        .reviewhaiphong_home_nav_list {
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .reviewhaiphong_home_nav_list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .reviewhaiphong_home_nav_item>a {
+            display: block;
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 10px 13px;
+            white-space: nowrap;
+            transition: background 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .reviewhaiphong_home_nav_item>a:hover,
+        .reviewhaiphong_home_nav_item.reviewhaiphong_home_nav_current>a {
+            background: rgba(255, 255, 255, 0.15);
+            border-bottom-color: #fff;
+        }
+
+        .reviewhaiphong_home_nav_item.reviewhaiphong_home_nav_home>a {
+            background: var(--rhp-red-dark);
+        }
+
+        /* ===== MOBILE NAV ===== */
+        .reviewhaiphong_home_mobile_nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+        }
+
+        .reviewhaiphong_home_mobile_nav.reviewhaiphong_home_open {
+            display: block;
+        }
+
+        .reviewhaiphong_home_mobile_nav_panel {
+            background: #fff;
+            width: 270px;
+            height: 100%;
+            overflow-y: auto;
+            padding: 0 0 24px;
+            transform: translateX(-100%);
+            transition: transform 0.3s;
+        }
+
+        .reviewhaiphong_home_mobile_nav.reviewhaiphong_home_open .reviewhaiphong_home_mobile_nav_panel {
+            transform: translateX(0);
+        }
+
+        .reviewhaiphong_home_mobile_nav_head {
+            background: var(--rhp-red);
+            color: #fff;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .reviewhaiphong_home_mobile_nav_close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+
+        .reviewhaiphong_home_mobile_nav_list a {
+            display: block;
+            padding: 11px 18px;
+            border-bottom: 1px solid var(--rhp-border);
+            color: var(--rhp-dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .reviewhaiphong_home_mobile_nav_list a:hover {
+            color: var(--rhp-red);
+            background: #fafafa;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .reviewhaiphong_home_breadcrumb {
+            background: #fff;
+            border-bottom: 1px solid var(--rhp-border);
+            padding: 5px 0;
+            font-size: 0.75rem;
+            color: var(--rhp-gray-light);
+        }
+
+        .reviewhaiphong_home_breadcrumb a {
+            color: var(--rhp-blue);
+        }
+
+        .reviewhaiphong_home_breadcrumb span {
+            margin: 0 5px;
+        }
+
+        /* ===== MAIN LAYOUT ===== */
+        .reviewhaiphong_home_main_layout {
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 14px 12px;
+            display: grid;
+            grid-template-columns: 1fr 290px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .reviewhaiphong_home_content_col {
+            min-width: 0;
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .reviewhaiphong_home_section_title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid var(--rhp-border);
+            padding-bottom: 8px;
+        }
+
+        .reviewhaiphong_home_section_title_bar {
+            width: 4px;
+            height: 20px;
+            background: var(--rhp-red);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .reviewhaiphong_home_section_title_text {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--rhp-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .reviewhaiphong_home_section_title_link {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--rhp-red);
+            font-weight: 600;
+        }
+
+        .reviewhaiphong_home_section_title_link:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== FEATURED / HERO BLOCK ===== */
+        .reviewhaiphong_home_hero_block {
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: var(--rhp-shadow);
+        }
+
+        .reviewhaiphong_home_hero_grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 0;
+        }
+
+        .reviewhaiphong_home_hero_main {
+            grid-row: 1 / 3;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_hero_main_img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s;
+        }
+
+        .reviewhaiphong_home_hero_main:hover .reviewhaiphong_home_hero_main_img {
+            transform: scale(1.03);
+        }
+
+        .reviewhaiphong_home_hero_main_caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+            color: #fff;
+            padding: 20px 12px 12px;
+        }
+
+        .reviewhaiphong_home_hero_main_tag {
+            background: var(--rhp-red);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .reviewhaiphong_home_hero_main_title {
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_hero_sub {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 0;
+        }
+
+        .reviewhaiphong_home_hero_sub_item {
+            position: relative;
+            overflow: hidden;
+            border-left: 1px solid var(--rhp-border);
+            border-bottom: 1px solid var(--rhp-border);
+        }
+
+        .reviewhaiphong_home_hero_sub_item:last-child {
+            border-bottom: none;
+        }
+
+        .reviewhaiphong_home_hero_sub_img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+
+        .reviewhaiphong_home_hero_sub_item:hover .reviewhaiphong_home_hero_sub_img {
+            transform: scale(1.04);
+        }
+
+        .reviewhaiphong_home_hero_sub_caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.72));
+            color: #fff;
+            padding: 18px 9px 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        /* ===== CARD GRID ===== */
+        .reviewhaiphong_home_card_grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .reviewhaiphong_home_card_grid_4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .reviewhaiphong_home_card {
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            overflow: hidden;
+            box-shadow: var(--rhp-shadow);
+            transition: box-shadow 0.25s, transform 0.25s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reviewhaiphong_home_card:hover {
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .reviewhaiphong_home_card_img_wrap {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_card_img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.35s;
+        }
+
+        .reviewhaiphong_home_card:hover .reviewhaiphong_home_card_img {
+            transform: scale(1.05);
+        }
+
+        .reviewhaiphong_home_card_tag {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--rhp-red);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+
+        .reviewhaiphong_home_card_body {
+            padding: 9px 10px 10px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .reviewhaiphong_home_card_title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--rhp-dark);
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s;
+        }
+
+        .reviewhaiphong_home_card:hover .reviewhaiphong_home_card_title {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_card_meta {
+            font-size: 0.7rem;
+            color: var(--rhp-gray-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reviewhaiphong_home_card_excerpt {
+            font-size: 0.76rem;
+            color: var(--rhp-gray);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+
+        /* ===== LIST CARD (horizontal) ===== */
+        .reviewhaiphong_home_list_card {
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            overflow: hidden;
+            box-shadow: var(--rhp-shadow);
+            display: flex;
+            gap: 0;
+            margin-bottom: 10px;
+            transition: box-shadow 0.25s;
+        }
+
+        .reviewhaiphong_home_list_card:hover {
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.13);
+        }
+
+        .reviewhaiphong_home_list_card_img {
+            width: 130px;
+            min-width: 130px;
+            height: 90px;
+            object-fit: cover;
+            flex-shrink: 0;
+            transition: transform 0.35s;
+        }
+
+        .reviewhaiphong_home_list_card:hover .reviewhaiphong_home_list_card_img {
+            transform: scale(1.04);
+        }
+
+        .reviewhaiphong_home_list_card_body {
+            padding: 9px 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            justify-content: center;
+        }
+
+        .reviewhaiphong_home_list_card_title {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--rhp-dark);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s;
+        }
+
+        .reviewhaiphong_home_list_card:hover .reviewhaiphong_home_list_card_title {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_list_card_meta {
+            font-size: 0.7rem;
+            color: var(--rhp-gray-light);
+        }
+
+        .reviewhaiphong_home_list_card_excerpt {
+            font-size: 0.75rem;
+            color: var(--rhp-gray);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ===== SECTION BLOCK ===== */
+        .reviewhaiphong_home_section_block {
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            padding: 14px 14px 10px;
+            margin-bottom: 14px;
+            box-shadow: var(--rhp-shadow);
+        }
+
+        /* ===== TABS ===== */
+        .reviewhaiphong_home_tab_nav {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--rhp-border);
+            margin-bottom: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .reviewhaiphong_home_tab_nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .reviewhaiphong_home_tab_btn {
+            padding: 7px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--rhp-gray);
+            cursor: pointer;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.2s, border-color 0.2s;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        .reviewhaiphong_home_tab_btn.reviewhaiphong_home_tab_active,
+        .reviewhaiphong_home_tab_btn:hover {
+            color: var(--rhp-red);
+            border-bottom-color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_tab_content {
+            display: none;
+        }
+
+        .reviewhaiphong_home_tab_content.reviewhaiphong_home_tab_show {
+            display: block;
+        }
+
+        /* ===== LOAD MORE BUTTON ===== */
+        .reviewhaiphong_home_loadmore_wrap {
+            text-align: center;
+            margin: 10px 0 6px;
+        }
+
+        .reviewhaiphong_home_loadmore_btn {
+            background: none;
+            border: 1.5px solid var(--rhp-border);
+            border-radius: 20px;
+            padding: 7px 28px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--rhp-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reviewhaiphong_home_loadmore_btn:hover {
+            border-color: var(--rhp-red);
+            color: var(--rhp-red);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .reviewhaiphong_home_sidebar {
+            position: sticky;
+            top: 70px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .reviewhaiphong_home_sidebar_box {
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            padding: 12px 13px;
+            box-shadow: var(--rhp-shadow);
+        }
+
+        .reviewhaiphong_home_sidebar_title {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--rhp-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid var(--rhp-red);
+            padding-bottom: 7px;
+            margin-bottom: 10px;
+        }
+
+        /* Sidebar trending */
+        .reviewhaiphong_home_sidebar_trending_item {
+            display: flex;
+            gap: 9px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--rhp-border);
+            align-items: flex-start;
+        }
+
+        .reviewhaiphong_home_sidebar_trending_item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .reviewhaiphong_home_sidebar_trending_num {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--rhp-border);
+            min-width: 24px;
+            line-height: 1;
+        }
+
+        .reviewhaiphong_home_sidebar_trending_item:nth-child(1) .reviewhaiphong_home_sidebar_trending_num {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_sidebar_trending_item:nth-child(2) .reviewhaiphong_home_sidebar_trending_num {
+            color: var(--rhp-orange);
+        }
+
+        .reviewhaiphong_home_sidebar_trending_item:nth-child(3) .reviewhaiphong_home_sidebar_trending_num {
+            color: var(--rhp-yellow);
+        }
+
+        .reviewhaiphong_home_sidebar_trending_title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            line-height: 1.35;
+            color: var(--rhp-dark);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_sidebar_trending_title:hover {
+            color: var(--rhp-red);
+        }
+
+        /* Sidebar thumb card */
+        .reviewhaiphong_home_sidebar_thumb_item {
+            display: flex;
+            gap: 9px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--rhp-border);
+        }
+
+        .reviewhaiphong_home_sidebar_thumb_item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .reviewhaiphong_home_sidebar_thumb_img {
+            width: 75px;
+            min-width: 75px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: var(--rhp-radius);
+            flex-shrink: 0;
+        }
+
+        .reviewhaiphong_home_sidebar_thumb_title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--rhp-dark);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_sidebar_thumb_title:hover {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_sidebar_thumb_meta {
+            font-size: 0.67rem;
+            color: var(--rhp-gray-light);
+            margin-top: 3px;
+        }
+
+        /* Sidebar Banner Ad */
+        .reviewhaiphong_home_sidebar_banner {
+            background: linear-gradient(135deg, var(--rhp-red) 0%, var(--rhp-red-dark) 100%);
+            border-radius: var(--rhp-radius);
+            padding: 16px 14px;
+            text-align: center;
+            color: #fff;
+            box-shadow: var(--rhp-shadow);
+        }
+
+        .reviewhaiphong_home_sidebar_banner_title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+
+        .reviewhaiphong_home_sidebar_banner_sub {
+            font-size: 0.76rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .reviewhaiphong_home_sidebar_banner_badge {
+            background: #fff;
+            color: var(--rhp-red);
+            font-weight: 800;
+            font-size: 1.2rem;
+            padding: 4px 14px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .reviewhaiphong_home_sidebar_banner_btn {
+            display: block;
+            background: #fff;
+            color: var(--rhp-red);
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 7px 18px;
+            border-radius: 20px;
+            margin: 8px auto 0;
+            width: fit-content;
+            transition: opacity 0.2s;
+        }
+
+        .reviewhaiphong_home_sidebar_banner_btn:hover {
+            opacity: 0.88;
+        }
+
+        /* Tags Cloud */
+        .reviewhaiphong_home_tags_cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .reviewhaiphong_home_tag_item {
+            background: var(--rhp-gray-bg);
+            border: 1px solid var(--rhp-border);
+            color: var(--rhp-gray);
+            font-size: 0.72rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .reviewhaiphong_home_tag_item:hover {
+            background: var(--rhp-red);
+            color: #fff;
+            border-color: var(--rhp-red);
+        }
+
+        /* ===== TOUR SECTION ===== */
+        .reviewhaiphong_home_tour_section {
+            background: var(--rhp-dark);
+            padding: 18px 0 14px;
+            margin-top: 10px;
+        }
+
+        .reviewhaiphong_home_tour_title {
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reviewhaiphong_home_tour_title::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: var(--rhp-red);
+            border-radius: 2px;
+        }
+
+        .reviewhaiphong_home_tour_grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+
+        .reviewhaiphong_home_tour_item {
+            position: relative;
+            border-radius: var(--rhp-radius);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .reviewhaiphong_home_tour_item_img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            display: block;
+            filter: brightness(0.8);
+            transition: transform 0.35s, filter 0.35s;
+        }
+
+        .reviewhaiphong_home_tour_item:hover .reviewhaiphong_home_tour_item_img {
+            transform: scale(1.06);
+            filter: brightness(0.65);
+        }
+
+        .reviewhaiphong_home_tour_item_label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: #fff;
+            text-align: center;
+            padding: 14px 5px 7px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* ===== FOOTER ===== */
+        .reviewhaiphong_home_footer {
+            background: var(--rhp-dark);
+            color: #ccc;
+            padding: 24px 0 0;
+            margin-top: 10px;
+        }
+
+        .reviewhaiphong_home_footer_grid {
+            max-width: var(--rhp-container);
+            margin: 0 auto;
+            padding: 0 12px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 24px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #333;
+        }
+
+        .reviewhaiphong_home_footer_logo {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--rhp-white);
+            margin-bottom: 8px;
+        }
+
+        .reviewhaiphong_home_footer_logo span {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_footer_desc {
+            font-size: 0.78rem;
+            line-height: 1.6;
+            color: #999;
+        }
+
+        .reviewhaiphong_home_footer_col_title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .reviewhaiphong_home_footer_links a {
+            display: block;
+            color: #999;
+            font-size: 0.78rem;
+            margin-bottom: 6px;
+            transition: color 0.2s;
+        }
+
+        .reviewhaiphong_home_footer_links a:hover {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_footer_bottom {
+            background: #111;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.72rem;
+            color: #666;
+        }
+
+        .reviewhaiphong_home_footer_bottom a {
+            color: var(--rhp-red);
+        }
+
+        /* ===== BIG IMAGE CARD ===== */
+        .reviewhaiphong_home_big_card {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 12px;
+            background: #fff;
+            border-radius: var(--rhp-radius);
+            overflow: hidden;
+            margin-bottom: 10px;
+            box-shadow: var(--rhp-shadow);
+            transition: box-shadow 0.25s;
+        }
+
+        .reviewhaiphong_home_big_card:hover {
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
+        }
+
+        .reviewhaiphong_home_big_card_img {
+            width: 200px;
+            height: 130px;
+            object-fit: cover;
+            flex-shrink: 0;
+            transition: transform 0.35s;
+        }
+
+        .reviewhaiphong_home_big_card:hover .reviewhaiphong_home_big_card_img {
+            transform: scale(1.04);
+        }
+
+        .reviewhaiphong_home_big_card_body {
+            padding: 12px 14px 12px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .reviewhaiphong_home_big_card_cat {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--rhp-red);
+            text-transform: uppercase;
+        }
+
+        .reviewhaiphong_home_big_card_title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--rhp-dark);
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s;
+        }
+
+        .reviewhaiphong_home_big_card:hover .reviewhaiphong_home_big_card_title {
+            color: var(--rhp-red);
+        }
+
+        .reviewhaiphong_home_big_card_excerpt {
+            font-size: 0.78rem;
+            color: var(--rhp-gray);
+            line-height: 1.45;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .reviewhaiphong_home_big_card_meta {
+            font-size: 0.68rem;
+            color: var(--rhp-gray-light);
+        }
+
+        /* ===== PLACEHOLDER IMAGES ===== */
+        .reviewhaiphong_home_placeholder {
+            background: linear-gradient(135deg, #ddd 0%, #eee 50%, #ddd 100%);
+            background-size: 200% 200%;
+            animation: reviewhaiphong_home_shimmer 1.5s infinite;
+        }
+
+        @keyframes reviewhaiphong_home_shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .reviewhaiphong_home_img_wrap {
+            overflow: hidden;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1100px) {
+            .reviewhaiphong_home_main_layout {
+                grid-template-columns: 1fr 260px;
+            }
+
+            .reviewhaiphong_home_tour_grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .reviewhaiphong_home_footer_grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .reviewhaiphong_home_main_layout {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_sidebar {
+                position: static;
+            }
+
+            .reviewhaiphong_home_card_grid_4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reviewhaiphong_home_hero_main_img {
+                height: 260px;
+            }
+
+            .reviewhaiphong_home_tour_grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .reviewhaiphong_home_header_action_btn .reviewhaiphong_home_action_label {
+                display: none;
+            }
+
+            .reviewhaiphong_home_search_wrap {
+                max-width: 280px;
+            }
+
+            .reviewhaiphong_home_card_grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reviewhaiphong_home_card_grid_4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reviewhaiphong_home_hero_grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_hero_main {
+                grid-row: 1;
+            }
+
+            .reviewhaiphong_home_hero_main_img {
+                height: 220px;
+            }
+
+            .reviewhaiphong_home_hero_sub {
+                grid-template-rows: auto;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .reviewhaiphong_home_hero_sub_img {
+                height: 130px;
+            }
+
+            .reviewhaiphong_home_big_card {
+                grid-template-columns: 130px 1fr;
+            }
+
+            .reviewhaiphong_home_big_card_img {
+                width: 130px;
+                height: 100px;
+            }
+
+            .reviewhaiphong_home_tour_grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .reviewhaiphong_home_footer_grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .reviewhaiphong_home_menu_toggle {
+                display: flex;
+            }
+
+            .reviewhaiphong_home_list_card_img {
+                width: 100px;
+                min-width: 100px;
+                height: 75px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .reviewhaiphong_home_card_grid,
+            .reviewhaiphong_home_card_grid_4 {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_hero_sub {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_big_card {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_big_card_img {
+                width: 100%;
+                height: 180px;
+            }
+
+            .reviewhaiphong_home_big_card_body {
+                padding: 10px 12px 12px;
+            }
+
+            .reviewhaiphong_home_tour_grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reviewhaiphong_home_footer_grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reviewhaiphong_home_search_wrap {
+                max-width: 200px;
+            }
+
+            html {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .reviewhaiphong_home_search_wrap {
+                max-width: 160px;
+            }
+
+            .reviewhaiphong_home_header_actions {
+                gap: 4px;
+            }
+
+            .reviewhaiphong_home_header_action_btn {
+                padding: 3px 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <div class="reviewhaiphong_home_topbar">
+        <div class="reviewhaiphong_home_topbar_inner">
+            <div class="reviewhaiphong_home_topbar_links">
+                <a href="#">Trang chủ</a>
+                <a href="#">Về chúng tôi</a>
+                <a href="#">Liên hệ</a>
+                <a href="#">Quảng cáo</a>
+            </div>
+            <div class="reviewhaiphong_home_topbar_social">
+                <a href="#">📘 Facebook</a>
+                <a href="#">📸 Instagram</a>
+                <a href="#">🎬 YouTube</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="reviewhaiphong_home_header">
+        <div class="reviewhaiphong_home_header_inner">
+            <!-- Logo -->
+            <a href="#" class="reviewhaiphong_home_logo">
+                <div>
+                    <div class="reviewhaiphong_home_logo_text">Review<span>HảiPhòng</span></div>
+                    <div class="reviewhaiphong_home_logo_sub">Khám phá thành phố hoa phượng đỏ</div>
+                </div>
+            </a>
+            <!-- Search -->
+            <div class="reviewhaiphong_home_search_wrap">
+                <input class="reviewhaiphong_home_search_input" type="text" placeholder="Tìm kiếm địa điểm, quán ăn...">
+                <button class="reviewhaiphong_home_search_btn">🔍</button>
+            </div>
+            <!-- Actions -->
+            <div class="reviewhaiphong_home_header_actions">
+                <div class="reviewhaiphong_home_header_action_btn">
+                    <span class="reviewhaiphong_home_icon">🏠</span>
+                    <span class="reviewhaiphong_home_action_label">Trang chủ</span>
+                </div>
+                <div class="reviewhaiphong_home_header_action_btn">
+                    <span class="reviewhaiphong_home_icon">📋</span>
+                    <span class="reviewhaiphong_home_action_label">Danh mục</span>
+                </div>
+                <div class="reviewhaiphong_home_header_action_btn">
+                    <span class="reviewhaiphong_home_icon">🗺️</span>
+                    <span class="reviewhaiphong_home_action_label">Bản đồ</span>
+                </div>
+                <div class="reviewhaiphong_home_header_action_btn">
+                    <span class="reviewhaiphong_home_icon">⭐</span>
+                    <span class="reviewhaiphong_home_action_label">Đánh giá</span>
+                </div>
+                <!-- Mobile hamburger -->
+                <button class="reviewhaiphong_home_menu_toggle" id="reviewhaiphong_home_menu_toggle"
+                    aria-label="Mở menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAV BAR -->
+    <nav class="reviewhaiphong_home_navbar">
+        <div class="reviewhaiphong_home_navbar_inner">
+            <ul class="reviewhaiphong_home_nav_list">
+                <li class="reviewhaiphong_home_nav_item reviewhaiphong_home_nav_home reviewhaiphong_home_nav_current"><a
+                        href="#">🏠 Trang chủ</a></li>
+                <li class="reviewhaiphong_home_nav_item"><a href="#">Ẩm thực</a></li>
+                <li class="reviewhaiphong_home_nav_item"><a href="#">Du lịch</a></li>
+                <li class="reviewhaiphong_home_nav_item"><a href="#">Cafe & Trà sữa</a></li>
+                <li class="reviewhaiphong_home_nav_item"><a href="#">Check-in</a></li>
+                <li class="reviewhaiphong_home_nav_item"><a href="#">Khách sạn</a></li>
+                <li class="reviewhaiphong_home_nav_item"><a href="#">Mua sắm</a></li>
+                <li class="reviewhaiphong_home_nav_item"><a href="#">Giải trí</a></li>
+                <li class="reviewhaiphong_home_nav_item"><a href="#">Tin tức HP</a></li>
+                <li class="reviewhaiphong_home_nav_item"><a href="#">Video</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- MOBILE NAV -->
+    <div class="reviewhaiphong_home_mobile_nav" id="reviewhaiphong_home_mobile_nav">
+        <div class="reviewhaiphong_home_mobile_nav_panel">
+            <div class="reviewhaiphong_home_mobile_nav_head">
+                <span>ReviewHảiPhòng</span>
+                <button class="reviewhaiphong_home_mobile_nav_close" id="reviewhaiphong_home_mobile_close">✕</button>
+            </div>
+            <ul class="reviewhaiphong_home_mobile_nav_list">
+                <li><a href="#">🏠 Trang chủ</a></li>
+                <li><a href="#">🍜 Ẩm thực</a></li>
+                <li><a href="#">✈️ Du lịch</a></li>
+                <li><a href="#">☕ Cafe & Trà sữa</a></li>
+                <li><a href="#">📸 Check-in</a></li>
+                <li><a href="#">🏨 Khách sạn</a></li>
+                <li><a href="#">🛍️ Mua sắm</a></li>
+                <li><a href="#">🎉 Giải trí</a></li>
+                <li><a href="#">📰 Tin tức HP</a></li>
+                <li><a href="#">🎬 Video</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="reviewhaiphong_home_main_layout">
+        <!-- LEFT COLUMN -->
+        <main class="reviewhaiphong_home_content_col">
+
+            <!-- FEATURED HERO -->
+            <div class="reviewhaiphong_home_section_block" style="padding:0;overflow:hidden;margin-bottom:14px;">
+                <div class="reviewhaiphong_home_section_title"
+                    style="padding:12px 14px 8px;margin-bottom:0;border-bottom:1px solid var(--rhp-border);">
+                    <div class="reviewhaiphong_home_section_title_bar"></div>
+                    <span class="reviewhaiphong_home_section_title_text">Tin nổi bật</span>
+                    <a href="#" class="reviewhaiphong_home_section_title_link">Xem tất cả »</a>
+                </div>
+                <div class="reviewhaiphong_home_hero_grid">
+                    <a href="#" class="reviewhaiphong_home_hero_main">
+                        <img src="https://images.unsplash.com/photo-1559521783-1d1599583485?w=600&q=80"
+                            alt="Bãi biển Đồ Sơn" class="reviewhaiphong_home_hero_main_img">
+                        <div class="reviewhaiphong_home_hero_main_caption">
+                            <span class="reviewhaiphong_home_hero_main_tag">Du lịch</span>
+                            <h2 class="reviewhaiphong_home_hero_main_title">Bãi biển Đồ Sơn mùa hè - Điểm đến không thể
+                                bỏ lỡ của người Hải Phòng và du khách khắp nơi năm 2025</h2>
+                        </div>
+                    </a>
+                    <div class="reviewhaiphong_home_hero_sub">
+                        <a href="#" class="reviewhaiphong_home_hero_sub_item">
+                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80"
+                                alt="Ẩm thực Hải Phòng" class="reviewhaiphong_home_hero_sub_img">
+                            <div class="reviewhaiphong_home_hero_sub_caption">Top 10 quán bún cua đặc sản Hải Phòng ngon
+                                nhất được yêu thích nhất 2025</div>
+                        </a>
+                        <a href="#" class="reviewhaiphong_home_hero_sub_item">
+                            <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&q=80"
+                                alt="Cafe view đẹp" class="reviewhaiphong_home_hero_sub_img">
+                            <div class="reviewhaiphong_home_hero_sub_caption">Những quán cafe view biển cực đẹp ở Đồ Sơn
+                                bạn nhất định phải ghé thăm</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: ẨM THỰC -->
+            <div class="reviewhaiphong_home_section_block">
+                <div class="reviewhaiphong_home_section_title">
+                    <div class="reviewhaiphong_home_section_title_bar"></div>
+                    <span class="reviewhaiphong_home_section_title_text">🍜 Ẩm Thực</span>
+                    <a href="#" class="reviewhaiphong_home_section_title_link">Xem thêm »</a>
+                </div>
+                <!-- Tabs -->
+                <div class="reviewhaiphong_home_tab_nav" id="reviewhaiphong_home_amthuc_tabs">
+                    <button class="reviewhaiphong_home_tab_btn reviewhaiphong_home_tab_active"
+                        data-tab="reviewhaiphong_home_tab_amthuc_all">Tất cả</button>
+                    <button class="reviewhaiphong_home_tab_btn" data-tab="reviewhaiphong_home_tab_amthuc_bun">Bún &
+                        Phở</button>
+                    <button class="reviewhaiphong_home_tab_btn" data-tab="reviewhaiphong_home_tab_amthuc_hai">Hải
+                        sản</button>
+                    <button class="reviewhaiphong_home_tab_btn" data-tab="reviewhaiphong_home_tab_amthuc_banh">Bánh &
+                        Snack</button>
+                    <button class="reviewhaiphong_home_tab_btn" data-tab="reviewhaiphong_home_tab_amthuc_lau">Lẩu &
+                        Nướng</button>
+                </div>
+                <div class="reviewhaiphong_home_tab_content reviewhaiphong_home_tab_show"
+                    id="reviewhaiphong_home_tab_amthuc_all">
+                    <div class="reviewhaiphong_home_card_grid">
+                        <a href="#" class="reviewhaiphong_home_card">
+                            <div class="reviewhaiphong_home_card_img_wrap">
+                                <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80"
+                                    alt="" class="reviewhaiphong_home_card_img">
+                                <span class="reviewhaiphong_home_card_tag">Ẩm thực</span>
+                            </div>
+                            <div class="reviewhaiphong_home_card_body">
+                                <div class="reviewhaiphong_home_card_title">Bánh đa cua Hải Phòng - Hương vị khó quên
+                                    của đất cảng</div>
+                                <div class="reviewhaiphong_home_card_meta">📅 15/05/2025 · ⏱ 5 phút đọc</div>
+                                <div class="reviewhaiphong_home_card_excerpt">Bánh đa cua được mệnh danh là linh hồn ẩm
+                                    thực Hải Phòng với nước dùng cua đồng thơm ngậy và bánh đa đỏ giòn dai...</div>
+                            </div>
+                        </a>
+                        <a href="#" class="reviewhaiphong_home_card">
+                            <div class="reviewhaiphong_home_card_img_wrap">
+                                <img src="https://images.unsplash.com/photo-1562802378-063ec186a863?w=400&q=80" alt=""
+                                    class="reviewhaiphong_home_card_img">
+                                <span class="reviewhaiphong_home_card_tag">Review</span>
+                            </div>
+                            <div class="reviewhaiphong_home_card_body">
+                                <div class="reviewhaiphong_home_card_title">Top 7 quán hải sản tươi sống ngon rẻ nhất
+                                    khu vực Đồ Sơn 2025</div>
+                                <div class="reviewhaiphong_home_card_meta">📅 12/05/2025 · ⏱ 7 phút đọc</div>
+                                <div class="reviewhaiphong_home_card_excerpt">Đến Đồ Sơn mà chưa thưởng thức hải sản
+                                    tươi sống thì coi như chưa đến. Hãy cùng khám phá những địa chỉ tin cậy...</div>
+                            </div>
+                        </a>
+                        <a href="#" class="reviewhaiphong_home_card">
+                            <div class="reviewhaiphong_home_card_img_wrap">
+                                <img src="https://images.unsplash.com/photo-1551183053-bf91798d792a?w=400&q=80" alt=""
+                                    class="reviewhaiphong_home_card_img">
+                                <span class="reviewhaiphong_home_card_tag">Mới nhất</span>
+                            </div>
+                            <div class="reviewhaiphong_home_card_body">
+                                <div class="reviewhaiphong_home_card_title">Nem cua bể Hải Phòng - đặc sản thơm ngon
+                                    khiến ai cũng mê</div>
+                                <div class="reviewhaiphong_home_card_meta">📅 10/05/2025 · ⏱ 4 phút đọc</div>
+                                <div class="reviewhaiphong_home_card_excerpt">Nem cua bể là đặc sản không thể thiếu khi
+                                    nhắc đến ẩm thực Hải Phòng, chiếc nem giòn rụm bọc nhân cua thơm ngon...</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="reviewhaiphong_home_loadmore_wrap">
+                        <button class="reviewhaiphong_home_loadmore_btn"
+                            data-section="reviewhaiphong_home_amthuc_more">Xem thêm ▼</button>
+                    </div>
+                    <div id="reviewhaiphong_home_amthuc_more" style="display:none;">
+                        <div class="reviewhaiphong_home_card_grid" style="margin-top:10px;">
+                            <a href="#" class="reviewhaiphong_home_card">
+                                <div class="reviewhaiphong_home_card_img_wrap">
+                                    <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&q=80"
+                                        alt="" class="reviewhaiphong_home_card_img">
+                                    <span class="reviewhaiphong_home_card_tag">Ẩm thực</span>
+                                </div>
+                                <div class="reviewhaiphong_home_card_body">
+                                    <div class="reviewhaiphong_home_card_title">Lẩu cua đồng Hải Phòng - Món ăn dân dã
+                                        đậm đà hương vị quê nhà</div>
+                                    <div class="reviewhaiphong_home_card_meta">📅 08/05/2025 · ⏱ 5 phút đọc</div>
+                                </div>
+                            </a>
+                            <a href="#" class="reviewhaiphong_home_card">
+                                <div class="reviewhaiphong_home_card_img_wrap">
+                                    <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=400&q=80"
+                                        alt="" class="reviewhaiphong_home_card_img">
+                                    <span class="reviewhaiphong_home_card_tag">Mới nhất</span>
+                                </div>
+                                <div class="reviewhaiphong_home_card_body">
+                                    <div class="reviewhaiphong_home_card_title">Bánh mì chả cá - Biến tấu độc đáo của
+                                        người Hải Phòng</div>
+                                    <div class="reviewhaiphong_home_card_meta">📅 06/05/2025 · ⏱ 3 phút đọc</div>
+                                </div>
+                            </a>
+                            <a href="#" class="reviewhaiphong_home_card">
+                                <div class="reviewhaiphong_home_card_img_wrap">
+                                    <img src="https://images.unsplash.com/photo-1525755662778-989d0524087e?w=400&q=80"
+                                        alt="" class="reviewhaiphong_home_card_img">
+                                    <span class="reviewhaiphong_home_card_tag">Hot</span>
+                                </div>
+                                <div class="reviewhaiphong_home_card_body">
+                                    <div class="reviewhaiphong_home_card_title">Ốc hương nướng phô mai - Món nhậu hot
+                                        nhất mùa hè Hải Phòng</div>
+                                    <div class="reviewhaiphong_home_card_meta">📅 04/05/2025 · ⏱ 4 phút đọc</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="reviewhaiphong_home_tab_content" id="reviewhaiphong_home_tab_amthuc_bun">
+                    <div class="reviewhaiphong_home_list_card"><img
+                            src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80" alt=""
+                            class="reviewhaiphong_home_list_card_img">
+                        <div class="reviewhaiphong_home_list_card_body">
+                            <div class="reviewhaiphong_home_list_card_title">10 quán bún cua ngon nức tiếng ở Hải Phòng
+                                bạn nên thử</div>
+                            <div class="reviewhaiphong_home_list_card_meta">📅 14/05/2025</div>
+                            <div class="reviewhaiphong_home_list_card_excerpt">Bún cua Hải Phòng mang hương vị đặc trưng
+                                khác hẳn các vùng miền khác với nước dùng ngọt thanh từ cua đồng...</div>
+                        </div>
+                    </div>
+                    <div class="reviewhaiphong_home_list_card"><img
+                            src="https://images.unsplash.com/photo-1561609671-8c7e20c3b3c0?w=400&q=80" alt=""
+                            class="reviewhaiphong_home_list_card_img">
+                        <div class="reviewhaiphong_home_list_card_body">
+                            <div class="reviewhaiphong_home_list_card_title">Bún ốc cay - Đặc sản vỉa hè không thể thiếu
+                                của người Hải Phòng</div>
+                            <div class="reviewhaiphong_home_list_card_meta">📅 11/05/2025</div>
+                            <div class="reviewhaiphong_home_list_card_excerpt">Tô bún ốc với nước dùng cay thơm, ốc to
+                                tròn dai giòn - món ăn quen thuộc của biết bao thế hệ người dân đất cảng...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reviewhaiphong_home_tab_content" id="reviewhaiphong_home_tab_amthuc_hai">
+                    <div class="reviewhaiphong_home_list_card"><img
+                            src="https://images.unsplash.com/photo-1562802378-063ec186a863?w=400&q=80" alt=""
+                            class="reviewhaiphong_home_list_card_img">
+                        <div class="reviewhaiphong_home_list_card_body">
+                            <div class="reviewhaiphong_home_list_card_title">Chợ hải sản Đồ Sơn - Thiên đường tươi sống
+                                giá rẻ cho tín đồ ẩm thực</div>
+                            <div class="reviewhaiphong_home_list_card_meta">📅 13/05/2025</div>
+                            <div class="reviewhaiphong_home_list_card_excerpt">Chợ hải sản Đồ Sơn hoạt động từ 4 giờ
+                                sáng với vô vàn loại hải sản tươi rói vừa được đánh về...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reviewhaiphong_home_tab_content" id="reviewhaiphong_home_tab_amthuc_banh">
+                    <div class="reviewhaiphong_home_list_card"><img
+                            src="https://images.unsplash.com/photo-1551183053-bf91798d792a?w=400&q=80" alt=""
+                            class="reviewhaiphong_home_list_card_img">
+                        <div class="reviewhaiphong_home_list_card_body">
+                            <div class="reviewhaiphong_home_list_card_title">Bánh cuốn Hải Phòng - Mỏng mịn thơm ngon
+                                khác hẳn Hà Nội</div>
+                            <div class="reviewhaiphong_home_list_card_meta">📅 09/05/2025</div>
+                            <div class="reviewhaiphong_home_list_card_excerpt">Bánh cuốn Hải Phòng có điểm đặc biệt
+                                riêng với lớp vỏ mỏng mịn kết hợp nhân thịt và nộm...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reviewhaiphong_home_tab_content" id="reviewhaiphong_home_tab_amthuc_lau">
+                    <div class="reviewhaiphong_home_list_card"><img
+                            src="https://images.unsplash.com/photo-1525755662778-989d0524087e?w=400&q=80" alt=""
+                            class="reviewhaiphong_home_list_card_img">
+                        <div class="reviewhaiphong_home_list_card_body">
+                            <div class="reviewhaiphong_home_list_card_title">Lẩu hải sản kiểu Hải Phòng - Thịnh soạn và
+                                đầy hương vị biển cả</div>
+                            <div class="reviewhaiphong_home_list_card_meta">📅 07/05/2025</div>
+                            <div class="reviewhaiphong_home_list_card_excerpt">Lẩu hải sản Hải Phòng nổi tiếng với nước
+                                dùng đậm đà từ xương cá tươi, kết hợp với các loại hải sản phong phú...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: DU LỊCH -->
+            <div class="reviewhaiphong_home_section_block">
+                <div class="reviewhaiphong_home_section_title">
+                    <div class="reviewhaiphong_home_section_title_bar"></div>
+                    <span class="reviewhaiphong_home_section_title_text">✈️ Du Lịch</span>
+                    <a href="#" class="reviewhaiphong_home_section_title_link">Xem thêm »</a>
+                </div>
+                <div class="reviewhaiphong_home_card_grid_4 reviewhaiphong_home_card_grid">
+                    <a href="#" class="reviewhaiphong_home_card">
+                        <div class="reviewhaiphong_home_card_img_wrap">
+                            <img src="https://images.unsplash.com/photo-1559521783-1d1599583485?w=400&q=80" alt=""
+                                class="reviewhaiphong_home_card_img">
+                            <span class="reviewhaiphong_home_card_tag">Du lịch</span>
+                        </div>
+                        <div class="reviewhaiphong_home_card_body">
+                            <div class="reviewhaiphong_home_card_title">Đảo Cát Bà - Viên ngọc xanh của vịnh Hạ Long
+                            </div>
+                            <div class="reviewhaiphong_home_card_meta">📅 16/05/2025</div>
+                        </div>
+                    </a>
+                    <a href="#" class="reviewhaiphong_home_card">
+                        <div class="reviewhaiphong_home_card_img_wrap">
+                            <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&q=80" alt=""
+                                class="reviewhaiphong_home_card_img">
+                            <span class="reviewhaiphong_home_card_tag">Khám phá</span>
+                        </div>
+                        <div class="reviewhaiphong_home_card_body">
+                            <div class="reviewhaiphong_home_card_title">Núi Voi Kiến An - Thiên nhiên hoang sơ giữa lòng
+                                thành phố</div>
+                            <div class="reviewhaiphong_home_card_meta">📅 14/05/2025</div>
+                        </div>
+                    </a>
+                    <a href="#" class="reviewhaiphong_home_card">
+                        <div class="reviewhaiphong_home_card_img_wrap">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" alt=""
+                                class="reviewhaiphong_home_card_img">
+                            <span class="reviewhaiphong_home_card_tag">Check-in</span>
+                        </div>
+                        <div class="reviewhaiphong_home_card_body">
+                            <div class="reviewhaiphong_home_card_title">Phố cổ Hải Phòng - Dạo bước qua những con phố
+                                đẹp như phim</div>
+                            <div class="reviewhaiphong_home_card_meta">📅 12/05/2025</div>
+                        </div>
+                    </a>
+                    <a href="#" class="reviewhaiphong_home_card">
+                        <div class="reviewhaiphong_home_card_img_wrap">
+                            <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&q=80" alt=""
+                                class="reviewhaiphong_home_card_img">
+                            <span class="reviewhaiphong_home_card_tag">Điểm đến</span>
+                        </div>
+                        <div class="reviewhaiphong_home_card_body">
+                            <div class="reviewhaiphong_home_card_title">Bãi biển Cát Cò 1 - Thiên đường nghỉ dưỡng của
+                                vịnh Lan Hạ</div>
+                            <div class="reviewhaiphong_home_card_meta">📅 10/05/2025</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="reviewhaiphong_home_loadmore_wrap">
+                    <button class="reviewhaiphong_home_loadmore_btn" data-section="reviewhaiphong_home_dulich_more">Xem
+                        thêm ▼</button>
+                </div>
+                <div id="reviewhaiphong_home_dulich_more" style="display:none;">
+                    <div class="reviewhaiphong_home_card_grid_4 reviewhaiphong_home_card_grid" style="margin-top:10px;">
+                        <a href="#" class="reviewhaiphong_home_card">
+                            <div class="reviewhaiphong_home_card_img_wrap"><img
+                                    src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=400&q=80" alt=""
+                                    class="reviewhaiphong_home_card_img"><span class="reviewhaiphong_home_card_tag">Khám
+                                    phá</span></div>
+                            <div class="reviewhaiphong_home_card_body">
+                                <div class="reviewhaiphong_home_card_title">Đảo Bạch Long Vỹ - Điểm cực Đông Bắc của Tổ
+                                    quốc</div>
+                            </div>
+                        </a>
+                        <a href="#" class="reviewhaiphong_home_card">
+                            <div class="reviewhaiphong_home_card_img_wrap"><img
+                                    src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=400&q=80" alt=""
+                                    class="reviewhaiphong_home_card_img"><span class="reviewhaiphong_home_card_tag">Du
+                                    lịch</span></div>
+                            <div class="reviewhaiphong_home_card_body">
+                                <div class="reviewhaiphong_home_card_title">Khu di tích Bạch Đằng Giang - Dấu tích lịch
+                                    sử hào hùng</div>
+                            </div>
+                        </a>
+                        <a href="#" class="reviewhaiphong_home_card">
+                            <div class="reviewhaiphong_home_card_img_wrap"><img
+                                    src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=80" alt=""
+                                    class="reviewhaiphong_home_card_img"><span class="reviewhaiphong_home_card_tag">Nghỉ
+                                    dưỡng</span></div>
+                            <div class="reviewhaiphong_home_card_body">
+                                <div class="reviewhaiphong_home_card_title">Vinpearl Resort Hải Phòng - Điểm nghỉ dưỡng
+                                    5 sao bên bờ biển</div>
+                            </div>
+                        </a>
+                        <a href="#" class="reviewhaiphong_home_card">
+                            <div class="reviewhaiphong_home_card_img_wrap"><img
+                                    src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=400&q=80" alt=""
+                                    class="reviewhaiphong_home_card_img"><span class="reviewhaiphong_home_card_tag">Mới
+                                    nhất</span></div>
+                            <div class="reviewhaiphong_home_card_body">
+                                <div class="reviewhaiphong_home_card_title">Hồ Thủy Sơn - Khu sinh thái xanh mát giữa
+                                    lòng Kiến An</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: CAFE & CHECK-IN -->
+            <div class="reviewhaiphong_home_section_block">
+                <div class="reviewhaiphong_home_section_title">
+                    <div class="reviewhaiphong_home_section_title_bar"></div>
+                    <span class="reviewhaiphong_home_section_title_text">☕ Cafe & Check-in</span>
+                    <a href="#" class="reviewhaiphong_home_section_title_link">Xem thêm »</a>
+                </div>
+                <a href="#" class="reviewhaiphong_home_big_card">
+                    <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&q=80" alt=""
+                        class="reviewhaiphong_home_big_card_img">
+                    <div class="reviewhaiphong_home_big_card_body">
+                        <div class="reviewhaiphong_home_big_card_cat">☕ Cafe hot</div>
+                        <div class="reviewhaiphong_home_big_card_title">Rooftop cafe view toàn thành phố - Sống ảo thả
+                            ga giữa Hải Phòng</div>
+                        <div class="reviewhaiphong_home_big_card_excerpt">Những quán cafe trên cao với tầm nhìn panorama
+                            ra toàn thành phố đang là xu hướng được giới trẻ Hải Phòng check-in rầm rộ trong năm 2025...
+                        </div>
+                        <div class="reviewhaiphong_home_big_card_meta">📅 17/05/2025 · 👁 12.5k lượt xem</div>
+                    </div>
+                </a>
+                <a href="#" class="reviewhaiphong_home_big_card">
+                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80" alt=""
+                        class="reviewhaiphong_home_big_card_img">
+                    <div class="reviewhaiphong_home_big_card_body">
+                        <div class="reviewhaiphong_home_big_card_cat">📸 Check-in</div>
+                        <div class="reviewhaiphong_home_big_card_title">10 góc chụp ảnh siêu đẹp ở Hải Phòng mà dân sống
+                            ảo không thể bỏ qua</div>
+                        <div class="reviewhaiphong_home_big_card_excerpt">Từ những bức tường cũ phủ đầy rêu phong đến
+                            cầu cảng hiện đại lung linh ánh đèn, Hải Phòng có vô vàn góc chụp ảnh cực nghệ...</div>
+                        <div class="reviewhaiphong_home_big_card_meta">📅 15/05/2025 · 👁 9.8k lượt xem</div>
+                    </div>
+                </a>
+                <a href="#" class="reviewhaiphong_home_big_card">
+                    <img src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=600&q=80" alt=""
+                        class="reviewhaiphong_home_big_card_img">
+                    <div class="reviewhaiphong_home_big_card_body">
+                        <div class="reviewhaiphong_home_big_card_cat">🧋 Trà sữa</div>
+                        <div class="reviewhaiphong_home_big_card_title">Review 5 thương hiệu trà sữa ngon nhất Hải Phòng
+                            theo bình chọn của giới trẻ 2025</div>
+                        <div class="reviewhaiphong_home_big_card_excerpt">Cơn sốt trà sữa chưa bao giờ hạ nhiệt ở Hải
+                            Phòng. Cùng điểm danh những thương hiệu được yêu thích nhất hiện nay...</div>
+                        <div class="reviewhaiphong_home_big_card_meta">📅 13/05/2025 · 👁 7.2k lượt xem</div>
+                    </div>
+                </a>
+                <div class="reviewhaiphong_home_loadmore_wrap">
+                    <button class="reviewhaiphong_home_loadmore_btn" data-section="reviewhaiphong_home_cafe_more">Xem
+                        thêm ▼</button>
+                </div>
+                <div id="reviewhaiphong_home_cafe_more" style="display:none;">
+                    <a href="#" class="reviewhaiphong_home_big_card" style="margin-top:10px;">
+                        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80" alt=""
+                            class="reviewhaiphong_home_big_card_img">
+                        <div class="reviewhaiphong_home_big_card_body">
+                            <div class="reviewhaiphong_home_big_card_cat">☕ Cafe mới</div>
+                            <div class="reviewhaiphong_home_big_card_title">The Whale Coffee - Quán cafe concept đại
+                                dương giữa lòng thành phố biển</div>
+                            <div class="reviewhaiphong_home_big_card_excerpt">Không gian trang trí theo phong cách đại
+                                dương xanh, mỗi góc đều là một backdrop sống ảo hoàn hảo...</div>
+                            <div class="reviewhaiphong_home_big_card_meta">📅 11/05/2025 · 👁 5.4k lượt xem</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SECTION: TIN TỨC HẢI PHÒNG -->
+            <div class="reviewhaiphong_home_section_block">
+                <div class="reviewhaiphong_home_section_title">
+                    <div class="reviewhaiphong_home_section_title_bar"></div>
+                    <span class="reviewhaiphong_home_section_title_text">📰 Tin tức Hải Phòng</span>
+                    <a href="#" class="reviewhaiphong_home_section_title_link">Xem thêm »</a>
+                </div>
+                <div class="reviewhaiphong_home_list_card">
+                    <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=400&q=80" alt=""
+                        class="reviewhaiphong_home_list_card_img">
+                    <div class="reviewhaiphong_home_list_card_body">
+                        <div class="reviewhaiphong_home_list_card_title">Hải Phòng khởi công dự án cầu Cửa Cấm mới - Kỳ
+                            vọng kết nối đô thị phát triển</div>
+                        <div class="reviewhaiphong_home_list_card_meta">📅 18/05/2025</div>
+                        <div class="reviewhaiphong_home_list_card_excerpt">Cầu Cửa Cấm mới sau khi hoàn thành sẽ rút
+                            ngắn đáng kể thời gian di chuyển giữa các khu vực nội thành và ngoại ô...</div>
+                    </div>
+                </div>
+                <div class="reviewhaiphong_home_list_card">
+                    <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&q=80" alt=""
+                        class="reviewhaiphong_home_list_card_img">
+                    <div class="reviewhaiphong_home_list_card_body">
+                        <div class="reviewhaiphong_home_list_card_title">Festival Hoa Phượng Đỏ 2025 - Sắc đỏ rực rỡ trở
+                            lại sau 3 năm gián đoạn</div>
+                        <div class="reviewhaiphong_home_list_card_meta">📅 16/05/2025</div>
+                        <div class="reviewhaiphong_home_list_card_excerpt">Lễ hội được tổ chức quy mô lớn với hàng chục
+                            sự kiện văn hóa nghệ thuật đặc sắc, thu hút hàng nghìn du khách...</div>
+                    </div>
+                </div>
+                <div class="reviewhaiphong_home_list_card">
+                    <img src="https://images.unsplash.com/photo-1524813686514-a57563d77965?w=400&q=80" alt=""
+                        class="reviewhaiphong_home_list_card_img">
+                    <div class="reviewhaiphong_home_list_card_body">
+                        <div class="reviewhaiphong_home_list_card_title">Cảng Hải Phòng lọt top 50 cảng biển lớn nhất
+                            châu Á - Thương mại tăng trưởng mạnh</div>
+                        <div class="reviewhaiphong_home_list_card_meta">📅 14/05/2025</div>
+                        <div class="reviewhaiphong_home_list_card_excerpt">Với lưu lượng hàng hóa thông quan đạt kỷ lục
+                            trong quý 1/2025, cảng Hải Phòng tiếp tục khẳng định vị thế cửa ngõ giao thương...</div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="reviewhaiphong_home_sidebar">
+
+            <!-- Trending -->
+            <div class="reviewhaiphong_home_sidebar_box">
+                <div class="reviewhaiphong_home_sidebar_title">🔥 Xem nhiều nhất</div>
+                <div class="reviewhaiphong_home_sidebar_trending_item">
+                    <div class="reviewhaiphong_home_sidebar_trending_num">1</div>
+                    <a href="#" class="reviewhaiphong_home_sidebar_trending_title">Bánh đa cua Hải Phòng - công thức
+                        nước dùng chuẩn vị từ đầu bếp 30 năm kinh nghiệm</a>
+                </div>
+                <div class="reviewhaiphong_home_sidebar_trending_item">
+                    <div class="reviewhaiphong_home_sidebar_trending_num">2</div>
+                    <a href="#" class="reviewhaiphong_home_sidebar_trending_title">Top 15 quán cafe view đẹp nhất Hải
+                        Phòng 2025 - Đăng ảnh là ra ngay ảnh đẹp</a>
+                </div>
+                <div class="reviewhaiphong_home_sidebar_trending_item">
+                    <div class="reviewhaiphong_home_sidebar_trending_num">3</div>
+                    <a href="#" class="reviewhaiphong_home_sidebar_trending_title">Lịch trình du lịch Cát Bà 2 ngày 1
+                        đêm chi phí tiết kiệm nhất 2025</a>
+                </div>
+                <div class="reviewhaiphong_home_sidebar_trending_item">
+                    <div class="reviewhaiphong_home_sidebar_trending_num">4</div>
+                    <a href="#" class="reviewhaiphong_home_sidebar_trending_title">Khách sạn 3 sao Hải Phòng gần trung
+                        tâm, view đẹp giá chỉ từ 350k/đêm</a>
+                </div>
+                <div class="reviewhaiphong_home_sidebar_trending_item">
+                    <div class="reviewhaiphong_home_sidebar_trending_num">5</div>
+                    <a href="#" class="reviewhaiphong_home_sidebar_trending_title">Kinh nghiệm mua hải sản tươi ở chợ Đồ
+                        Sơn không bị chặt chém giá</a>
+                </div>
+            </div>
+
+            <!-- Banner -->
+            <div class="reviewhaiphong_home_sidebar_banner">
+                <div class="reviewhaiphong_home_sidebar_banner_title">🏨 Đặt Phòng<br>Khách Sạn</div>
+                <div class="reviewhaiphong_home_sidebar_banner_sub">Toàn quốc - Giá tốt nhất</div>
+                <div class="reviewhaiphong_home_sidebar_banner_badge">Giảm 15–45%</div>
+                <div style="font-size:0.72rem;opacity:0.85;margin-bottom:4px;">Áp dụng cho đặt phòng online</div>
+                <a href="#" class="reviewhaiphong_home_sidebar_banner_btn">Đặt ngay →</a>
+            </div>
+
+            <!-- Recent Posts -->
+            <div class="reviewhaiphong_home_sidebar_box">
+                <div class="reviewhaiphong_home_sidebar_title">📌 Bài viết mới nhất</div>
+                <div class="reviewhaiphong_home_sidebar_thumb_item">
+                    <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=200&q=80" alt=""
+                        class="reviewhaiphong_home_sidebar_thumb_img">
+                    <div>
+                        <a href="#" class="reviewhaiphong_home_sidebar_thumb_title">Top quán bún cua Hải Phòng ngon nhất
+                            khu vực Ngô Quyền 2025</a>
+                        <div class="reviewhaiphong_home_sidebar_thumb_meta">📅 18/05/2025</div>
+                    </div>
+                </div>
+                <div class="reviewhaiphong_home_sidebar_thumb_item">
+                    <img src="https://images.unsplash.com/photo-1559521783-1d1599583485?w=200&q=80" alt=""
+                        class="reviewhaiphong_home_sidebar_thumb_img">
+                    <div>
+                        <a href="#" class="reviewhaiphong_home_sidebar_thumb_title">Đồ Sơn mùa hè - Kinh nghiệm du lịch
+                            chi tiết cho người lần đầu đến</a>
+                        <div class="reviewhaiphong_home_sidebar_thumb_meta">📅 17/05/2025</div>
+                    </div>
+                </div>
+                <div class="reviewhaiphong_home_sidebar_thumb_item">
+                    <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200&q=80" alt=""
+                        class="reviewhaiphong_home_sidebar_thumb_img">
+                    <div>
+                        <a href="#" class="reviewhaiphong_home_sidebar_thumb_title">Những quán cafe phong cách vintage
+                            đẹp như trời Tây giữa lòng Hải Phòng</a>
+                        <div class="reviewhaiphong_home_sidebar_thumb_meta">📅 16/05/2025</div>
+                    </div>
+                </div>
+                <div class="reviewhaiphong_home_sidebar_thumb_item">
+                    <img src="https://images.unsplash.com/photo-1562802378-063ec186a863?w=200&q=80" alt=""
+                        class="reviewhaiphong_home_sidebar_thumb_img">
+                    <div>
+                        <a href="#" class="reviewhaiphong_home_sidebar_thumb_title">Chợ đêm Tam Bạc - Thiên đường ẩm
+                            thực về đêm của Hải Phòng</a>
+                        <div class="reviewhaiphong_home_sidebar_thumb_meta">📅 15/05/2025</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="reviewhaiphong_home_sidebar_box">
+                <div class="reviewhaiphong_home_sidebar_title">🏷️ Chủ đề hot</div>
+                <div class="reviewhaiphong_home_tags_cloud">
+                    <span class="reviewhaiphong_home_tag_item">Bánh đa cua</span>
+                    <span class="reviewhaiphong_home_tag_item">Cát Bà</span>
+                    <span class="reviewhaiphong_home_tag_item">Đồ Sơn</span>
+                    <span class="reviewhaiphong_home_tag_item">Cafe Hải Phòng</span>
+                    <span class="reviewhaiphong_home_tag_item">Hải sản</span>
+                    <span class="reviewhaiphong_home_tag_item">Check-in</span>
+                    <span class="reviewhaiphong_home_tag_item">Khách sạn</span>
+                    <span class="reviewhaiphong_home_tag_item">Hoa Phượng</span>
+                    <span class="reviewhaiphong_home_tag_item">Ẩm thực</span>
+                    <span class="reviewhaiphong_home_tag_item">Phố cổ HP</span>
+                    <span class="reviewhaiphong_home_tag_item">Nem cua bể</span>
+                    <span class="reviewhaiphong_home_tag_item">Trà sữa</span>
+                    <span class="reviewhaiphong_home_tag_item">Bãi tắm</span>
+                    <span class="reviewhaiphong_home_tag_item">Mua sắm</span>
+                </div>
+            </div>
+
+            <!-- Second Banner -->
+            <div class="reviewhaiphong_home_sidebar_banner"
+                style="background:linear-gradient(135deg,#e8540a 0%,#c04000 100%);">
+                <div style="font-size:0.75rem;opacity:0.9;margin-bottom:4px;">🌏 TOUR KHÁM PHÁ</div>
+                <div class="reviewhaiphong_home_sidebar_banner_title">Cát Bà - Lan Hạ<br>Trọn gói 2N1Đ</div>
+                <div class="reviewhaiphong_home_sidebar_banner_sub">Xuất phát từ Hải Phòng</div>
+                <div class="reviewhaiphong_home_sidebar_banner_badge" style="color:var(--rhp-orange);">Từ 890K/người
+                </div>
+                <a href="#" class="reviewhaiphong_home_sidebar_banner_btn" style="color:var(--rhp-orange);">Đặt tour
+                    ngay →</a>
+            </div>
+
+        </aside>
+    </div>
+
+    <!-- TOUR DESTINATIONS SECTION -->
+    <div class="reviewhaiphong_home_tour_section">
+        <div class="reviewhaiphong_home_container">
+            <div class="reviewhaiphong_home_tour_title">🗺️ Tour trọn gói - Vòng quanh thế giới</div>
+            <div class="reviewhaiphong_home_tour_grid">
+                <a href="#" class="reviewhaiphong_home_tour_item">
+                    <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=300&q=80" alt="Nhật Bản"
+                        class="reviewhaiphong_home_tour_item_img">
+                    <div class="reviewhaiphong_home_tour_item_label">🇯🇵 Nhật Bản</div>
+                </a>
+                <a href="#" class="reviewhaiphong_home_tour_item">
+                    <img src="https://images.unsplash.com/photo-1538970272646-f61fabb3a8a2?w=300&q=80" alt="Hàn Quốc"
+                        class="reviewhaiphong_home_tour_item_img">
+                    <div class="reviewhaiphong_home_tour_item_label">🇰🇷 Hàn Quốc</div>
+                </a>
+                <a href="#" class="reviewhaiphong_home_tour_item">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=80" alt="Thái Lan"
+                        class="reviewhaiphong_home_tour_item_img">
+                    <div class="reviewhaiphong_home_tour_item_label">🇹🇭 Thái Lan</div>
+                </a>
+                <a href="#" class="reviewhaiphong_home_tour_item">
+                    <img src="https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=300&q=80" alt="Singapore"
+                        class="reviewhaiphong_home_tour_item_img">
+                    <div class="reviewhaiphong_home_tour_item_label">🇸🇬 Singapore</div>
+                </a>
+                <a href="#" class="reviewhaiphong_home_tour_item">
+                    <img src="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=300&q=80" alt="Châu Âu"
+                        class="reviewhaiphong_home_tour_item_img">
+                    <div class="reviewhaiphong_home_tour_item_label">🌍 Châu Âu</div>
+                </a>
+                <a href="#" class="reviewhaiphong_home_tour_item">
+                    <img src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=300&q=80" alt="Maldives"
+                        class="reviewhaiphong_home_tour_item_img">
+                    <div class="reviewhaiphong_home_tour_item_label">🏝️ Maldives</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="reviewhaiphong_home_footer">
+        <div class="reviewhaiphong_home_footer_grid">
+            <div>
+                <div class="reviewhaiphong_home_footer_logo">Review<span>HảiPhòng</span></div>
+                <p class="reviewhaiphong_home_footer_desc">Website review địa điểm ăn uống, du lịch, cafe và các trải
+                    nghiệm địa phương tại thành phố Hải Phòng - Thành phố hoa phượng đỏ. Cung cấp thông tin chính xác,
+                    trung thực và hữu ích nhất cho người dùng.</p>
+                <div style="margin-top:12px;display:flex;gap:8px;">
+                    <a href="#"
+                        style="background:#1877f2;color:#fff;padding:5px 12px;border-radius:3px;font-size:0.75rem;font-weight:600;">📘
+                        Facebook</a>
+                    <a href="#"
+                        style="background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;padding:5px 12px;border-radius:3px;font-size:0.75rem;font-weight:600;">📸
+                        Instagram</a>
+                </div>
+            </div>
+            <div>
+                <div class="reviewhaiphong_home_footer_col_title">Chuyên mục</div>
+                <div class="reviewhaiphong_home_footer_links">
+                    <a href="#">Ẩm thực Hải Phòng</a>
+                    <a href="#">Du lịch - Check-in</a>
+                    <a href="#">Cafe & Trà sữa</a>
+                    <a href="#">Khách sạn - Resort</a>
+                    <a href="#">Mua sắm</a>
+                    <a href="#">Giải trí - Vui chơi</a>
+                    <a href="#">Tin tức địa phương</a>
+                </div>
+            </div>
+            <div>
+                <div class="reviewhaiphong_home_footer_col_title">Địa điểm nổi bật</div>
+                <div class="reviewhaiphong_home_footer_links">
+                    <a href="#">Đảo Cát Bà</a>
+                    <a href="#">Bãi biển Đồ Sơn</a>
+                    <a href="#">Phố cổ Hải Phòng</a>
+                    <a href="#">Chợ Tam Bạc</a>
+                    <a href="#">Núi Voi Kiến An</a>
+                    <a href="#">Bạch Long Vỹ</a>
+                    <a href="#">Khu CN VSIP</a>
+                </div>
+            </div>
+            <div>
+                <div class="reviewhaiphong_home_footer_col_title">Liên hệ</div>
+                <div class="reviewhaiphong_home_footer_links">
+                    <a href="#">📧 contact@reviewhaiphong.vn</a>
+                    <a href="#">📞 0901 234 567</a>
+                    <a href="#">📍 Quận Lê Chân, Hải Phòng</a>
+                    <a href="#">🤝 Hợp tác quảng cáo</a>
+                    <a href="#">📝 Gửi bài viết</a>
+                    <a href="#">❓ Về chúng tôi</a>
+                </div>
+            </div>
+        </div>
+        <div class="reviewhaiphong_home_footer_bottom">
+            © 2025 <a href="#">ReviewHảiPhòng.vn</a> · Bản quyền thuộc về Review Hải Phòng · Thiết kế bởi team Review HP
+        </div>
+    </footer>
+
+    <script>
+        // ===== JAVASCRIPT =====
+
+        // --- Mobile Menu Toggle ---
+        (function () {
+            var reviewhaiphong_home_toggle = document.getElementById('reviewhaiphong_home_menu_toggle');
+            var reviewhaiphong_home_nav = document.getElementById('reviewhaiphong_home_mobile_nav');
+            var reviewhaiphong_home_close = document.getElementById('reviewhaiphong_home_mobile_close');
+
+            if (reviewhaiphong_home_toggle && reviewhaiphong_home_nav) {
+                reviewhaiphong_home_toggle.addEventListener('click', function () {
+                    reviewhaiphong_home_nav.classList.add('reviewhaiphong_home_open');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            if (reviewhaiphong_home_close && reviewhaiphong_home_nav) {
+                reviewhaiphong_home_close.addEventListener('click', function () {
+                    reviewhaiphong_home_nav.classList.remove('reviewhaiphong_home_open');
+                    document.body.style.overflow = '';
+                });
+            }
+            if (reviewhaiphong_home_nav) {
+                reviewhaiphong_home_nav.addEventListener('click', function (e) {
+                    if (e.target === reviewhaiphong_home_nav) {
+                        reviewhaiphong_home_nav.classList.remove('reviewhaiphong_home_open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+        })();
+
+        // --- Tab System ---
+        (function () {
+            var reviewhaiphong_home_tabContainers = document.querySelectorAll('[id$="_tabs"]');
+            reviewhaiphong_home_tabContainers.forEach(function (reviewhaiphong_home_tabContainer) {
+                var reviewhaiphong_home_btns = reviewhaiphong_home_tabContainer.querySelectorAll('.reviewhaiphong_home_tab_btn');
+                reviewhaiphong_home_btns.forEach(function (reviewhaiphong_home_btn) {
+                    reviewhaiphong_home_btn.addEventListener('click', function () {
+                        var reviewhaiphong_home_targetId = this.getAttribute('data-tab');
+                        // Deactivate all in this container
+                        reviewhaiphong_home_btns.forEach(function (b) { b.classList.remove('reviewhaiphong_home_tab_active'); });
+                        // Hide all tab contents (find parent section)
+                        var reviewhaiphong_home_parentSection = reviewhaiphong_home_tabContainer.closest('.reviewhaiphong_home_section_block');
+                        if (reviewhaiphong_home_parentSection) {
+                            reviewhaiphong_home_parentSection.querySelectorAll('.reviewhaiphong_home_tab_content').forEach(function (tc) {
+                                tc.classList.remove('reviewhaiphong_home_tab_show');
+                            });
+                            var reviewhaiphong_home_target = document.getElementById(reviewhaiphong_home_targetId);
+                            if (reviewhaiphong_home_target) reviewhaiphong_home_target.classList.add('reviewhaiphong_home_tab_show');
+                        }
+                        this.classList.add('reviewhaiphong_home_tab_active');
+                    });
+                });
+            });
+        })();
+
+        // --- Load More ---
+        (function () {
+            var reviewhaiphong_home_loadMoreBtns = document.querySelectorAll('.reviewhaiphong_home_loadmore_btn');
+            reviewhaiphong_home_loadMoreBtns.forEach(function (reviewhaiphong_home_btn) {
+                reviewhaiphong_home_btn.addEventListener('click', function () {
+                    var reviewhaiphong_home_sectionId = this.getAttribute('data-section');
+                    var reviewhaiphong_home_section = document.getElementById(reviewhaiphong_home_sectionId);
+                    if (reviewhaiphong_home_section) {
+                        if (reviewhaiphong_home_section.style.display === 'none' || reviewhaiphong_home_section.style.display === '') {
+                            reviewhaiphong_home_section.style.display = 'block';
+                            this.textContent = 'Thu gọn ▲';
+                        } else {
+                            reviewhaiphong_home_section.style.display = 'none';
+                            this.textContent = 'Xem thêm ▼';
+                        }
+                    }
+                });
+            });
+        })();
+
+        // --- Search Enter Key ---
+        (function () {
+            var reviewhaiphong_home_searchInput = document.querySelector('.reviewhaiphong_home_search_input');
+            var reviewhaiphong_home_searchBtn = document.querySelector('.reviewhaiphong_home_search_btn');
+            if (reviewhaiphong_home_searchInput) {
+                reviewhaiphong_home_searchInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        if (reviewhaiphong_home_searchBtn) reviewhaiphong_home_searchBtn.click();
+                    }
+                });
+            }
+            if (reviewhaiphong_home_searchBtn) {
+                reviewhaiphong_home_searchBtn.addEventListener('click', function () {
+                    var reviewhaiphong_home_q = reviewhaiphong_home_searchInput ? reviewhaiphong_home_searchInput.value.trim() : '';
+                    if (reviewhaiphong_home_q) {
+                        alert('Tìm kiếm: ' + reviewhaiphong_home_q);
+                    }
+                });
+            }
+        })();
+
+        // --- Sticky header shadow on scroll ---
+        (function () {
+            var reviewhaiphong_home_hdr = document.querySelector('.reviewhaiphong_home_header');
+            if (!reviewhaiphong_home_hdr) return;
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 10) {
+                    reviewhaiphong_home_hdr.style.boxShadow = '0 2px 12px rgba(0,0,0,0.16)';
+                } else {
+                    reviewhaiphong_home_hdr.style.boxShadow = '0 1px 4px rgba(0,0,0,0.10)';
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>

@@ -33,8 +33,8 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $account = $this->loadAccount();
-        $perPage = (int) ($request->input('per_page') ?? 20);
-        $perPage = $perPage > 0 && $perPage <= 200 ? $perPage : 20;
+        $perPage = (int) ($request->input('per_page') ?? 50);
+        $perPage = in_array($perPage, [50, 200, 500, 2000, 5000]) ? $perPage : 50;
         $status = $request->input('status');
         $keyword = trim((string) $request->input('q', ''));
 
@@ -348,16 +348,55 @@ class PostController extends Controller
     }
 
     /**
+     * Helper: Xóa ảnh của bài viết (seo_image và ảnh trong content)
+     */
+    private function deletePostImages(Post $post)
+    {
+        // 1. Xóa ảnh thumbnail (seo_image)
+        if (!empty($post->seo_image) && $post->seo_image !== 'default_image.webp') {
+            $seoImagePath = public_path('client/assets/images/posts/' . $post->seo_image);
+            if (\Illuminate\Support\Facades\File::exists($seoImagePath)) {
+                \Illuminate\Support\Facades\File::delete($seoImagePath);
+            }
+        }
+
+        // 2. Xóa các ảnh được nhúng trong bài viết (content)
+        if (!empty($post->content)) {
+            preg_match_all('/<img[^>]+src=(?:["\'])?([^"\'\s>]+)(?:["\'])?[^>]*>/i', $post->content, $matches);
+            
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $src) {
+                    $parsedUrl = parse_url($src);
+                    $path = $parsedUrl['path'] ?? '';
+                    
+                    if (!empty($path)) {
+                        $relativePath = ltrim($path, '/');
+                        $fullPath = public_path($relativePath);
+                        
+                        // Chỉ xóa nếu file thực sự tồn tại trong thư mục public
+                        if (\Illuminate\Support\Facades\File::exists($fullPath) && is_file($fullPath)) {
+                            \Illuminate\Support\Facades\File::delete($fullPath);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Xoá bài viết vĩnh viễn
      */
     public function destroy(Post $post)
     {
+        // Xóa ảnh vật lý trước khi xóa record
+        $this->deletePostImages($post);
+        
         $post->delete();
         
         // Xóa cache sau khi xóa bài viết
         $this->clearCache();
         
-        return back()->with('success', 'Đã xoá bài viết');
+        return back()->with('success', 'Đã xoá bài viết và các hình ảnh liên quan');
     }
 
     /**
@@ -371,21 +410,20 @@ class PostController extends Controller
         ]);
 
         $postIds = $request->input('post_ids');
-        $deletedCount = 0;
 
-        // Xóa từng bài một để trigger model events (và xóa ảnh)
-        foreach ($postIds as $id) {
-            $post = Post::find($id);
-            if ($post) {
-                $post->delete();
-                $deletedCount++;
-            }
+        // Lấy danh sách bài viết để xóa ảnh vật lý
+        $posts = Post::whereIn('id', $postIds)->get(['id', 'seo_image', 'content']);
+        foreach ($posts as $post) {
+            $this->deletePostImages($post);
         }
+
+        // Xóa nhanh bằng 1 câu lệnh SQL duy nhất
+        $deletedCount = Post::whereIn('id', $postIds)->delete();
 
         // Xóa cache sau khi xóa bài viết
         $this->clearCache();
 
-        return back()->with('success', "Đã xoá {$deletedCount} bài viết");
+        return back()->with('success', "Đã xoá {$deletedCount} bài viết và toàn bộ ảnh liên quan");
     }
 
     /**
@@ -596,13 +634,16 @@ class PostController extends Controller
                 ->with('error', 'Bạn không có quyền xóa bài viết này!');
         }
 
+        // Xóa ảnh vật lý
+        $this->deletePostImages($post);
+
         $post->delete();
         
         // Xóa cache
         $this->clearCache();
         
         return redirect()->route('admin.staff.posts.index')
-            ->with('success', 'Bài viết đã được xóa thành công!');
+            ->with('success', 'Bài viết và ảnh đã được xóa thành công!');
     }
 
     /**
@@ -652,13 +693,10 @@ class PostController extends Controller
                         ->orWhere('slug', 'like', $like);
                 });
             }
-            
-            $posts = $query->orderBy('created_at', 'desc')->get();
-            
-            $export = new PostsExport($posts);
+            $query->orderBy('created_at', 'desc');
             $filename = 'bai-viet-' . date('Y-m-d-His') . '.xlsx';
-            $export->download($filename);
             
+            return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\PostsExport($query), $filename);
         } catch (\Exception $e) {
             Log::error('Posts Export Error: ' . $e->getMessage());
             return back()->withErrors(['export' => 'Lỗi khi xuất file Excel: ' . $e->getMessage()]);
@@ -666,227 +704,53 @@ class PostController extends Controller
     }
 
     /**
-     * Nhập bài viết từ file Excel - Chia nhỏ batch để tránh timeout
+     * Nhập bài viết từ file Excel
      */
     public function import(Request $request)
     {
-        // Nếu là AJAX request để xử lý batch
-        if ($request->ajax() && $request->has('batch_index')) {
-            return $this->processImportBatch($request);
-        }
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:10240' // Max 10MB
+        ], [
+            'file.required' => 'Vui lòng chọn file Excel để nhập.',
+            'file.mimes' => 'File phải có định dạng .xlsx hoặc .xls.',
+            'file.max' => 'File không được vượt quá 10MB.',
+        ]);
 
         try {
-            $validator = Validator::make($request->all(), [
-                'file' => 'required|mimes:xlsx,xls|max:10240', // Max 10MB
-            ], [
-                'file.required' => 'Vui lòng chọn file Excel để nhập.',
-                'file.mimes' => 'File phải có định dạng .xlsx hoặc .xls.',
-                'file.max' => 'File không được vượt quá 10MB.',
-            ]);
-
-            if ($validator->fails()) {
-                return back()->withErrors($validator)->withInput();
-            }
-
-            $file = $request->file('file');
-            
-            // Đảm bảo thư mục temp tồn tại
-            $tempDir = storage_path('app/temp');
-            if (!file_exists($tempDir)) {
-                mkdir($tempDir, 0755, true);
-            }
-            
-            // Lưu file với tên duy nhất (loại bỏ ký tự đặc biệt trong tên file)
-            $originalName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
-            $fileName = 'import_' . time() . '_' . uniqid() . '_' . $originalName;
-            
-            // Lưu file và lấy đường dẫn đầy đủ
-            $filePath = $file->storeAs('temp', $fileName, 'local');
-            
-            // Lấy đường dẫn đầy đủ từ storage
-            $fullPath = Storage::disk('local')->path($filePath);
-            
-            // Kiểm tra file đã được lưu thành công
-            if (!file_exists($fullPath)) {
-                Log::error('Posts Import - File không tồn tại sau khi lưu', [
-                    'filePath' => $filePath,
-                    'fullPath' => $fullPath,
-                    'originalName' => $file->getClientOriginalName()
-                ]);
-                throw new \Exception('Không thể lưu file. Vui lòng thử lại.');
-            }
-
-            // Đọc file để đếm số dòng
-            try {
-                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fullPath);
-                $sheet = $spreadsheet->getActiveSheet();
-                $rows = $sheet->toArray();
-                $totalRows = count($rows) - 1; // Trừ header
-            } catch (\Exception $e) {
-                throw new \Exception('Không thể đọc file Excel: ' . $e->getMessage());
-            }
-
-            // Lưu thông tin vào session
-            $request->session()->put('import_file_path', $fullPath);
-            $request->session()->put('import_file_name', $fileName);
-            $request->session()->put('import_total_rows', $totalRows);
-            $request->session()->put('import_success', 0);
-            $request->session()->put('import_skip', 0);
-            $request->session()->put('import_errors', []);
-
-            // Trả về view với JavaScript để xử lý batch
-            return view('admin.posts.import-processing', [
-                'totalRows' => $totalRows,
-                'fileName' => $originalName
-            ]);
-
+            \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\PostsImport, $request->file('file'));
+            $this->clearCache();
+            return redirect()->route('admin.posts.index')->with('success', 'Đã nhập bài viết từ file Excel thành công!');
         } catch (\Exception $e) {
             Log::error('Posts Import Error: ' . $e->getMessage());
-            return back()->withErrors(['import' => 'Lỗi khi nhập file Excel: ' . $e->getMessage()]);
+            return back()->withErrors(['import' => 'Lỗi khi nhập file Excel: ' . $e->getMessage()])->withInput();
         }
     }
 
     /**
-     * Xử lý một batch nhỏ (10 dòng mỗi lần) để tránh timeout
+     * Nhận mảng JSON từ Client (JS) và Upsert
      */
-    private function processImportBatch(Request $request)
+    public function importBatch(Request $request)
     {
+        $request->validate([
+            'rows' => 'required|array'
+        ]);
+
         try {
-            // Kiểm tra AJAX request
-            if (!$request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Chỉ chấp nhận AJAX request'
-                ], 400);
-            }
-
-            $batchIndex = (int) $request->input('batch_index', 0);
-            $batchSize = 10; // Xử lý 10 dòng mỗi batch
+            $rows = collect($request->input('rows'));
+            $import = new \App\Imports\PostsImport();
+            $import->collection($rows);
             
-            $filePath = $request->session()->get('import_file_path');
-            $totalRows = $request->session()->get('import_total_rows', 0);
-            
-            if (empty($filePath) || !file_exists($filePath)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'File Excel không tồn tại hoặc đã bị xóa'
-                ]);
-            }
-
-            // Đọc file Excel
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filePath);
-            $sheet = $spreadsheet->getActiveSheet();
-            $rows = $sheet->toArray();
-
-            if (empty($rows) || count($rows) < 2) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'File Excel không có dữ liệu'
-                ]);
-            }
-
-            // Skip header row
-            $dataRows = array_slice($rows, 1);
-            
-            // Tính toán batch hiện tại
-            $startIndex = $batchIndex * $batchSize;
-            $endIndex = min($startIndex + $batchSize, count($dataRows));
-            $batchRows = array_slice($dataRows, $startIndex, $batchSize);
-            
-            if (empty($batchRows)) {
-                // Đã xử lý xong tất cả
-                $successCount = $request->session()->get('import_success', 0);
-                $skipCount = $request->session()->get('import_skip', 0);
-                $errors = $request->session()->get('import_errors', []);
-                
-                // Xóa file temp
-                if (file_exists($filePath)) {
-                    @unlink($filePath);
-                }
-                
-                // Clear session
-                $request->session()->forget([
-                    'import_file_path', 
-                    'import_file_name', 
-                    'import_total_rows', 
-                    'import_success', 
-                    'import_skip', 
-                    'import_errors'
-                ]);
-                
-                // Clear cache
-                $this->clearCache();
-                
-                return response()->json([
-                    'success' => true,
-                    'completed' => true,
-                    'message' => "Đã xử lý thành công {$successCount} bài viết" . 
-                                ($skipCount > 0 ? ", bỏ qua {$skipCount} bài viết" : "") . 
-                                (count($errors) > 0 ? ", " . count($errors) . " lỗi" : ""),
-                    'successCount' => $successCount,
-                    'skipCount' => $skipCount,
-                    'errorCount' => count($errors),
-                    'errors' => $errors
-                ]);
-            }
-
-            $successCount = $request->session()->get('import_success', 0);
-            $skipCount = $request->session()->get('import_skip', 0);
-            $errors = $request->session()->get('import_errors', []);
-            
-            // Tăng thời gian thực thi cho batch này
-            set_time_limit(300); // 5 phút cho mỗi batch
-            ini_set('memory_limit', '1024M');
-            
-            // Xử lý từng dòng trong batch
-            $import = new PostsImport();
-            $import->resetCounters(); // Reset counters cho batch này
-            
-            foreach ($batchRows as $rowIndex => $row) {
-                $rowNumber = $startIndex + $rowIndex + 2; // +2 vì bỏ qua header và index bắt đầu từ 0
-                
-                try {
-                    $import->importRow($row, $rowNumber);
-                    // importRow đã tự tăng successCount hoặc skipCount
-                } catch (\Exception $e) {
-                    $errorMsg = $e->getMessage();
-                    if (strpos($errorMsg, 'đã tồn tại') !== false && strpos($errorMsg, 'Bỏ qua') !== false) {
-                        $skipCount++;
-                    }
-                    $errors[] = "Dòng {$rowNumber}: " . $errorMsg;
-                    Log::error("PostsImport Batch - Dòng {$rowNumber}: " . $errorMsg);
-                }
-            }
-            
-            // Cập nhật counters từ import instance
-            $batchSuccess = $import->getSuccessCount();
-            $batchSkip = $import->getSkipCount();
-            $successCount += $batchSuccess;
-            $skipCount += $batchSkip;
-            
-            // Cập nhật session
-            $request->session()->put('import_success', $successCount);
-            $request->session()->put('import_skip', $skipCount);
-            $request->session()->put('import_errors', $errors);
+            $this->clearCache();
             
             return response()->json([
                 'success' => true,
-                'completed' => false,
-                'batchIndex' => $batchIndex,
-                'processed' => $endIndex,
-                'total' => count($dataRows),
-                'successCount' => $successCount,
-                'skipCount' => $skipCount,
-                'errorCount' => count($errors),
-                'message' => "Đã xử lý {$endIndex}/" . count($dataRows) . " dòng..."
+                'errors' => $import->errors,
+                'skipCount' => $import->skipCount,
+                'successCount' => $import->successCount
             ]);
-            
         } catch (\Exception $e) {
-            Log::error('Posts Import Batch Error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Lỗi khi xử lý batch: ' . $e->getMessage()
-            ], 500);
+            Log::error('Posts Import Batch JS Error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 }
