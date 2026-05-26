@@ -174,7 +174,7 @@
                         </div>
                         <div class="reviewhaiphong_home_card_body">
                             <div class="reviewhaiphong_home_card_title">{{ $post->name }}</div>
-                            <div class="reviewhaiphong_home_card_meta">📅 {{ \Carbon\Carbon::parse($post->published_at)->format('d/m/Y') }} · ⏱ {{ ceil(str_word_count(strip_tags($post->content)) / 200) }} phút đọc</div>
+                            <div class="reviewhaiphong_home_card_meta">📅 {{ \Carbon\Carbon::parse($post->published_at)->format('d/m/Y') }} · ⏱ {{ $post->reading_time }} phút đọc</div>
                             <div class="reviewhaiphong_home_card_excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($post->content), 100) }}</div>
                         </div>
                     </a>

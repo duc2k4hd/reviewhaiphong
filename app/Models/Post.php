@@ -93,4 +93,19 @@ class Post extends Model
         }
         $this->attributes['content'] = $value;
     }
+
+    public function getWordCountAttribute()
+    {
+        if (empty($this->content)) {
+            return 0;
+        }
+        $text = strip_tags($this->content);
+        return count(preg_split('/\s+/u', $text, -1, PREG_SPLIT_NO_EMPTY));
+    }
+
+    public function getReadingTimeAttribute()
+    {
+        $minutes = ceil($this->word_count / 200);
+        return $minutes > 0 ? $minutes : 1;
+    }
 }

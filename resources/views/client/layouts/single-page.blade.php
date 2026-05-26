@@ -179,7 +179,7 @@
             "genre": "{{ $post->category->name }}",
             @endif
             "inLanguage": "vi",
-                "wordCount": {{ str_word_count(strip_tags($post->content ?? '')) }},
+                "wordCount": {{ $post->word_count }},
             "commentCount": {{ isset($post->comments) ? count($post->comments) : 0 }},
             @if(isset($post->comments) && count($post->comments) > 0)
             "comment": [
